@@ -2,6 +2,16 @@
 
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 
+// ============================================================
+// NeuralNetwork — a brain.
+// Recognizable brain silhouette (bumpy cortex outline + central
+// fissure + sulci folds) filled with a dense network of ~55 nodes
+// connected by curved axons. Travelling signal dots flow along the
+// axons. Nodes react to the cursor: the ones near the mouse light
+// up, grow, and turn accent-colored — a glowing cluster follows
+// the cursor through the cortex.
+// ============================================================
+
 interface NNode {
   x: number
   y: number
@@ -10,82 +20,171 @@ interface NNode {
   delay: number
 }
 
-// Brain-like bilateral topology: 20 nodes arranged as left & right hemispheres
-// plus a central bridge. NOT concentric rings — the silhouette suggests a brain.
-// Left hemisphere lives around x=170-280, right around x=320-430, bridge at x=300.
-// Y spread 150-460. Radii 3.5-6. Four "hub" nodes (r=6) filled with accent.
-const NODES: NNode[] = [
-  // Left hemisphere (0-7)
-  { x: 210, y: 180, r: 4,   hub: false, delay: 0.0 }, // 0  L upper outer
-  { x: 175, y: 250, r: 4.5, hub: false, delay: 0.6 }, // 1  L outer mid
-  { x: 190, y: 330, r: 4,   hub: false, delay: 1.2 }, // 2  L outer lower
-  { x: 230, y: 400, r: 4,   hub: false, delay: 1.8 }, // 3  L lower
-  { x: 260, y: 220, r: 4.5, hub: false, delay: 0.4 }, // 4  L upper inner
-  { x: 245, y: 290, r: 6,   hub: true,  delay: 0.2 }, // 5  L HUB
-  { x: 260, y: 360, r: 4.5, hub: false, delay: 1.0 }, // 6  L lower inner
-  { x: 220, y: 150, r: 3.5, hub: false, delay: 0.8 }, // 7  L top
-  // Right hemisphere (8-15, mirror of 0-7)
-  { x: 390, y: 180, r: 4,   hub: false, delay: 0.3 }, // 8  R upper outer
-  { x: 425, y: 250, r: 4.5, hub: false, delay: 0.9 }, // 9  R outer mid
-  { x: 410, y: 330, r: 4,   hub: false, delay: 1.5 }, // 10 R outer lower
-  { x: 370, y: 400, r: 4,   hub: false, delay: 2.1 }, // 11 R lower
-  { x: 340, y: 220, r: 4.5, hub: false, delay: 0.7 }, // 12 R upper inner
-  { x: 355, y: 290, r: 6,   hub: true,  delay: 0.5 }, // 13 R HUB
-  { x: 340, y: 360, r: 4.5, hub: false, delay: 1.1 }, // 14 R lower inner
-  { x: 380, y: 150, r: 3.5, hub: false, delay: 1.3 }, // 15 R top
-  // Central bridge (16-19) — corpus-callosum-like cross-links between hemispheres
-  { x: 300, y: 250, r: 6,   hub: true,  delay: 0.1 }, // 16 UPPER BRIDGE HUB
-  { x: 300, y: 350, r: 6,   hub: true,  delay: 1.7 }, // 17 LOWER BRIDGE HUB
-  { x: 300, y: 150, r: 4,   hub: false, delay: 1.6 }, // 18 top bridge (sensory pole)
-  { x: 300, y: 450, r: 4,   hub: false, delay: 2.4 }, // 19 bottom bridge (motor pole)
+// ---------- Brain silhouette ----------
+// A hand-crafted, genuinely brain-shaped outline: rounded frontal
+// lobe at the front (left), rounded occipital pole at the back
+// (right), temporal lobe curving under, and soft gyri bumps along
+// the top. Drawn as smooth cubic Beziers so it reads instantly as a
+// brain (not a star). Center ~ (300, 295).
+const BC = { x: 300, y: 295 }
+const BRAIN_OUTLINE =
+  // Start at the front-bottom (frontal/temporal notch, lower-left),
+  // trace clockwise: temporal underside -> occipital back -> top gyri
+  // bumps -> frontal bulge -> back to start.
+  'M 132 330 ' +
+  // Temporal lobe curving under to the back-bottom
+  'C 150 405 215 452 300 452 ' +
+  'C 385 452 450 405 468 330 ' +
+  // Occipital pole (back, right) rounding up
+  'C 500 275 498 220 470 188 ' +
+  // Top-right gyri bumps (soft, rounded)
+  'C 460 168 444 170 436 186 ' +
+  'C 428 170 412 170 404 188 ' +
+  'C 396 170 380 170 372 190 ' +
+  // Crown — central dimple (top of the longitudinal fissure)
+  'C 362 168 344 170 336 192 ' +
+  'C 328 170 312 170 304 192 ' +
+  'C 296 170 280 170 272 192 ' +
+  'C 264 170 248 170 240 190 ' +
+  'C 232 170 216 170 208 188 ' +
+  // Frontal lobe (front, left) bulging forward and down
+  'C 196 168 184 172 176 192 ' +
+  'C 150 220 140 275 132 330 Z'
+
+// ---------- Sulci (interior wrinkles) ----------
+// A few gentle curved folds inside each hemisphere + the central
+// longitudinal fissure dividing the two hemispheres.
+const CENTRAL_FISSURE =
+  'M 300 178 C 296 230 304 280 300 295 C 296 340 305 390 300 438'
+const SULCI = [
+  // left hemisphere folds (frontal -> temporal)
+  'M 250 195 C 232 235 224 275 206 305 C 188 335 178 360 168 388',
+  'M 272 240 C 254 270 248 300 232 328 C 220 350 214 372 206 398',
+  // right hemisphere folds (mirrored)
+  'M 350 195 C 368 235 376 275 394 305 C 412 335 422 360 432 388',
+  'M 328 240 C 346 270 352 300 368 328 C 380 350 386 372 394 398',
 ]
 
-// 16 connections (indices into NODES) — bilateral chains + bridge cross-links.
-const EDGES: [number, number][] = [
-  [0, 4],   // L upper outer → L upper inner
-  [4, 5],   // L upper inner → L hub
-  [5, 6],   // L hub → L lower inner
-  [6, 3],   // L lower inner → L lower
-  [1, 5],   // L outer mid → L hub
-  [2, 6],   // L outer lower → L lower inner
-  [7, 0],   // L top → L upper outer
-  [8, 12],  // R upper outer → R upper inner
-  [12, 13], // R upper inner → R hub
-  [13, 14], // R hub → R lower inner
-  [14, 11], // R lower inner → R lower
-  [9, 13],  // R outer mid → R hub
-  [10, 14], // R outer lower → R lower inner
-  [15, 8],  // R top → R upper outer
-  [5, 16],  // L hub → upper bridge hub (cross-hemisphere)
-  [13, 17], // R hub → lower bridge hub (cross-hemisphere)
-]
+// ---------- Internal node network ----------
+// Deterministic pseudo-random so the layout is stable across renders.
+function rng(seed: number) {
+  let s = seed >>> 0
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0
+    return s / 0xffffffff
+  }
+}
 
-// Precompute quadratic Bézier path d-strings + per-path animation timing.
-// Control point is offset perpendicular to the segment midpoint (alternating
-// direction for an organic feel), 14-20px magnitude.
-const PATHS: { d: string; dur: string; begin: string }[] = EDGES.map(([a, b], i) => {
-  const p1 = NODES[a]
-  const p2 = NODES[b]
-  const mx = (p1.x + p2.x) / 2
-  const my = (p1.y + p2.y) / 2
-  const dx = p2.x - p1.x
-  const dy = p2.y - p1.y
-  const L = Math.hypot(dx, dy) || 1
-  const px = -dy / L // perpendicular unit
-  const py = dx / L
-  const sign = i % 2 === 0 ? 1 : -1
-  const offset = sign * (14 + (i % 3) * 3) // 14, 17, or 20 px, alternating direction
-  const cx = mx + px * offset
-  const cy = my + py * offset
-  const d = `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
-  // Stagger durations 2.4s–4.2s, begin offsets 0s–1.8s
-  const dur = (2.4 + (i % 5) * 0.45).toFixed(2) + 's'
-  const begin = (i % 7) * 0.3 + 's'
-  return { d, dur, begin }
-})
+const NODES: NNode[] = (() => {
+  const rand = rng(7)
+  const out: NNode[] = []
+  const step = 42
+  // jittered grid across the brain bbox; keep points inside the cortex.
+  // Inside-brain test approximates the hand-crafted silhouette: a tapered
+  // blob widest through the middle (y~300) and rounded at top/bottom, with
+  // the front (left, x<230) bulging a touch more and the back (right,
+  // x>370) rounded. Inset by ~14px so nodes sit inside the outline.
+  const insideBrain = (x: number, y: number) => {
+    const dx = x - BC.x
+    const dy = y - BC.y
+    // vertical half-height shrinks toward top/bottom (rounded crown/base)
+    const ry = 150 - (dy * dy) / 520
+    if (ry <= 0) return false
+    // horizontal half-width: bulges at front (dx<0) and back (dx>0),
+    // narrows slightly at the very front tip.
+    let rx = 196
+    if (dx < 0) rx = 200 + Math.min(0, dx) * 0.12 // frontal bulge
+    if (dx > 0) rx = 198 + Math.min(18, dx * 0.05) // occipital round
+    // top crown is a bit narrower (the gyri bumps dip between hemispheres)
+    if (dy < -90) rx -= 8
+    return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 0.86
+  }
+  for (let gx = 130; gx <= 470; gx += step) {
+    for (let gy = 185; gy <= 430; gy += step) {
+      const jx = (rand() - 0.5) * 26
+      const jy = (rand() - 0.5) * 26
+      const x = gx + jx
+      const y = gy + jy
+      if (!insideBrain(x, y)) continue
+      // thin the central fissure corridor
+      if (Math.abs(x - BC.x) < 11 && Math.abs(y - BC.y) < 110) {
+        if (rand() < 0.75) continue
+      }
+      out.push({
+        x,
+        y,
+        r: 2.6 + rand() * 2.2,
+        hub: rand() < 0.12,
+        delay: rand() * 3,
+      })
+    }
+  }
+  return out
+})()
+
+// ---------- Edges (k-nearest) ----------
+interface Edge {
+  a: number
+  b: number
+  d: string
+  dur: string
+  begin: string
+}
+const EDGES: Edge[] = (() => {
+  const edges: Edge[] = []
+  const seen = new Set<string>()
+  const dist = (i: number, j: number) =>
+    Math.hypot(NODES[i].x - NODES[j].x, NODES[i].y - NODES[j].y)
+  for (let i = 0; i < NODES.length; i++) {
+    // 2 nearest neighbors
+    const nbrs = NODES.map((_, j) => ({ j, d: i === j ? Infinity : dist(i, j) }))
+      .sort((p, q) => p.d - q.d)
+      .slice(0, 3)
+    for (const { j, d: len } of nbrs) {
+      if (len > 95) continue // only short local axons
+      const key = i < j ? `${i}-${j}` : `${j}-${i}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      const p1 = NODES[i]
+      const p2 = NODES[j]
+      const mx = (p1.x + p2.x) / 2
+      const my = (p1.y + p2.y) / 2
+      const dx = p2.x - p1.x
+      const dy = p2.y - p1.y
+      const L = Math.hypot(dx, dy) || 1
+      const sign = (i + j) % 2 === 0 ? 1 : -1
+      const off = sign * (9 + (i % 3) * 4)
+      const cx = mx + (-dy / L) * off
+      const cy = my + (dx / L) * off
+      const d = `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
+      edges.push({
+        a: i,
+        b: j,
+        d,
+        dur: (2.2 + (i % 5) * 0.4).toFixed(2) + 's',
+        begin: ((i % 7) * 0.28).toFixed(2) + 's',
+      })
+    }
+  }
+  return edges
+})()
+
+// Travelling signal dots on a subset of edges (every 2nd edge).
+const FLOW_EDGES = EDGES.filter((_, i) => i % 2 === 0)
+
+// Cursor proximity radius (viewBox units). Nodes within this of the
+// cursor light up + grow.
+const PROX_R = 115
 
 export function NeuralNetwork({ className }: { className?: string }) {
   const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+
+  // Cursor position in viewBox coordinates (viewBox is 600x600, square).
+  const cx = 300 + x * 600
+  const cy = 300 + y * 600
+  // Global parallax shift for the whole brain (subtle).
+  const px = x * 12
+  const py = y * 12
 
   return (
     <div ref={ref} className={className}>
@@ -99,51 +198,86 @@ export function NeuralNetwork({ className }: { className?: string }) {
         strokeLinejoin="round"
       >
         <defs>
-          <radialGradient id="nn-bg-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.35" />
-            <stop offset="55%" stopColor="var(--svg-glow)" stopOpacity="0.1" />
+          <radialGradient id="nn-bg-glow" cx="50%" cy="49%" r="55%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.4" />
+            <stop offset="55%" stopColor="var(--svg-glow)" stopOpacity="0.12" />
             <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="nn-cursor-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-accent)" stopOpacity="0.22" />
+            <stop offset="60%" stopColor="var(--svg-accent)" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="var(--svg-accent)" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Faint central radial glow breathing behind the network */}
+        {/* Ambient breathing glow behind the brain */}
         <circle
           cx="300"
-          cy="300"
-          r="260"
+          cy="295"
+          r="270"
           fill="url(#nn-bg-glow)"
           className="nf-breathe"
-          style={{ transformBox: 'fill-box', transformOrigin: 'center', animationDuration: '7s' }}
+          style={{
+            transformBox: 'fill-box',
+            transformOrigin: 'center',
+            animationDuration: '7s',
+          }}
         />
 
-        {/* Whole-network common parallax: connections + travelling dots + nodes all
-            shift together so dots stay on the lines. Hub nodes get an extra small
-            counter-shift (foreground, less movement); background nodes get an extra
-            forward-shift (more movement). Depth-staggered but subtle. */}
-        <g style={{ transform: `translate3d(${x * 14}px, ${y * 14}px, 0)` }}>
-          {/* Connection paths (static within the common group so dots stay aligned) */}
-          {PATHS.map((p, i) => (
-            <path
-              key={`p-${i}`}
-              id={`nn-path-${i}`}
-              d={p.d}
-              stroke="var(--svg-stroke)"
-              strokeWidth="0.9"
-              opacity="0.4"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
+        {/* Whole-brain parallax group: outline + folds + network shift together
+            so travelling dots stay on their axons. */}
+        <g style={{ transform: `translate3d(${px}px, ${py}px, 0)` }}>
+          {/* ----- Brain silhouette ----- */}
+          <path
+            d={BRAIN_OUTLINE}
+            fill="var(--svg-fill)"
+            stroke="var(--svg-stroke)"
+            strokeWidth="1.6"
+            opacity="0.85"
+            vectorEffect="non-scaling-stroke"
+          />
+          {/* Sulci folds */}
+          <g
+            stroke="var(--svg-stroke)"
+            strokeWidth="1"
+            opacity="0.32"
+            vectorEffect="non-scaling-stroke"
+          >
+            {SULCI.map((d, i) => (
+              <path key={`sul-${i}`} d={d} />
+            ))}
+          </g>
+          {/* Central longitudinal fissure (divides hemispheres) */}
+          <path
+            d={CENTRAL_FISSURE}
+            stroke="var(--svg-stroke)"
+            strokeWidth="1.3"
+            opacity="0.5"
+            vectorEffect="non-scaling-stroke"
+          />
 
-          {/* Travelling data-signal dots — one per connection. animateMotion moves the
-              dot along the path; a paired opacity animation fades the dot in at the path
-              start and out at the path end, masking the cycle reset so the flow reads as
-              continuous "data packets" rather than visible teleport jumps. */}
-          {PATHS.map((p, i) => (
-            <circle key={`d-${i}`} r="2.2" fill="var(--svg-accent)" opacity="0">
+          {/* Soft glow that follows the cursor through the cortex */}
+          <circle cx={cx} cy={cy} r={PROX_R * 1.25} fill="url(#nn-cursor-glow)" />
+
+          {/* ----- Axon connections ----- */}
+          <g
+            stroke="var(--svg-stroke)"
+            strokeWidth="0.8"
+            opacity="0.32"
+            vectorEffect="non-scaling-stroke"
+          >
+            {EDGES.map((e, i) => (
+              <path key={`e-${i}`} d={e.d} />
+            ))}
+          </g>
+
+          {/* ----- Travelling signal dots ----- */}
+          {FLOW_EDGES.map((e, i) => (
+            <circle key={`f-${i}`} r="2.1" fill="var(--svg-accent)" opacity="0">
               <animateMotion
-                path={p.d}
-                dur={p.dur}
-                begin={p.begin}
+                path={e.d}
+                dur={e.dur}
+                begin={e.begin}
                 repeatCount="indefinite"
                 rotate="auto"
               />
@@ -151,51 +285,63 @@ export function NeuralNetwork({ className }: { className?: string }) {
                 attributeName="opacity"
                 values="0;1;1;0"
                 keyTimes="0;0.12;0.88;1"
-                dur={p.dur}
-                begin={p.begin}
+                dur={e.dur}
+                begin={e.begin}
                 repeatCount="indefinite"
               />
             </circle>
           ))}
 
-          {/* Nodes — hub nodes (foreground, less parallax) vs background nodes (more parallax) */}
+          {/* ----- Nodes (per-node cursor proximity reaction) ----- */}
           {NODES.map((n, i) => {
-            const extra = n.hub ? -7 : 7
+            const dist = Math.hypot(n.x - cx, n.y - cy)
+            const prox = Math.max(0, 1 - dist / PROX_R) // 1 at cursor, 0 at edge
+            const scale = 1 + prox * 1.1
+            const lit = prox > 0.25
             return (
-              <g key={`n-${i}`} style={{ transform: `translate3d(${x * extra}px, ${y * extra}px, 0)` }}>
-                {/* Soft pulsing halo (hub halos brighter via accent stroke) */}
+              <g
+                key={`n-${i}`}
+                style={{
+                  transform: `translate(${n.x}px, ${n.y}px) scale(${scale})`,
+                  transformBox: 'fill-box',
+                  transformOrigin: 'center',
+                }}
+              >
+                {/* Halo (brightens near cursor) */}
                 <circle
-                  cx={n.x}
-                  cy={n.y}
-                  r={n.r + 5}
+                  cx="0"
+                  cy="0"
+                  r={n.r + 5 + prox * 4}
                   fill="none"
-                  stroke={n.hub ? 'var(--svg-accent)' : 'var(--svg-glow)'}
-                  strokeWidth="0.8"
-                  opacity={n.hub ? 0.6 : 0.4}
+                  stroke={lit ? 'var(--svg-accent)' : 'var(--svg-glow)'}
+                  strokeWidth="0.9"
+                  opacity={0.25 + prox * 0.7}
                   className="nf-pulse-soft"
                   style={{
                     transformBox: 'fill-box',
                     transformOrigin: 'center',
                     animationDelay: `${n.delay}s`,
-                    animationDuration: n.hub ? '3.4s' : '4.4s',
+                    animationDuration: n.hub ? '3.2s' : '4.6s',
                   }}
                 />
-                {/* Node body — hubs filled accent, others outlined with soft fill */}
+                {/* Node body */}
                 <circle
-                  cx={n.x}
-                  cy={n.y}
+                  cx="0"
+                  cy="0"
                   r={n.r}
-                  fill={n.hub ? 'var(--svg-accent)' : 'var(--svg-fill)'}
+                  fill={
+                    lit || n.hub ? 'var(--svg-accent)' : 'var(--svg-fill)'
+                  }
                   stroke="var(--svg-stroke)"
-                  strokeWidth="1.1"
+                  strokeWidth="1"
                   vectorEffect="non-scaling-stroke"
                 />
-                {/* Inner solid dot at node center */}
+                {/* Inner dot */}
                 <circle
-                  cx={n.x}
-                  cy={n.y}
+                  cx="0"
+                  cy="0"
                   r={n.r * 0.4}
-                  fill={n.hub ? 'var(--svg-fill)' : 'var(--svg-accent)'}
+                  fill={lit || n.hub ? 'var(--svg-fill)' : 'var(--svg-accent)'}
                   stroke="none"
                 />
               </g>

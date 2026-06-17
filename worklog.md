@@ -195,3 +195,29 @@ Stage Summary:
 - Light theme is now warm/premium with card depth (no longer flat white).
 - Hero, Lead Gen, and Content & Social SVGs completely replaced with conceptually-appropriate animated illustrations.
 - Logo is now a theme-aware compass rose with an elongated sharp north point.
+
+---
+Task ID: 7
+Agent: main (brain SVG rebuild)
+Task: Make the hero brain SVG actually look like a brain — big, many nodes, mouse-interactive
+
+Work Log:
+- Read worklog + existing neural-network.tsx. Diagnosed: the previous "brain" was just 20 scattered nodes with no recognizable brain silhouette — VLM called it "abstract spiky shape / star".
+- REBUILT src/components/svg/neural-network.tsx with a real, recognizable brain:
+  • Hand-crafted BRAIN_OUTLINE path: rounded frontal lobe (front/left), rounded occipital pole (back/right), temporal lobe curving under, and soft gyri bumps along the top crown — all smooth cubic Béziers (NOT a star). Starts at front-bottom (132,330), traces the temporal underside, occipital back, 8 soft crown gyri bumps with a central dimple, then the frontal bulge back to start.
+  • CENTRAL_FISSURE: a vertical wavy line down the middle dividing the two hemispheres.
+  • 4 SULCI fold paths (2 per hemisphere) curving front-to-back through the cortex.
+  • ~37 NODES generated via a jittered grid with an analytical insideBrain() test that matches the silhouette (tapered blob, frontal bulge, rounded crown/base, inset 14px). 12% are "hub" nodes (accent-filled).
+  • ~68 EDGES connecting each node to its 2-3 nearest neighbors (≤95px) with curved quadratic-Bézier axons.
+  • 34 travelling signal dots (animateMotion along every 2nd axon) with fade-in/out masking the cycle reset = continuous data-packet flow.
+  • THE interactivity: per-node cursor proximity. Cursor mapped to viewBox coords (cx=300+x*600). Each node computes dist to cursor; nodes within PROX_R=115px scale up to 2.1x, brighten their halo, and turn accent-filled (lit). A soft radial glow follows the cursor through the cortex. Whole-brain subtle parallax shift on top.
+- Made it BIG: home-page.tsx hero container max-w-[560px] → max-w-[720px], grid cols [1.1fr_1fr] → [1fr_1.15fr] so the brain gets more space.
+- Verification (Agent Browser + VLM):
+  - 0 page errors. 37 nodes, 34 animateMotion dots, 74 paths rendered.
+  - VLM on dark: "The outer outline DOES look like a brain — rounded blob with soft gyri bumps, rounded frontal lobe and back, curving underside. Visible central fissure dividing two hemispheres. Curved wrinkle lines (sulci) inside. Many small nodes connected by lines filling the brain." (was previously "spiky/star-like/abstract").
+  - Mouse interactivity confirmed: moving cursor over the brain → 3 nodes scaled up + 11 lit near cursor. VLM: "cluster of brighter/larger nodes near the cursor with a soft glow, more lit/enlarged than nodes on the far left".
+  - Light theme: VLM "brain SVG clearly reads as a brain (rounded outline, central fissure, folds, node network). Prominent and sized to balance the hero text."
+  - lint: 0 errors.
+
+Stage Summary:
+- Hero SVG is now an unmistakable brain (rounded silhouette + fissure + sulci + dense internal node network) with 34 flowing signal dots and strong per-node cursor interactivity (nodes light up + grow near the mouse with a following glow). Made bigger in the layout. Verified in both themes.
