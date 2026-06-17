@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/site/fade-in";
 import { CTASection } from "@/components/site/cta-section";
 import { LeadNetworkMap } from "@/components/svg/lead-network-map";
 import { ChatBubbles } from "@/components/svg/chat-bubbles";
-import { FlowingLines } from "@/components/svg/flowing-lines";
+import { ContentAgents } from "@/components/svg/content-agents";
 
 const PROJECTS = [
   {
@@ -22,7 +22,7 @@ const PROJECTS = [
   {
     title: "Content Repurposing Agent",
     desc: "Takes one long-form post and turns it into five platform-ready versions.",
-    Svg: FlowingLines,
+    Svg: ContentAgents,
   },
 ];
 

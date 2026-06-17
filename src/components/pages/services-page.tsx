@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/site/fade-in";
 import { CTASection } from "@/components/site/cta-section";
 import { LeadNetworkMap } from "@/components/svg/lead-network-map";
 import { ChatBubbles } from "@/components/svg/chat-bubbles";
-import { FlowingLines } from "@/components/svg/flowing-lines";
+import { ContentAgents } from "@/components/svg/content-agents";
 import { InterlockingGears } from "@/components/svg/interlocking-gears";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +31,7 @@ const SERVICES = [
     title: "Content & Social",
     tag: "Content & Social Agents",
     desc: "Turn one piece of content into many. Your agent repurposes blog posts, videos, or updates into formats for different platforms — automatically, on schedule.",
-    Svg: FlowingLines,
+    Svg: ContentAgents,
   },
   {
     num: "04",

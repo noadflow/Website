@@ -44,23 +44,27 @@
   --svg-fill: rgba(245, 245, 240, 0.06);
   --svg-accent: #ffffff;
   --svg-glow: rgba(255, 255, 255, 0.5);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 22px 48px -30px rgba(0, 0, 0, 0.7);
+  --nav-shadow: 0 10px 40px -16px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
 
-/* ---------- THEME: LIGHT ---------- */
+/* ---------- THEME: LIGHT (warm, premium, with depth) ---------- */
 :root[data-theme="light"] {
-  --bg: #F5F5F0;
-  --fg: #1c1c1c;
-  --accent: #000000;
-  --muted-fg: #6a6a66;
+  --bg: #F4F1EA;
+  --fg: #1b1a17;
+  --accent: #1b1a17;
+  --muted-fg: #6c655a;
   --card: #ffffff;
-  --card-2: #ececea;
-  --border: rgba(28, 28, 28, 0.12);
-  --nav-bg: rgba(245, 245, 240, 0.72);
-  --svg-stroke: #1c1c1c;
-  --svg-fill: rgba(28, 28, 28, 0.05);
-  --svg-accent: #000000;
-  --svg-glow: rgba(0, 0, 0, 0.35);
+  --card-2: #ECE7DC;
+  --border: rgba(27, 26, 23, 0.10);
+  --nav-bg: rgba(248, 245, 239, 0.82);
+  --svg-stroke: #1b1a17;
+  --svg-fill: rgba(27, 26, 23, 0.05);
+  --svg-accent: #1b1a17;
+  --svg-glow: rgba(27, 26, 23, 0.28);
+  --card-shadow: 0 1px 2px rgba(40, 34, 26, 0.05), 0 18px 40px -24px rgba(40, 34, 26, 0.20);
+  --nav-shadow: 0 10px 36px -18px rgba(40, 34, 26, 0.18);
   color-scheme: light;
 }
 
@@ -97,6 +101,18 @@
     letter-spacing: -0.02em;
     line-height: 1.05;
   }
+
+  /* Premium card depth (lifts white cards off the warm bg in light mode;
+     adds subtle separation in dark mode). Only targets full-opacity cards. */
+  .bg-card {
+    box-shadow: var(--card-shadow);
+  }
+}
+
+/* ---------- Component polish for light theme ---------- */
+/* Subtle interactive lift on hoverable cards in light mode */
+:root[data-theme="light"] .bg-card:hover {
+  box-shadow: 0 2px 4px rgba(40, 34, 26, 0.06), 0 28px 56px -24px rgba(40, 34, 26, 0.26);
 }
 
 /* ---------- Custom scrollbar ---------- */
