@@ -23,7 +23,7 @@ import { BRAIN_SVG } from './brain-svg-data'
 // 139) with generous PAD on every side. This makes the brain sit
 // perfectly centered in its column (aligned with the headline), while
 // the padding keeps all radiating glow + bubble terminals fully visible.
-const PAD = 110
+const PAD = 80
 const ART_CX = 140 // artwork true center (measured)
 const ART_CY = 139
 const ART_W = 308 // artwork bbox width

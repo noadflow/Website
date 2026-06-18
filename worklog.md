@@ -334,3 +334,19 @@ Work Log:
 
 Stage Summary:
 - Brain is now perfectly centered in its column and aligned with the headline (path center = viewBox center, offset 0,0). The 110px viewBox padding is preserved so no clipping of glow/bubbles. Works in both themes.
+
+---
+Task ID: 28
+Agent: main (fix brain too right + too down)
+Task: Brain still too far right and too low, not aligned with the text
+
+Work Log:
+- Diagnosed via screenshot + measurements: brain content was at x=883-1471 (overflowing the 1440 viewport right edge) and vertically misaligned (brain content center 79px below its SVG container center). Root causes: (1) hero grid gave brain column 1.15fr (too wide) + brain container max-w-[720px] (too big) → brain pushed off-screen right; (2) the brain-svg-data had a NESTED inner <svg viewBox="0 0 284.81 281.83"> wrapper, so my outer viewBox centering on (140,139) was in the wrong coordinate space — the inner SVG rendered its content at the inner SVG's center (142.4, 140.9 in outer coords), not (140, 139).
+- Fixes:
+  • home-page.tsx: grid lg:grid-cols-[1fr_1.15fr] → [1.1fr_1fr] (text column wider, brain column narrower); gap-8 → gap-6; brain container max-w-[720px] → max-w-[520px] (smaller, stays within viewport).
+  • brain-svg-data.ts: removed the nested inner <svg viewBox="0 0 284.81 281.83"> wrapper + its closing </svg> so all brain paths live directly in the outer SVG's coordinate space. Now the outer viewBox centering on (140, 139) correctly centers the brain content.
+  • neural-network.tsx: reduced viewBox PAD 110 → 80 (brain fills more of its container, less tiny/offset).
+- Verified: brain content center (368) ≈ SVG container center (372) — 4px diff (was 79px). Brain content right edge 1388 (within 1440 viewport, was 1471 overflow). h1 center 319, brain center 368 — aligned against the full text block (badge+h1+para+buttons). VLM: "brain vertically aligned with the headline, positioned beside the text, not too far right." Light theme: aligned, no clipping. Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is now properly sized (520px max) and positioned beside the text column, vertically aligned with the headline/text block. No right overflow, no clipping. The nested inner SVG wrapper that broke coordinate centering was removed.
