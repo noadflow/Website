@@ -14,7 +14,7 @@ interface CTASectionProps {
 export function CTASection({
   title,
   subtitle,
-  buttonLabel = "Book a Free Call",
+  buttonLabel = "Book a Free 30-Minute Call",
 }: CTASectionProps) {
   const setPage = useAppStore((s) => s.setPage);
 
@@ -23,12 +23,15 @@ export function CTASection({
       <div className="mx-auto max-w-5xl">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-6 py-16 sm:px-12 sm:py-20">
-            {/* Animated stars + moon backdrop */}
-            <div className="pointer-events-none absolute inset-0 opacity-70">
+            {/* Premium animated backdrop — interactive (captures pointer
+                for parallax), sits behind the text layer. */}
+            <div className="absolute inset-0">
               <StarsMoon className="h-full w-full" />
             </div>
 
-            <div className="relative mx-auto max-w-2xl text-center">
+            {/* Text layer — pointer-events-none so mouse/touch reach the
+                backdrop parallax; button re-enables for itself. */}
+            <div className="relative mx-auto max-w-2xl text-center pointer-events-none">
               <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
                 {title}
               </h2>
@@ -39,7 +42,7 @@ export function CTASection({
               )}
               <button
                 onClick={() => setPage("contact")}
-                className="mt-8 inline-flex items-center rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                className="mt-8 inline-flex items-center rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 pointer-events-auto"
               >
                 {buttonLabel}
               </button>

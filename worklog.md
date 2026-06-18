@@ -569,3 +569,23 @@ Work Log:
 
 Stage Summary:
 - Hover glitch fixed via stable useTilt hook (one continuous rAF, ref-mirrored target). CTA redesigned as line streets + dots arranged around the text so visibility is never hindered. Both themes verified.
+
+---
+Task ID: 36
+Agent: main (CTA premium redesign)
+Task: CTA looking bad — make a good design with animations
+
+Work Log:
+- Diagnosed: previous CTA (random streets + dots) was messy/cluttered/low-contrast per VLM. Redesigned StarsMoon as a clean premium backdrop:
+  • Concentric expanding rings: 4 circles radiate outward from center (r 60→360) with opacity 0→0.5→0, staggered 1.5s, 6s loop — always one expanding. Clean radial structure.
+  • Faint static guide rings (r=140, 260) at low opacity for subtle structure.
+  • 4 orbiting dots at different radii (140-320) + speeds (24-50s), each a slow nf-spin-slow rotation around center + nf-brain-bubble opacity pulse. Elegant motion.
+  • Soft central glow (radial gradient var(--svg-glow)) that breathes via nf-brain-breathe.
+  • 6 small accent dots scattered at the outer edges (never near center → text stays clean).
+  • Subtle mouse parallax (stable rAF, ref-mirrored target).
+  • All line-art stroke 2 round caps, theme-aware via CSS variables.
+- Fixed CTA section: removed pointer-events-none from backdrop (so parallax works); text layer pointer-events-none + button pointer-events-auto (so events reach backdrop, button stays clickable). Default button label "Book a Free 30-Minute Call".
+- Verified: VLM "clean/premium with subtle concentric rings radiating from center and orbiting dots, text clearly visible in center uncluttered, sleek and effective." Rings animating (r changes confirmed). 4 orbit groups. Light theme: clean, good contrast. Lint clean, 0 errors.
+
+Stage Summary:
+- CTA redesigned as a premium concentric-ring radiating backdrop with orbiting dots + breathing central glow. Clean, animated, text fully visible. Both themes.

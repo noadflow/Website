@@ -4,58 +4,27 @@ import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 
 // ============================================================
-// StarsMoon — CTA section backdrop.
-// Small "streets" (short line segments) drawn with line-art, each
-// with a dot at one end, arranged in a wide band AROUND the text
-// area (left/right margins + top/bottom) so text visibility is
-// never hindered. The dots gently pulse opacity; the whole field
-// has a subtle mouse parallax. Soft, ambient, premium.
+// StarsMoon — CTA section backdrop (premium redesign).
+// Concentric expanding rings radiate outward from behind the text,
+// a few elegant dots orbit slowly at different radii, and a soft
+// central glow breathes. All line-art (stroke 2, round caps), theme-
+// aware via CSS variables. The rings expand from the center so the
+// text sits in clean negative space — nothing clutters the text.
+// Subtle mouse parallax. Ambient, premium, calm.
 // ============================================================
 
 const VB_W = 1200
 const VB_H = 360
-// Text safe-zone: the central region where the heading + button sit.
-// Streets only render OUTSIDE this zone (left/right margins + top/bottom).
-const SAFE_X1 = 320
-const SAFE_X2 = 880
-const SAFE_Y1 = 90
-const SAFE_Y2 = 270
+const CX = VB_W / 2
+const CY = VB_H / 2
 
-interface Street {
-  x1: number; y1: number; x2: number; y2: number
-  delay: number
-}
-
-// Deterministic pseudo-random
-function rng(seed: number) {
-  let s = seed >>> 0
-  return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 0xffffffff }
-}
-
-// Generate ~40 short line "streets" + dots, all OUTSIDE the safe zone.
-const STREETS: Street[] = (() => {
-  const rand = rng(42)
-  const out: Street[] = []
-  const make = (x1: number, y1: number) => {
-    const len = 20 + rand() * 50
-    const ang = rand() * Math.PI * 2
-    out.push({
-      x1, y1,
-      x2: x1 + Math.cos(ang) * len,
-      y2: y1 + Math.sin(ang) * len,
-      delay: rand() * 4,
-    })
-  }
-  // Left margin (x < SAFE_X1)
-  for (let i = 0; i < 12; i++) make(rand() * (SAFE_X1 - 40) + 20, rand() * VB_H)
-  // Right margin (x > SAFE_X2)
-  for (let i = 0; i < 12; i++) make(SAFE_X2 + 20 + rand() * (VB_W - SAFE_X2 - 40), rand() * VB_H)
-  // Top band (y < SAFE_Y1, x between safe)
-  for (let i = 0; i < 8; i++) make(SAFE_X1 + rand() * (SAFE_X2 - SAFE_X1), rand() * (SAFE_Y1 - 20) + 10)
-  // Bottom band (y > SAFE_Y2, x between safe)
-  for (let i = 0; i < 8; i++) make(SAFE_X1 + rand() * (SAFE_X2 - SAFE_X1), SAFE_Y2 + 10 + rand() * (VB_H - SAFE_Y2 - 20))
-  return out
-})()
+// Orbiting dots at different radii + speeds (CSS spin animations).
+const ORBITS = [
+  { r: 140, speed: 24, delay: 0, dot: 3.5 },
+  { r: 200, speed: 32, delay: -4, dot: 3 },
+  { r: 260, speed: 40, delay: -8, dot: 2.5 },
+  { r: 320, speed: 50, delay: -2, dot: 2 },
+]
 
 export function StarsMoon({ className }: { className?: string }) {
   const { ref, x, y } = useMouseParallax<HTMLDivElement>()
@@ -73,7 +42,7 @@ export function StarsMoon({ className }: { className?: string }) {
     const apply = () => {
       curX += (target.current.x - curX) * 0.06
       curY += (target.current.y - curY) * 0.06
-      field.style.transform = `translate3d(${(curX * 16).toFixed(2)}px, ${(curY * 10).toFixed(2)}px, 0)`
+      field.style.transform = `translate3d(${(curX * 12).toFixed(2)}px, ${(curY * 8).toFixed(2)}px, 0)`
       raf = requestAnimationFrame(apply)
     }
     raf = requestAnimationFrame(apply)
@@ -93,42 +62,95 @@ export function StarsMoon({ className }: { className?: string }) {
         strokeLinejoin="round"
       >
         <defs>
-          <radialGradient id="cta-ambient" cx="50%" cy="50%" r="55%">
-            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.22" />
-            <stop offset="60%" stopColor="var(--svg-glow)" stopOpacity="0.06" />
+          <radialGradient id="cta-core-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="var(--svg-glow)" stopOpacity="0.12" />
             <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Soft ambient glow behind everything */}
-        <circle cx={VB_W / 2} cy={VB_H / 2} r="340" fill="url(#cta-ambient)" className="nf-glow-radiate" />
-
-        {/* The streets + dots field (parallax layer) */}
+        {/* Parallax field: rings + orbits + glow */}
         <g ref={fieldRef}>
-          {STREETS.map((s, i) => (
-            <g key={i}>
-              {/* Street line segment */}
-              <line
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
-                stroke="var(--svg-stroke)"
-                strokeWidth="2"
-                opacity="0.5"
-                vectorEffect="non-scaling-stroke"
+          {/* Soft central glow (breathes) */}
+          <circle
+            cx={CX} cy={CY} r="180"
+            fill="url(#cta-core-glow)"
+            className="nf-brain-breathe"
+            style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+          />
+
+          {/* Concentric expanding rings — radiate outward from center,
+              staggered so there's always one expanding. Clean, premium. */}
+          {[0, 1, 2, 3].map((i) => (
+            <circle
+              key={`ring-${i}`}
+              cx={CX} cy={CY} r="60"
+              fill="none"
+              stroke="var(--svg-stroke)"
+              strokeWidth="1.5"
+              opacity="0"
+              vectorEffect="non-scaling-stroke"
+            >
+              <animate
+                attributeName="r"
+                values="60;360"
+                dur="6s"
+                begin={`${i * 1.5}s`}
+                repeatCount="indefinite"
               />
-              {/* Dot at the street's start (pulses opacity) */}
+              <animate
+                attributeName="opacity"
+                values="0;0.5;0"
+                keyTimes="0;0.2;1"
+                dur="6s"
+                begin={`${i * 1.5}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+          ))}
+
+          {/* A couple of faint static guide rings for structure */}
+          <circle cx={CX} cy={CY} r="140" fill="none" stroke="var(--svg-stroke)" strokeWidth="1" opacity="0.15" vectorEffect="non-scaling-stroke" />
+          <circle cx={CX} cy={CY} r="260" fill="none" stroke="var(--svg-stroke)" strokeWidth="1" opacity="0.1" vectorEffect="non-scaling-stroke" />
+
+          {/* Orbiting dots — slow, elegant, at different radii */}
+          {ORBITS.map((o, i) => (
+            <g
+              key={`orbit-${i}`}
+              className="nf-spin-slow"
+              style={{
+                transformBox: 'fill-box',
+                transformOrigin: `${CX}px ${CY}px`,
+                animationDuration: `${o.speed}s`,
+                animationDelay: `${o.delay}s`,
+              }}
+            >
               <circle
-                cx={s.x1} cy={s.y1} r="3"
+                cx={CX + o.r} cy={CY} r={o.dot}
                 fill="var(--svg-accent)"
                 className="nf-brain-bubble"
-                style={{ animationDelay: `${s.delay}s` }}
-              />
-              {/* Smaller dot at the street's end */}
-              <circle
-                cx={s.x2} cy={s.y2} r="2"
-                fill="var(--svg-stroke)"
-                opacity="0.6"
+                style={{ animationDelay: `${i * 0.5}s` }}
               />
             </g>
+          ))}
+
+          {/* A few small accent dots scattered at the outer edges
+              (never near center, so text stays clean) */}
+          {[
+            { x: 120, y: 80, delay: 0 },
+            { x: 1080, y: 80, delay: 1 },
+            { x: 80, y: 280, delay: 2 },
+            { x: 1120, y: 280, delay: 1.5 },
+            { x: 200, y: 50, delay: 0.8 },
+            { x: 1000, y: 50, delay: 2.2 },
+          ].map((d, i) => (
+            <circle
+              key={`dot-${i}`}
+              cx={d.x} cy={d.y} r="2.5"
+              fill="var(--svg-stroke)"
+              className="nf-brain-bubble"
+              style={{ animationDelay: `${d.delay}s` }}
+            />
           ))}
         </g>
       </svg>
