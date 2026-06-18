@@ -399,3 +399,18 @@ Work Log:
 
 Stage Summary:
 - Brain is now 583px wide (very big), prominent, fully on-screen beside the text.
+
+---
+Task ID: 33
+Agent: main (fix brain padding pushing text left)
+Task: Brain padding too big, pushing text to the left
+
+Work Log:
+- Diagnosed: brain container was 816px wide but artwork only 583px — ~116px dead padding on each side. The container's left edge (544) sat right against the h1's right edge (536), squishing the text column. Root cause: container max-w-[960px] + grid [0.7fr_1.3fr] gave the brain column too much width that was mostly empty padding.
+- Fixes:
+  • home-page.tsx: grid lg:grid-cols-[0.7fr_1.3fr] → [1fr_1fr] (balanced 50/50 columns); gap-2 → gap-8; brain container max-w-[960px] → max-w-[640px] (matches artwork size, no excess padding hogging column space).
+  • neural-network.tsx: reduced viewBox PAD 30 → 10 so the artwork fills more of its container (keeps the brain big despite the smaller container). 10px is enough for the glow/bubbles not to clip.
+- Verified: container now 624px (was 816px), artwork 501px (still big). h1 right edge now 704 (was 536) — text column has proper width, no longer pushed left. Brain right edge 1298 (within 1440, on-screen). Glow fits within SVG (no clipping). VLM: "brain large and prominent, text balanced (not overly left-pushed), brain fully on-screen." Light theme: good. Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is big (501px artwork) and the text column is no longer pushed left — balanced 50/50 columns. The excess container padding that was hogging space is gone (container now matches artwork size). No clipping, both themes.
