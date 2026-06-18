@@ -176,20 +176,23 @@
 }
 @keyframes nf-brain-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.025); }
+  50% { transform: scale(1.015); }
 }
 @keyframes nf-brain-float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
+/* Bubbles (radiating lines + terminals) pulse OPACITY ONLY — they do
+   NOT scale, so they never grow into the brain or get clipped. They
+   stay fixed in place and gently fade in/out. */
 @keyframes nf-bubble-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.35); }
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
 }
 @keyframes nf-glow-radiate {
-  0% { transform: scale(0.7); opacity: 0; }
-  30% { opacity: 0.5; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% { transform: scale(0.75); opacity: 0; }
+  30% { opacity: 0.4; }
+  100% { transform: scale(1.4); opacity: 0; }
 }
 
 /* ---------- Utility animation classes ---------- */

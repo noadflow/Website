@@ -302,3 +302,21 @@ Work Log:
 
 Stage Summary:
 - The radiating glow and pulsing bubbles no longer get clipped. The SVG viewBox now has 70px padding so everything has room to expand, and overflow:visible is forced via CSS !important. Verified in both themes.
+
+---
+Task ID: 26
+Agent: main (fix bubble scaling/clip + transform origins)
+Task: Bubbles clipping at edges + scaling into brain; rays animating inward; overlap with brain
+
+Work Log:
+- Diagnosed: bubbles (radiating lines + terminals) were tagged nf-brain-bubble and animated with scale(1.35) + transform-box:fill-box. Their bbox center sits mid-line (inside the brain area), so scaling moved the outer bubble inward → grew INTO the brain AND the 1.35 scale pushed them past the viewBox edge → clipped. Brain breathe scale(1.025) also contributed to overlap.
+- Fixes in globals.css keyframes:
+  • nf-bubble-pulse: REMOVED the scale — now OPACITY ONLY (0.45→1). Bubbles stay fixed in place, just gently fade in/out. Never grow into the brain, never clip.
+  • nf-brain-breathe: scale 1.025 → 1.015 (subtler, less overlap risk).
+  • nf-brain-float: translateY -8px → -6px (subtler).
+  • nf-glow-radiate: scale max 1.6 → 1.4, start 0.7 → 0.75 (stays within padded viewBox).
+- Fix in neural-network.tsx: increased viewBox padding PAD 70 → 120. viewBox now "-120 -120 524.81 521.83" — generous margin so bubble terminals at the brain's outer edges always remain fully visible.
+- Verified: viewBox -120 -120 524.81 521.83 + overflow visible. Bubble transform = "none" (no scaling, opacity-only: 0.98→0.54 confirmed). VLM: "(1) outer bubbles fully visible no clipping (2) bubbles stay in place no scaling into brain (3) nothing overlaps/intersects brain (4) brain shape preserved cleanly." Light theme: clean, no clipping. Lint clean, 0 errors.
+
+Stage Summary:
+- Bubbles now pulse opacity-only (fixed in place, no scaling → never grow into brain or clip). ViewBox padding increased to 120px so all outer elements stay fully visible. Brain breathe/float made subtler. Glow stays within bounds. Nothing overlaps the brain. Original brain shape preserved.

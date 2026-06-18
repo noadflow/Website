@@ -16,10 +16,11 @@ import { BRAIN_SVG } from './brain-svg-data'
 // All colors use CSS variables so it switches with the theme.
 // ============================================================
 
-// The brain SVG's natural bbox is 284.81×281.83. We add PAD on every
-// side in the viewBox so the radiating glow + pulsing bubbles have room
-// to expand without being clipped at the SVG boundary.
-const PAD = 70
+// The brain SVG's natural bbox is 284.81×281.83. We add generous PAD on
+// every side in the viewBox so the radiating glow + bubble terminals
+// (which sit at the brain's outer edges) always remain fully visible
+// with no clipping during animation.
+const PAD = 120
 const BRAIN_W = 284.81
 const BRAIN_H = 281.83
 const VB_X = -PAD
