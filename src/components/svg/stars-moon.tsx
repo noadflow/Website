@@ -4,218 +4,132 @@ import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 
 // ============================================================
-// StarsMoon — floating particles + a soft glowing orb (CTA backdrop).
-// Built on the brain SVG design language:
-//   • ~14 small circle "particles" of varying sizes scattered across
-//     the band, each pulsing opacity (nf-brain-bubble, staggered)
-//   • a few particles also drift upward (nf-drift-up) for ambient motion
-//   • a central glowing orb that breathes (nf-brain-breathe) drawn as
-//     concentric line-art outlines + a center dot, with a radiating
-//     halo (nf-glow-radiate) and a constant soft glow behind it
-//   • subtle layered mouse PARALLAX (no tilt — it's an ambient backdrop):
-//     back particles drift least, the orb mid, front particles most.
-//     All via direct DOM rAF (0.08 lerp). No React state.
-// Wide band viewBox 600 x 300, `preserveAspectRatio="xMidYMid meet"`
-// (centered backdrop — content sits on top in the CTA card).
+// StarsMoon — CTA section backdrop.
+// Small "streets" (short line segments) drawn with line-art, each
+// with a dot at one end, arranged in a wide band AROUND the text
+// area (left/right margins + top/bottom) so text visibility is
+// never hindered. The dots gently pulse opacity; the whole field
+// has a subtle mouse parallax. Soft, ambient, premium.
 // ============================================================
 
-const VB_W = 600
-const VB_H = 300
-const ORB_X = VB_W / 2
-const ORB_Y = VB_H / 2
-const ORB_R = 36
+const VB_W = 1200
+const VB_H = 360
+// Text safe-zone: the central region where the heading + button sit.
+// Streets only render OUTSIDE this zone (left/right margins + top/bottom).
+const SAFE_X1 = 320
+const SAFE_X2 = 880
+const SAFE_Y1 = 90
+const SAFE_Y2 = 270
 
-interface Particle {
-  x: number
-  y: number
-  r: number
+interface Street {
+  x1: number; y1: number; x2: number; y2: number
   delay: number
-  drift: boolean
-  driftDur: string
-  pulseDur: string
-  layer: 'back' | 'front'
 }
 
-// 14 particles scattered across the band, split into back/front layers
-// for parallax depth. Smaller ones tend to be in the back layer.
-const PARTICLES: Particle[] = [
-  { x: 55,  y: 55,  r: 2.4, delay: 0.0, drift: false, driftDur: '12s',   pulseDur: '3.6s', layer: 'back'  },
-  { x: 120, y: 95,  r: 1.8, delay: 0.6, drift: true,  driftDur: '11s',   pulseDur: '4.0s', layer: 'back'  },
-  { x: 195, y: 50,  r: 3.2, delay: 1.1, drift: false, driftDur: '13s',   pulseDur: '3.4s', layer: 'front' },
-  { x: 240, y: 110, r: 2.0, delay: 0.3, drift: true,  driftDur: '12.5s', pulseDur: '4.4s', layer: 'back'  },
-  { x: 80,  y: 210, r: 2.8, delay: 1.4, drift: false, driftDur: '11.5s', pulseDur: '3.2s', layer: 'front' },
-  { x: 165, y: 245, r: 1.6, delay: 0.8, drift: true,  driftDur: '12s',   pulseDur: '4.2s', layer: 'back'  },
-  { x: 230, y: 215, r: 2.4, delay: 1.8, drift: false, driftDur: '13s',   pulseDur: '3.8s', layer: 'front' },
-  { x: 370, y: 50,  r: 2.0, delay: 0.5, drift: true,  driftDur: '12.5s', pulseDur: '4.0s', layer: 'back'  },
-  { x: 440, y: 90,  r: 2.6, delay: 1.2, drift: false, driftDur: '11s',   pulseDur: '3.6s', layer: 'front' },
-  { x: 510, y: 55,  r: 1.7, delay: 0.2, drift: true,  driftDur: '13s',   pulseDur: '4.4s', layer: 'back'  },
-  { x: 545, y: 130, r: 3.0, delay: 1.6, drift: false, driftDur: '12s',   pulseDur: '3.4s', layer: 'front' },
-  { x: 385, y: 235, r: 2.2, delay: 0.9, drift: true,  driftDur: '11.5s', pulseDur: '3.8s', layer: 'back'  },
-  { x: 470, y: 215, r: 2.4, delay: 1.5, drift: false, driftDur: '12.5s', pulseDur: '4.0s', layer: 'front' },
-  { x: 540, y: 245, r: 1.9, delay: 0.4, drift: true,  driftDur: '12s',   pulseDur: '3.6s', layer: 'back'  },
-]
+// Deterministic pseudo-random
+function rng(seed: number) {
+  let s = seed >>> 0
+  return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 0xffffffff }
+}
+
+// Generate ~40 short line "streets" + dots, all OUTSIDE the safe zone.
+const STREETS: Street[] = (() => {
+  const rand = rng(42)
+  const out: Street[] = []
+  const make = (x1: number, y1: number) => {
+    const len = 20 + rand() * 50
+    const ang = rand() * Math.PI * 2
+    out.push({
+      x1, y1,
+      x2: x1 + Math.cos(ang) * len,
+      y2: y1 + Math.sin(ang) * len,
+      delay: rand() * 4,
+    })
+  }
+  // Left margin (x < SAFE_X1)
+  for (let i = 0; i < 12; i++) make(rand() * (SAFE_X1 - 40) + 20, rand() * VB_H)
+  // Right margin (x > SAFE_X2)
+  for (let i = 0; i < 12; i++) make(SAFE_X2 + 20 + rand() * (VB_W - SAFE_X2 - 40), rand() * VB_H)
+  // Top band (y < SAFE_Y1, x between safe)
+  for (let i = 0; i < 8; i++) make(SAFE_X1 + rand() * (SAFE_X2 - SAFE_X1), rand() * (SAFE_Y1 - 20) + 10)
+  // Bottom band (y > SAFE_Y2, x between safe)
+  for (let i = 0; i < 8; i++) make(SAFE_X1 + rand() * (SAFE_X2 - SAFE_X1), SAFE_Y2 + 10 + rand() * (VB_H - SAFE_Y2 - 20))
+  return out
+})()
 
 export function StarsMoon({ className }: { className?: string }) {
-  const { ref: wrapRef, x, y } = useMouseParallax<HTMLDivElement>()
-  const backRef = useRef<SVGGElement>(null)
-  const orbRef = useRef<SVGGElement>(null)
-  const frontRef = useRef<SVGGElement>(null)
+  const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+  const fieldRef = useRef<SVGGElement>(null)
 
-  const cur = useRef({ x: 0, y: 0 })
-
+  // Stable parallax: one long-running rAF, reads latest x/y from a ref.
+  const target = useRef({ x: 0, y: 0 })
+  useEffect(() => { target.current.x = x; target.current.y = y }, [x, y])
   useEffect(() => {
+    const field = fieldRef.current
+    if (!field) return
     let raf = 0
+    let curX = 0
+    let curY = 0
     const apply = () => {
-      raf = 0
-      const tx = x
-      const ty = y
-      cur.current.x += (tx - cur.current.x) * 0.08
-      cur.current.y += (ty - cur.current.y) * 0.08
-      // Layered parallax: back particles drift least, orb mid, front most.
-      // No rotation — this is an ambient backdrop.
-      const set = (el: SVGGElement | null, factor: number) => {
-        if (!el) return
-        const dx = cur.current.x * factor
-        const dy = cur.current.y * factor
-        el.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)})`)
-      }
-      set(backRef.current, 8)
-      set(orbRef.current, 14)
-      set(frontRef.current, 24)
-      if (Math.abs(tx - cur.current.x) > 0.001 || Math.abs(ty - cur.current.y) > 0.001) {
-        raf = requestAnimationFrame(apply)
-      }
+      curX += (target.current.x - curX) * 0.06
+      curY += (target.current.y - curY) * 0.06
+      field.style.transform = `translate3d(${(curX * 16).toFixed(2)}px, ${(curY * 10).toFixed(2)}px, 0)`
+      raf = requestAnimationFrame(apply)
     }
-    if (!raf) raf = requestAnimationFrame(apply)
-    return () => {
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [x, y])
-
-  const renderParticle = (p: Particle, i: number) => {
-    // Particles are FILLED dots — override the .nf-brain-bubble class's
-    // default `fill:none; stroke:...` via inline style (style beats class).
-    const dot = (
-      <circle
-        r={p.r}
-        className="nf-brain-bubble"
-        vectorEffect="non-scaling-stroke"
-        style={{
-          fill: 'var(--svg-accent)',
-          stroke: 'none',
-          animationDelay: `${p.delay}s`,
-          animationDuration: p.pulseDur,
-        }}
-      />
-    )
-    return (
-      <g key={i} transform={`translate(${p.x} ${p.y})`}>
-        {p.drift ? (
-          <g
-            className="nf-drift-up"
-            style={{
-              animationDelay: `${p.delay}s`,
-              animationDuration: p.driftDur,
-            }}
-          >
-            {dot}
-          </g>
-        ) : (
-          dot
-        )}
-      </g>
-    )
-  }
+    raf = requestAnimationFrame(apply)
+    return () => { if (raf) cancelAnimationFrame(raf) }
+  }, [])
 
   return (
-    <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>
+    <div ref={ref} className={className} style={{ overflow: 'visible' }}>
       <svg
         className="nf-brain-svg"
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         width="100%"
         height="100%"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMid slice"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={{ overflow: 'visible' }}
       >
         <defs>
-          <radialGradient id="sm-orb-halo" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.5" />
-            <stop offset="60%" stopColor="var(--svg-glow)" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
-          </radialGradient>
-          <radialGradient id="sm-orb-core" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.55" />
+          <radialGradient id="cta-ambient" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.22" />
+            <stop offset="60%" stopColor="var(--svg-glow)" stopOpacity="0.06" />
             <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Back-layer particles — smallest parallax depth */}
-        <g ref={backRef}>
-          {PARTICLES.filter((p) => p.layer === 'back').map(renderParticle)}
-        </g>
+        {/* Soft ambient glow behind everything */}
+        <circle cx={VB_W / 2} cy={VB_H / 2} r="340" fill="url(#cta-ambient)" className="nf-glow-radiate" />
 
-        {/* Central glowing orb — mid parallax depth */}
-        <g ref={orbRef}>
-          {/* Radiating halo (expands + fades, repeating) */}
-          <circle
-            cx={ORB_X}
-            cy={ORB_Y}
-            r={ORB_R * 3.2}
-            fill="url(#sm-orb-halo)"
-            className="nf-glow-radiate"
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              animationDuration: '6s',
-            }}
-          />
-          {/* Constant soft glow behind the orb */}
-          <circle
-            cx={ORB_X}
-            cy={ORB_Y}
-            r={ORB_R * 2.1}
-            fill="url(#sm-orb-core)"
-          />
-          {/* Breathing orb — concentric line-art outlines + center dot */}
-          <g
-            className="nf-brain-breathe"
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              animationDuration: '7s',
-            }}
-          >
-            <circle
-              cx={ORB_X}
-              cy={ORB_Y}
-              r={ORB_R}
-              className="nf-brain-line"
-              vectorEffect="non-scaling-stroke"
-            />
-            <circle
-              cx={ORB_X}
-              cy={ORB_Y}
-              r={ORB_R * 0.55}
-              className="nf-brain-line"
-              vectorEffect="non-scaling-stroke"
-              style={{ opacity: 0.5 }}
-            />
-            <circle
-              cx={ORB_X}
-              cy={ORB_Y}
-              r="2.5"
-              fill="var(--svg-accent)"
-              stroke="none"
-            />
-          </g>
-        </g>
-
-        {/* Front-layer particles — largest parallax depth */}
-        <g ref={frontRef}>
-          {PARTICLES.filter((p) => p.layer === 'front').map(renderParticle)}
+        {/* The streets + dots field (parallax layer) */}
+        <g ref={fieldRef}>
+          {STREETS.map((s, i) => (
+            <g key={i}>
+              {/* Street line segment */}
+              <line
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+                stroke="var(--svg-stroke)"
+                strokeWidth="2"
+                opacity="0.5"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* Dot at the street's start (pulses opacity) */}
+              <circle
+                cx={s.x1} cy={s.y1} r="3"
+                fill="var(--svg-accent)"
+                className="nf-brain-bubble"
+                style={{ animationDelay: `${s.delay}s` }}
+              />
+              {/* Smaller dot at the street's end */}
+              <circle
+                cx={s.x2} cy={s.y2} r="2"
+                fill="var(--svg-stroke)"
+                opacity="0.6"
+              />
+            </g>
+          ))}
         </g>
       </svg>
     </div>

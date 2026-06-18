@@ -81,47 +81,37 @@ export function FlowingLines({ className }: { className?: string }) {
   const linesRef = useRef<SVGGElement>(null) // the wave field (subtle parallax)
   const glowRef = useRef<SVGGElement>(null) // cursor-following glow (stronger parallax)
 
-  // Eased "current" values persist across effect re-runs.
+  // Latest pointer target (updated without re-running the rAF effect).
+  const target = useRef({ x: 0, y: 0 })
+  useEffect(() => { target.current.x = x; target.current.y = y }, [x, y])
+  // Eased "current" values persist across the loop's lifetime.
   const cur = useRef({ x: 0, y: 0 })
 
+  // One long-running rAF loop (empty deps) — no teardown/recreate on move.
   useEffect(() => {
     let raf = 0
     const apply = () => {
-      raf = 0
-      const tx = x
-      const ty = y
+      const tx = target.current.x
+      const ty = target.current.y
       cur.current.x += (tx - cur.current.x) * 0.08
       cur.current.y += (ty - cur.current.y) * 0.08
       const lines = linesRef.current
       const glow = glowRef.current
-      // Wave field drifts subtly with the cursor.
       if (lines) {
         const lx = cur.current.x * 10
         const ly = cur.current.y * 8
-        lines.setAttribute(
-          'transform',
-          `translate(${lx.toFixed(2)} ${ly.toFixed(2)})`
-        )
+        lines.setAttribute('transform', `translate(${lx.toFixed(2)} ${ly.toFixed(2)})`)
       }
-      // The cursor glow follows more strongly — it reads as a soft halo
-      // tracking the pointer across the band.
       if (glow) {
         const gx = cur.current.x * 32
         const gy = cur.current.y * 24
-        glow.setAttribute(
-          'transform',
-          `translate(${gx.toFixed(2)} ${gy.toFixed(2)})`
-        )
+        glow.setAttribute('transform', `translate(${gx.toFixed(2)} ${gy.toFixed(2)})`)
       }
-      if (Math.abs(tx - cur.current.x) > 0.001 || Math.abs(ty - cur.current.y) > 0.001) {
-        raf = requestAnimationFrame(apply)
-      }
+      raf = requestAnimationFrame(apply)
     }
-    if (!raf) raf = requestAnimationFrame(apply)
-    return () => {
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [x, y])
+    raf = requestAnimationFrame(apply)
+    return () => { if (raf) cancelAnimationFrame(raf) }
+  }, [])
 
   return (
     <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>

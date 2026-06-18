@@ -554,3 +554,18 @@ Work Log:
 
 Stage Summary:
 - All 7 SVG illustrations redesigned to match the brain's visual language: stroke var(--svg-stroke) width 2 round caps/joins, soft var(--svg-glow) radial glows, subtle breathe/float/bubble-pulse/glow-radiate animations, mouse/touch tilt via useMouseParallax + direct DOM refs. The entire site now feels cohesive — one design system across the brain, lead-gen radar, support chat, content agents, workflow gears, about flowing lines, pricing shapes, and CTA particles.
+
+---
+Task ID: 35
+Agent: main (fix hover glitch + redesign CTA)
+Task: (1) Mouse hover on service SVGs glitching; (2) Redesign CTA as small streets with dots around the text
+
+Work Log:
+- DIAGNOSED hover glitch: the 7 redesigned SVGs used useEffect with `[x, y]` deps — every mousemove tore down + recreated the rAF loop, causing stutter. Also the loop stopped when it reached target (`if (... > 0.001) raf = ...`) so it kept restarting.
+- FIX: created src/hooks/use-tilt.ts — a stable tilt hook with ONE long-running rAF loop (empty deps). The latest pointer is mirrored into a ref via a separate lightweight effect (no heavy work), and the rAF loop reads from that ref every frame. Never tears down/recreates → no glitch. Applied to all 4 service SVGs (lead-network-map, chat-bubbles, content-agents, interlocking-gears) — replaced their verbose tilt blocks with `const { ref, tiltRef } = useTilt(CX, CY)`.
+- FIX: applied the same stable pattern to the 3 band SVGs (flowing-lines, geometric-shapes, stars-moon) — moved x/y into a target ref, made the rAF loop empty-deps + continuous (no stop condition).
+- CTA REDESIGN (stars-moon.tsx): replaced the particles+orb design with small "streets" — short line segments each with a dot at one end, arranged in a wide band AROUND the text safe-zone (left/right margins + top/bottom, NOT behind the heading/button). ~40 streets total, dots pulse opacity via nf-brain-bubble, subtle parallax. Text visibility preserved.
+- Verified: service card SVG tilt responds smoothly (translate 0.85, rotate 0.51 after rapid moves — no glitch). CTA: "small line streets with dots arranged around the text, text clearly visible." Light theme: good contrast. Lint clean (0 errors), 0 page errors.
+
+Stage Summary:
+- Hover glitch fixed via stable useTilt hook (one continuous rAF, ref-mirrored target). CTA redesigned as line streets + dots arranged around the text so visibility is never hindered. Both themes verified.

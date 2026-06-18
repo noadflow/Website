@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { useMouseParallax } from '@/hooks/use-mouse-parallax'
+import { useTilt } from '@/hooks/use-tilt'
 
 // ============================================================
 // ContentAgents — AI writing + publishing content.
@@ -44,39 +43,7 @@ const PLATFORMS = [
 ]
 
 export function ContentAgents({ className }: { className?: string }) {
-  const { ref, x, y } = useMouseParallax<HTMLDivElement>()
-  const tiltRef = useRef<SVGGElement>(null)
-
-  useEffect(() => {
-    const tilt = tiltRef.current
-    if (!tilt) return
-    let raf = 0
-    let curX = 0
-    let curY = 0
-
-    const apply = () => {
-      raf = 0
-      const tx_target = x
-      const ty_target = y
-      curX += (tx_target - curX) * 0.08
-      curY += (ty_target - curY) * 0.08
-      const rot = curX * 6
-      const tx = curX * 10
-      const ty = curY * 10
-      tilt.setAttribute(
-        'transform',
-        `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`
-      )
-      if (Math.abs(tx_target - curX) > 0.001 || Math.abs(ty_target - curY) > 0.001) {
-        raf = requestAnimationFrame(apply)
-      }
-    }
-    raf = requestAnimationFrame(apply)
-
-    return () => {
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [x, y])
+  const { ref, tiltRef } = useTilt<SVGGElement>(CX, CY)
 
   const lastLine = TEXT_LINES[TEXT_LINES.length - 1]
   const cursorX = LINE_X + lastLine.width + 4

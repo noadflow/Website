@@ -118,36 +118,29 @@ export function GeometricShapes({ className }: { className?: string }) {
   const { ref: wrapRef, x, y } = useMouseParallax<HTMLDivElement>()
   const tiltRef = useRef<SVGGElement>(null) // mouse-tilt group wrapping all shapes
 
+  const target = useRef({ x: 0, y: 0 })
+  useEffect(() => { target.current.x = x; target.current.y = y }, [x, y])
   const cur = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     let raf = 0
     const apply = () => {
-      raf = 0
-      const tx = x
-      const ty = y
+      const tx = target.current.x
+      const ty = target.current.y
       cur.current.x += (tx - cur.current.x) * 0.08
       cur.current.y += (ty - cur.current.y) * 0.08
       const el = tiltRef.current
       if (el) {
-        // Gentle tilt: max ~5deg rotate around band center + ~8px translate.
         const rot = cur.current.x * 5
         const dx = cur.current.x * 8
         const dy = cur.current.y * 6
-        el.setAttribute(
-          'transform',
-          `translate(${dx.toFixed(2)} ${dy.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`
-        )
+        el.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`)
       }
-      if (Math.abs(tx - cur.current.x) > 0.001 || Math.abs(ty - cur.current.y) > 0.001) {
-        raf = requestAnimationFrame(apply)
-      }
+      raf = requestAnimationFrame(apply)
     }
-    if (!raf) raf = requestAnimationFrame(apply)
-    return () => {
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [x, y])
+    raf = requestAnimationFrame(apply)
+    return () => { if (raf) cancelAnimationFrame(raf) }
+  }, [])
 
   return (
     <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>
