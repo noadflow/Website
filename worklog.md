@@ -247,3 +247,22 @@ Work Log:
 
 Stage Summary:
 - Brain SVG is now symmetric and unambiguously brain-shaped (egg outline + bold central fissure + visible sulci + dense node network + flowing signal dots + cursor-reactive nodes). Verified in both themes.
+
+---
+Task ID: 23
+Agent: main (use DD.svg brain + rotating gears)
+Task: Use the uploaded DD.svg brain for the hero, match it with the homepage theme, make the gears inside constantly rotate
+
+Work Log:
+- Inspected upload/DD.svg: a single-path brain made of nodes+lines with 2 gears integrated as one filled silhouette (viewBox 0 0 612 1024). Located the 2 gears via VLM: gear1 center ~(233,390) r~52, gear2 center ~(324,430) r~34 (positions in the SVG's own viewBox).
+- Transformed DD.svg → src/components/svg/brain-svg-data.ts: stripped XML decl/comments, removed fixed width/height/id/style, set the path fill="var(--svg-stroke)" so the whole brain+gears silhouette switches with the theme (dark: white brain, light: dark brain).
+- Rewrote src/components/svg/neural-network.tsx to use the DD.svg brain:
+  • Renders the brain SVG once (memoized <Brain>).
+  • Draws 2 SEPARATE gear shapes ON TOP at the located positions, built via a gearPath() function (toothed ring + center hub hole, fillRule evenodd). Gear1: 12 teeth, outerR 56, dir +1 (CW), 18s/rev. Gear2: 10 teeth, outerR 38, dir -1 (CCW), 13s/rev — meshed gears turn in OPPOSITE directions.
+  • CONSTANT ROTATION via continuous rAF: each frame sets the gear <g> transform = translate(cx,cy) rotate(angle), where angle increments by elapsed/speed*360*dir. Staggered start angles. Direct DOM (no React re-renders).
+  • 16 travelling runner dots (accent-colored, r=4) move along generated connection lines spread across the brain (linear interpolation, wrap, staggered).
+  • Ambient breathing glow behind. Touch-action none on wrapper.
+- Verified: 3 paths (1 brain + 2 gears), 2 gear groups. Gear0 rotation confirmed changing (346°→367° in 1s, ~20°/s). Gears rotate in opposite directions (gear0 CW +1, gear1 CCW -1). VLM: "brain made of nodes and connecting lines, 2 gears visible inside, matches the dark theme." Light theme: "brain + 2 gears clearly visible, matching the light theme." Lint clean, 0 errors.
+
+Stage Summary:
+- Hero brain is now the user's DD.svg (nodes+lines brain with gears), theme-matched via CSS variables. The 2 gears constantly rotate in opposite directions (meshed). Travelling signal dots run along the brain's internal connections. Works in both dark and light themes.
