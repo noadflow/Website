@@ -350,3 +350,15 @@ Work Log:
 
 Stage Summary:
 - Brain is now properly sized (520px max) and positioned beside the text column, vertically aligned with the headline/text block. No right overflow, no clipping. The nested inner SVG wrapper that broke coordinate centering was removed.
+
+---
+Task ID: 29
+Agent: main (brain too small — make it bigger)
+Task: Brain was too small after the previous fix
+
+Work Log:
+- home-page.tsx: brain container max-w-[520px] → max-w-[680px]; grid lg:grid-cols-[1.1fr_1fr] → [1fr_1.05fr] (brain column slightly wider so the 680px fits).
+- Verified: brain content now 362×360px (was ~250px). Positioned x=857-1219 (within 1440 viewport, no overflow). h1 ends at 693, brain starts at 857 (reasonable gap). VLM: "good size, aligned beside the text, doesn't overflow." Light theme: good. Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is now a good size (362×360px), bigger, aligned beside the text, no overflow. Works in both themes.
