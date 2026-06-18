@@ -1,6 +1,29 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
+
+// ============================================================
+// GeometricShapes — soft outlined shapes that breathe (Pricing band).
+// Built on the brain SVG design language:
+//   • stroke var(--svg-stroke), width 2, round caps/joins, fill none
+//     (via the shared .nf-brain-line class)
+//   • 5 line-art shapes: circle, rounded square, rounded triangle,
+//     hexagon, plus — drawn as smooth paths with rounded joins
+//   • each shape gently breathes (nf-brain-breathe) on a STAGGERED
+//     delay so they never move in lockstep
+//   • a soft radiating glow (nf-glow-radiate) sits behind the band
+//   • subtle mouse tilt parallax: max ~5deg rotate + ~8px translate
+//     via direct DOM rAF (0.08 lerp). No React state.
+// Wide band viewBox 500 x 200, `preserveAspectRatio="xMidYMid slice"`
+// so the band fills a wide container. Shapes sit on the y=100 axis
+// so the slice's vertical crop never clips them.
+// ============================================================
+
+const VB_W = 500
+const VB_H = 200
+const CX = VB_W / 2 // tilt pivot (band center)
+const CY = VB_H / 2
 
 type ShapeType = 'circle' | 'square' | 'triangle' | 'hexagon' | 'plus'
 
@@ -9,101 +32,198 @@ interface ShapeDef {
   cx: number
   cy: number
   size: number
-  filled: boolean
-  delay: number
-  depth: number
   rotate: number
+  delay: number
 }
 
-// Balanced composition of 5 geometric shapes with staggered breathing delays.
+// 5 shapes spread across the band, staggered breathing delays.
 const SHAPES: ShapeDef[] = [
-  { type: 'circle', cx: 115, cy: 130, size: 46, filled: true, delay: 0, depth: 14, rotate: 0 },
-  { type: 'square', cx: 280, cy: 95, size: 50, filled: false, delay: 0.7, depth: 26, rotate: 12 },
-  { type: 'triangle', cx: 410, cy: 165, size: 54, filled: true, delay: 1.4, depth: 18, rotate: 0 },
-  { type: 'hexagon', cx: 175, cy: 285, size: 50, filled: false, delay: 2.1, depth: 30, rotate: 0 },
-  { type: 'plus', cx: 365, cy: 300, size: 44, filled: true, delay: 2.8, depth: 22, rotate: 0 },
+  { type: 'circle',   cx: 60,  cy: 100, size: 32, rotate: 0,  delay: 0.0 },
+  { type: 'square',   cx: 155, cy: 100, size: 30, rotate: 8,  delay: 1.1 },
+  { type: 'triangle', cx: 250, cy: 100, size: 34, rotate: 0,  delay: 2.0 },
+  { type: 'hexagon',  cx: 345, cy: 100, size: 32, rotate: 0,  delay: 0.7 },
+  { type: 'plus',     cx: 440, cy: 100, size: 28, rotate: 0,  delay: 1.6 },
 ]
 
-function shapePath(type: ShapeType, size: number): string {
-  const s = size
+// Rounded square (centered at origin, half-size s, corner radius r).
+function roundedSquare(s: number, r: number): string {
+  return `M ${(-s + r).toFixed(2)} ${(-s).toFixed(2)} L ${(s - r).toFixed(2)} ${(-s).toFixed(2)} Q ${s.toFixed(2)} ${(-s).toFixed(2)} ${s.toFixed(2)} ${(-s + r).toFixed(2)} L ${s.toFixed(2)} ${(s - r).toFixed(2)} Q ${s.toFixed(2)} ${s.toFixed(2)} ${(s - r).toFixed(2)} ${s.toFixed(2)} L ${(-s + r).toFixed(2)} ${s.toFixed(2)} Q ${(-s).toFixed(2)} ${s.toFixed(2)} ${(-s).toFixed(2)} ${(s - r).toFixed(2)} L ${(-s).toFixed(2)} ${(-s + r).toFixed(2)} Q ${(-s).toFixed(2)} ${(-s).toFixed(2)} ${(-s + r).toFixed(2)} ${(-s).toFixed(2)} Z`
+}
+
+// Rounded equilateral triangle pointing up (centered at origin,
+// circumradius r, corner radius cr). Corners are real quadratic
+// curves so the rounding is visible — not just stroke-linejoin.
+function roundedTriangle(r: number, cr: number): string {
+  const verts: { x: number; y: number }[] = []
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 - Math.PI / 2
+    verts.push({ x: Math.cos(a) * r, y: Math.sin(a) * r })
+  }
+  const corners = verts.map((v, i) => {
+    const prev = verts[(i + 2) % 3]
+    const next = verts[(i + 1) % 3]
+    const dPrev = Math.hypot(v.x - prev.x, v.y - prev.y)
+    const dNext = Math.hypot(v.x - next.x, v.y - next.y)
+    const entry = {
+      x: v.x + ((prev.x - v.x) * cr) / dPrev,
+      y: v.y + ((prev.y - v.y) * cr) / dPrev,
+    }
+    const exit = {
+      x: v.x + ((next.x - v.x) * cr) / dNext,
+      y: v.y + ((next.y - v.y) * cr) / dNext,
+    }
+    return { v, entry, exit }
+  })
+  let d = `M ${corners[0].entry.x.toFixed(2)} ${corners[0].entry.y.toFixed(2)} `
+  for (let i = 0; i < 3; i++) {
+    const cur = corners[i]
+    const nxt = corners[(i + 1) % 3]
+    d += `Q ${cur.v.x.toFixed(2)} ${cur.v.y.toFixed(2)} ${cur.exit.x.toFixed(2)} ${cur.exit.y.toFixed(2)} `
+    d += `L ${nxt.entry.x.toFixed(2)} ${nxt.entry.y.toFixed(2)} `
+  }
+  return d + 'Z'
+}
+
+// Hexagon (centered at origin, circumradius r, point at top).
+function hexagon(r: number): string {
+  const pts: string[] = []
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2 - Math.PI / 2
+    pts.push(`${(Math.cos(a) * r).toFixed(2)} ${(Math.sin(a) * r).toFixed(2)}`)
+  }
+  return 'M ' + pts.join(' L ') + ' Z'
+}
+
+// Plus shape (centered at origin, arm half-length s, arm half-thickness t).
+function plus(s: number, t: number): string {
+  return `M ${(-t).toFixed(2)} ${(-s).toFixed(2)} L ${t.toFixed(2)} ${(-s).toFixed(2)} L ${t.toFixed(2)} ${(-t).toFixed(2)} L ${s.toFixed(2)} ${(-t).toFixed(2)} L ${s.toFixed(2)} ${t.toFixed(2)} L ${t.toFixed(2)} ${t.toFixed(2)} L ${t.toFixed(2)} ${s.toFixed(2)} L ${(-t).toFixed(2)} ${s.toFixed(2)} L ${(-t).toFixed(2)} ${t.toFixed(2)} L ${(-s).toFixed(2)} ${t.toFixed(2)} L ${(-s).toFixed(2)} ${(-t).toFixed(2)} L ${(-t).toFixed(2)} ${(-t).toFixed(2)} Z`
+}
+
+function shapePath(type: ShapeType, size: number): string | null {
   switch (type) {
-    case 'square': {
-      const r = s * 0.22
-      return `M ${-s + r} ${-s} L ${s - r} ${-s} Q ${s} ${-s} ${s} ${-s + r} L ${s} ${s - r} Q ${s} ${s} ${s - r} ${s} L ${-s + r} ${s} Q ${-s} ${s} ${-s} ${s - r} L ${-s} ${-s + r} Q ${-s} ${-s} ${-s + r} ${-s} Z`
-    }
-    case 'triangle': {
-      // Pointing up, roughly equilateral
-      return `M 0 ${-s} L ${s * 0.87} ${s * 0.5} L ${-s * 0.87} ${s * 0.5} Z`
-    }
-    case 'hexagon': {
-      const pts: string[] = []
-      for (let i = 0; i < 6; i++) {
-        const a = (i / 6) * Math.PI * 2 - Math.PI / 2
-        pts.push(`${(Math.cos(a) * s).toFixed(2)} ${(Math.sin(a) * s).toFixed(2)}`)
-      }
-      return 'M ' + pts.join(' L ') + ' Z'
-    }
-    case 'plus': {
-      const t = s * 0.32
-      return `M ${-t} ${-s} L ${t} ${-s} L ${t} ${-t} L ${s} ${-t} L ${s} ${t} L ${t} ${t} L ${t} ${s} L ${-t} ${s} L ${-t} ${t} L ${-s} ${t} L ${-s} ${-t} L ${-t} ${-t} Z`
-    }
+    case 'square':
+      return roundedSquare(size, size * 0.24)
+    case 'triangle':
+      return roundedTriangle(size, size * 0.24)
+    case 'hexagon':
+      return hexagon(size)
+    case 'plus':
+      return plus(size, size * 0.34)
     default:
-      return ''
+      return null // circle is drawn via <circle>
   }
 }
 
 export function GeometricShapes({ className }: { className?: string }) {
-  const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+  const { ref: wrapRef, x, y } = useMouseParallax<HTMLDivElement>()
+  const tiltRef = useRef<SVGGElement>(null) // mouse-tilt group wrapping all shapes
+
+  const cur = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    let raf = 0
+    const apply = () => {
+      raf = 0
+      const tx = x
+      const ty = y
+      cur.current.x += (tx - cur.current.x) * 0.08
+      cur.current.y += (ty - cur.current.y) * 0.08
+      const el = tiltRef.current
+      if (el) {
+        // Gentle tilt: max ~5deg rotate around band center + ~8px translate.
+        const rot = cur.current.x * 5
+        const dx = cur.current.x * 8
+        const dy = cur.current.y * 6
+        el.setAttribute(
+          'transform',
+          `translate(${dx.toFixed(2)} ${dy.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`
+        )
+      }
+      if (Math.abs(tx - cur.current.x) > 0.001 || Math.abs(ty - cur.current.y) > 0.001) {
+        raf = requestAnimationFrame(apply)
+      }
+    }
+    if (!raf) raf = requestAnimationFrame(apply)
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [x, y])
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>
       <svg
-        viewBox="0 0 500 400"
+        className="nf-brain-svg"
+        viewBox={`0 0 ${VB_W} ${VB_H}`}
         width="100%"
         height="100%"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMid slice"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ overflow: 'visible' }}
       >
-        {SHAPES.map((sh, i) => {
-          const path = sh.type === 'circle' ? null : shapePath(sh.type, sh.size)
-          return (
-            <g key={i} style={{ transform: `translate3d(${x * sh.depth}px, ${y * sh.depth}px, 0)` }}>
-              <g transform={`translate(${sh.cx} ${sh.cy}) rotate(${sh.rotate})`}>
+        <defs>
+          <radialGradient id="gs-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.42" />
+            <stop offset="60%" stopColor="var(--svg-glow)" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Soft radiating glow filling the band behind the shapes */}
+        <ellipse
+          cx={CX}
+          cy={CY}
+          rx={VB_W * 0.55}
+          ry={VB_H * 0.9}
+          fill="url(#gs-glow)"
+          className="nf-glow-radiate"
+          style={{
+            transformBox: 'fill-box',
+            transformOrigin: 'center',
+            animationDuration: '7s',
+          }}
+        />
+
+        {/* Mouse-tilt group wrapping all shapes — tilts as one pane */}
+        <g ref={tiltRef}>
+          {SHAPES.map((sh, i) => {
+            const path = shapePath(sh.type, sh.size)
+            return (
+              <g
+                key={i}
+                transform={`translate(${sh.cx} ${sh.cy}) rotate(${sh.rotate})`}
+              >
+                {/* Each shape breathes on its own staggered beat */}
                 <g
-                  data-pivot
-                  className="nf-breathe"
-                  style={{ animationDelay: `${sh.delay}s`, animationDuration: '5.5s' }}
+                  className="nf-brain-breathe"
+                  style={{
+                    animationDelay: `${sh.delay}s`,
+                    animationDuration: '6s',
+                    transformBox: 'fill-box',
+                    transformOrigin: 'center',
+                  }}
                 >
                   {sh.type === 'circle' ? (
                     <circle
                       cx="0"
                       cy="0"
                       r={sh.size}
-                      fill={sh.filled ? 'var(--svg-fill)' : 'none'}
-                      stroke="var(--svg-stroke)"
-                      strokeWidth="1.3"
+                      className="nf-brain-line"
                       vectorEffect="non-scaling-stroke"
                     />
                   ) : (
                     <path
                       d={path as string}
-                      fill={sh.filled ? 'var(--svg-fill)' : 'none'}
-                      stroke="var(--svg-stroke)"
-                      strokeWidth="1.3"
+                      className="nf-brain-line"
                       vectorEffect="non-scaling-stroke"
                     />
                   )}
-                  {/* Small accent dot at center for filled non-plus shapes */}
-                  {sh.filled && sh.type !== 'plus' && (
-                    <circle cx="0" cy="0" r="2.5" fill="var(--svg-accent)" stroke="none" />
-                  )}
                 </g>
               </g>
-            </g>
-          )
-        })}
+            )
+          })}
+        </g>
       </svg>
     </div>
   )

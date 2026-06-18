@@ -1,130 +1,169 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 
-interface TextLine {
-  y: number
-  width: number
-}
+// ============================================================
+// ContentAgents — AI writing + publishing content.
+//   • 5 thin horizontal rounded lines (staggered widths, stroke 2) —
+//     reads as text paragraphs being written.
+//   • A blinking cursor at the end of the last (shortest) line — uses
+//     the existing .nf-caret class (1s blink).
+//   • 4 small circle "platform" icons drifting upward + fading out
+//     (nf-drift-up, staggered) — like content being published and sent
+//     into the world. Positioned on the sides so they never overlap
+//     the text.
+//   • Soft radiating glow behind. Whole group floats gently.
+//   • Subtle mouse/touch tilt (rAF lerp, direct DOM — no React state
+//     on mousemove).
+// All colors via CSS variables → switches with the theme.
+// ============================================================
 
-// 6 thin horizontal lines stacked vertically — staggered widths read as text paragraphs.
-// Last line is shortest (being typed); the blinking cursor sits at its end.
-const TEXT_LINES: TextLine[] = [
-  { y: 150, width: 360 },
-  { y: 185, width: 340 },
-  { y: 220, width: 355 },
-  { y: 255, width: 300 },
-  { y: 290, width: 330 },
-  { y: 325, width: 180 }, // last line shortest — being typed
+const CX = 150
+const CY = 150
+
+const LINE_X = 50
+// 5 text lines (paragraphs); last is shortest — being typed.
+const TEXT_LINES = [
+  { y: 100, width: 200 },
+  { y: 130, width: 175 },
+  { y: 160, width: 210 },
+  { y: 190, width: 165 },
+  { y: 220, width: 95 },
 ]
 
-const LINE_X = 70
-
-interface Platform {
-  x: number
-  y: number
-  delay: string
-}
-
-// 6 platform icons positioned around / within the text block. Each drifts upward
-// and fades out via .nf-drift-up (12s cycle). Staggered delays (0,2,4,6,8,10s)
-// produce continuous emission — like content being published and sent into the world.
-const PLATFORMS: Platform[] = [
-  { x: 100, y: 100, delay: '0s' },
-  { x: 220, y: 250, delay: '2s' },
-  { x: 370, y: 130, delay: '4s' },
-  { x: 160, y: 340, delay: '6s' },
-  { x: 420, y: 220, delay: '8s' },
-  { x: 290, y: 80,  delay: '10s' },
+// 4 platform icons on the sides of the text block. Each drifts upward
+// +48px and fades out (nf-drift-up, 12s). Staggered 3s apart for
+// continuous emission. Positioned at x=28 (left) / x=272 (right) so
+// they never overlap the text (which spans x=50–260).
+const PLATFORMS = [
+  { x: 28, y: 245, delay: '0s' },
+  { x: 272, y: 250, delay: '3s' },
+  { x: 28, y: 165, delay: '6s' },
+  { x: 272, y: 170, delay: '9s' },
 ]
 
 export function ContentAgents({ className }: { className?: string }) {
   const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+  const tiltRef = useRef<SVGGElement>(null)
+
+  useEffect(() => {
+    const tilt = tiltRef.current
+    if (!tilt) return
+    let raf = 0
+    let curX = 0
+    let curY = 0
+
+    const apply = () => {
+      raf = 0
+      const tx_target = x
+      const ty_target = y
+      curX += (tx_target - curX) * 0.08
+      curY += (ty_target - curY) * 0.08
+      const rot = curX * 6
+      const tx = curX * 10
+      const ty = curY * 10
+      tilt.setAttribute(
+        'transform',
+        `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`
+      )
+      if (Math.abs(tx_target - curX) > 0.001 || Math.abs(ty_target - curY) > 0.001) {
+        raf = requestAnimationFrame(apply)
+      }
+    }
+    raf = requestAnimationFrame(apply)
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [x, y])
+
   const lastLine = TEXT_LINES[TEXT_LINES.length - 1]
   const cursorX = LINE_X + lastLine.width + 4
   const cursorY = lastLine.y
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={{ overflow: 'visible' }}>
       <svg
-        viewBox="0 0 500 460"
+        className="nf-brain-svg"
+        viewBox="0 0 300 300"
         width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid meet"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ overflow: 'visible' }}
       >
-        {/* Document frame + text lines + cursor — subtle shared parallax toward cursor */}
-        <g style={{ transform: `translate3d(${x * 6}px, ${y * 6}px, 0)` }}>
-          {/* Faint document / paper frame grounding the text block */}
-          <rect
-            x="50"
-            y="110"
-            width="400"
-            height="260"
-            rx="14"
-            ry="14"
-            fill="var(--svg-fill)"
-            stroke="var(--svg-glow)"
-            strokeWidth="1"
-            opacity="0.5"
-            vectorEffect="non-scaling-stroke"
-          />
+        <defs>
+          <radialGradient id="content-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.5" />
+            <stop offset="55%" stopColor="var(--svg-glow)" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
 
-          {/* Text lines (paragraphs) */}
-          {TEXT_LINES.map((line, i) => (
-            <line
-              key={`t-${i}`}
-              x1={LINE_X}
-              y1={line.y}
-              x2={LINE_X + line.width}
-              y2={line.y}
-              stroke="var(--svg-stroke)"
-              strokeWidth="2.4"
-              opacity="0.72"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
+        {/* Soft radiating glow behind — expands + fades, repeating */}
+        <circle cx={CX} cy={CY} r="125" fill="url(#content-glow)" className="nf-glow-radiate" />
 
-          {/* Blinking cursor at the end of the last (shortest) line */}
-          <line
-            x1={cursorX}
-            y1={cursorY - 7}
-            x2={cursorX}
-            y2={cursorY + 7}
-            stroke="var(--svg-accent)"
-            strokeWidth="2.4"
-            className="nf-caret"
-            vectorEffect="non-scaling-stroke"
-          />
-        </g>
-
-        {/* Floating platform icons — drift up & fade (nf-drift-up), deeper parallax for depth.
-            animationFillMode: 'backwards' applies the 0% keyframe (opacity 0, translateY 24px)
-            during the staggered animation-delay window, so icons stay invisible until their
-            spawn moment — no flash of the resting icon before its delay elapses. */}
-        {PLATFORMS.map((p, i) => (
-          <g key={`p-${i}`} style={{ transform: `translate3d(${x * 14}px, ${y * 14}px, 0)` }}>
-            <g
-              className="nf-drift-up"
-              style={{ animationDelay: p.delay, animationFillMode: 'backwards' }}
-            >
-              {/* Outer platform circle (outlined) */}
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r="11"
-                fill="var(--svg-fill)"
+        {/* Tilt group (outermost) → float group → content */}
+        <g ref={tiltRef}>
+          <g className="nf-brain-float">
+            {/* Text lines (paragraphs) */}
+            {TEXT_LINES.map((line, i) => (
+              <line
+                key={`t-${i}`}
+                x1={LINE_X}
+                y1={line.y}
+                x2={LINE_X + line.width}
+                y2={line.y}
                 stroke="var(--svg-stroke)"
-                strokeWidth="1.1"
+                strokeWidth="2"
+                strokeLinecap="round"
+                opacity="0.75"
                 vectorEffect="non-scaling-stroke"
               />
-              {/* Inner avatar dot (accent) */}
-              <circle cx={p.x} cy={p.y} r="4" fill="var(--svg-accent)" stroke="none" />
-            </g>
+            ))}
+
+            {/* Blinking cursor at end of last (shortest) line — .nf-caret (1s blink) */}
+            <line
+              x1={cursorX}
+              y1={cursorY - 7}
+              x2={cursorX}
+              y2={cursorY + 7}
+              stroke="var(--svg-accent)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              className="nf-caret"
+              vectorEffect="non-scaling-stroke"
+            />
+
+            {/* Platform icons drifting upward + fading (nf-drift-up, staggered).
+                animationFillMode: 'backwards' applies the 0% keyframe (opacity 0)
+                during the staggered delay window so icons stay invisible until
+                their spawn moment — no flash of the resting icon before delay. */}
+            {PLATFORMS.map((p, i) => (
+              <g
+                key={`p-${i}`}
+                className="nf-drift-up"
+                style={{ animationDelay: p.delay, animationFillMode: 'backwards' }}
+              >
+                {/* Outer platform circle (outlined) */}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="9"
+                  fill="none"
+                  stroke="var(--svg-stroke)"
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+                {/* Inner accent dot */}
+                <circle cx={p.x} cy={p.y} r="3" fill="var(--svg-accent)" stroke="none" />
+              </g>
+            ))}
           </g>
-        ))}
+        </g>
       </svg>
     </div>
   )

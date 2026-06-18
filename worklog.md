@@ -414,3 +414,143 @@ Work Log:
 
 Stage Summary:
 - Brain is big (501px artwork) and the text column is no longer pushed left — balanced 50/50 columns. The excess container padding that was hogging space is gone (container now matches artwork size). No clipping, both themes.
+
+---
+Task ID: 34 (contract)
+Agent: main (SVG redesign coordinator)
+Task: Redesign ALL SVG illustrations to match the brain SVG's visual language
+
+## Brain SVG Design System (the reference all SVGs must match)
+- **Stroke**: `var(--svg-stroke)` (theme-aware: white on dark, dark on light — opposite of bg)
+- **Stroke width**: 2, with `stroke-linecap: round` + `stroke-linejoin: round`
+- **Fill**: none (line-art only, no fills except soft glows)
+- **Glow**: soft radial gradient using `var(--svg-glow)` (low opacity)
+- **Animations** (all subtle, ease-in-out, infinite):
+  - breathe: scale 1 → 1.015 (6s)
+  - float: translateY 0 → -6px (7s)
+  - bubble-pulse: opacity 0.45 → 1 (3.4s) — NO scaling, opacity only
+  - glow-radiate: scale 0.75 → 1.4 + opacity 0 → 0.4 → 0 (5s)
+- **Interactivity**: subtle mouse/touch tilt (max ~6deg rotate + ~10px translate, eased 0.08 lerp) via useMouseParallax hook + direct DOM refs (no React re-renders)
+- **Aesthetic**: smooth rounded shapes, soft curves, elegant minimal, premium/futuristic/dreamy
+
+## SVGs to redesign (keep export names + file paths):
+1. lead-network-map.tsx → LeadNetworkMap (radar finding leads)
+2. chat-bubbles.tsx → ChatBubbles (24/7 customer support)
+3. content-agents.tsx → ContentAgents (AI writing + publishing content)
+4. interlocking-gears.tsx → InterlockingGears (workflow automation)
+5. flowing-lines.tsx → FlowingLines (about page abstract)
+6. geometric-shapes.tsx → GeometricShapes (pricing page)
+7. stars-moon.tsx → StarsMoon → CTA section backdrop
+
+---
+Task ID: 34-a
+Agent: sub-agent (general-purpose — rebuild 4 service SVGs in brain style)
+Task: Rewrite LeadNetworkMap, ChatBubbles, ContentAgents, InterlockingGears to match the brain SVG's visual language (per Task 34 contract).
+
+## Files rewritten (all keep their export names + paths)
+1. `src/components/svg/lead-network-map.tsx` → `LeadNetworkMap`
+2. `src/components/svg/chat-bubbles.tsx` → `ChatBubbles`
+3. `src/components/svg/content-agents.tsx` → `ContentAgents`
+4. `src/components/svg/interlocking-gears.tsx` → `InterlockingGears`
+
+## Brain design system applied (uniform across all 4)
+- **viewBox**: `0 0 300 300` (square, ~30px implicit padding via centered content).
+- **Stroke**: `var(--svg-stroke)`, width **2**, `stroke-linecap: round`, `stroke-linejoin: round`, `fill: none`. All key strokes carry `vector-effect="non-scaling-stroke"` so they stay crisp at any render size.
+- **Glow**: each component has a unique radialGradient def (`lead-glow`, `chat-glow`, `content-glow`, `gears-glow`) using `var(--svg-glow)` (0.5 peak → 0.14 → 0). The glow circle (r=125) uses class `nf-glow-radiate` → scales 0.75→1.4 + fades, repeating (5s).
+- **Animations** (all from the EXISTING keyframes in globals.css — no new keyframes added):
+  - Whole artwork group: `nf-brain-float` (translateY 0→-6px, 7s).
+  - Pulsing elements: `nf-brain-bubble` (opacity 0.45→1, 3.4s, NO scale) — used for prospect dots, typing dots, accent dots. Staggered via inline `animationDelay`.
+  - Breathing elements: `nf-brain-breathe` (scale 1→1.015, 6s) — used for the radar origin node and the 24/7 clock.
+  - Radiating elements: `nf-glow-radiate` — used for the soft glow + the 3 sonar ping rings (LeadNetworkMap).
+  - Spinning elements: `nf-spin-slow` / `nf-spin-rev` (overridden `animationDuration` per gear) — used for the radar sweep and the 3 gears.
+  - Drifting elements: `nf-drift-up` (translateY 24→-48 + fade, 12s) — used for the 4 platform icons (ContentAgents).
+  - Blinking element: `nf-caret` (1s step-end) — used for the cursor (ContentAgents).
+- **Interactivity**: subtle mouse/touch tilt via `useMouseParallax` hook. The hook's `ref` attaches to the wrapper div; its `x`/`y` (-0.5..0.5) are stored in a `targetRef` (updated every render). A single long-running `useEffect` (empty deps) holds a rAF loop that eases `curX/curY` toward the target (0.08 lerp) and writes the tilt group's SVG `transform` attribute directly via `tiltRef.current.setAttribute(...)` — `translate(tx ty) rotate(rot CX CY)`, max ~6deg + ~10px. A tiny `[x, y]` effect calls `kickRef.current()` to re-kick the rAF when the target moves. **No React state on mousemove** for the transform values — they live in the effect closure.
+- **Structure** (matches the brain): `<div ref={ref} className={className} style={{overflow:'visible'}}>` → `<svg className="nf-brain-svg" viewBox="0 0 300 300" style={{overflow:'visible'}}>` → `<defs>` → glow `<circle className="nf-glow-radiate">` → `<g ref={tiltRef}>` (tilt) → `<g className="nf-brain-float">` (float) → content.
+
+## Per-component design decisions
+### LeadNetworkMap (radar finding leads)
+- Central origin node at (150,150): outer ring (r=8, stroked) + inner accent dot (r=3), wrapped in `nf-brain-breathe`.
+- 3 concentric ping rings (r=82, stroked) with `nf-glow-radiate` + staggered delays 0s/1.6s/3.2s → continuous sonar pings (scale 0.75→1.4 = visual r 61→115).
+- Faint outer guide ring (r=110, stroke 1, opacity 0.35, `var(--svg-glow)`) frames the radar.
+- 7 prospect dots at varied radii (68–96) and angles around the center, each `nf-brain-bubble` with staggered delays (0.45s apart) — opacity-pulse as the radar "detects" them. Solid `var(--svg-accent)` fill.
+- Radar sweep: thin accent line from center (0,0) to (0,-104) inside a `translate(150 150)` group; the spinning inner group uses `nf-spin-slow` (9s) with `transform-box: fill-box; transform-origin: center bottom` so CSS rotation pivots exactly at the radar center (bottom of the line's bbox = the center point).
+
+### ChatBubbles (24/7 customer support)
+- 3 stacked rounded chat bubbles (rect rx=14, stroke 2, no fill) with line-art tails (2-segment triangle tip, no fill). Tails alternate bl/br/tl for a natural conversation cascade.
+- Bubble 1 (top-left): 2 text lines. Bubble 2 (middle-right): 3 typing dots (`nf-brain-bubble`, staggered 0s/0.4s/0.8s → typing wave). Bubble 3 (bottom-left): 1 text line.
+- 24/7 clock top-right (cx=240, cy=58, r=22): outer circle + 4 tick marks at 12/3/6/9 + hour hand (short, to ~10 o'clock) + minute hand (longer, to ~2 o'clock) + center dot. Whole clock group wrapped in `nf-brain-breathe` (subtle scale pulse). Hands use `var(--svg-accent)`.
+- Layout verified non-overlapping: clock (y 36–80) sits above bubble 1 (y 95–153); bubble 2 (y 168–226) tail tip at (262,240) is right of bubble 3 (x 40–160).
+
+### ContentAgents (AI writing + publishing)
+- 5 thin horizontal lines (stroke 2, round caps, opacity 0.75) at y=100/130/160/190/220 with staggered widths (200/175/210/165/95) — reads as text paragraphs. Last line shortest (being typed).
+- Blinking cursor (vertical line, ±7px) at end of last line, accent color, `.nf-caret` class (1s blink).
+- 4 platform icons (outlined circle r=9 + inner accent dot r=3) positioned on the LEFT (x=28) and RIGHT (x=272) sides of the text block, so they never overlap the text (x 50–260). Each uses `nf-drift-up` (drifts up 48px + fades) with staggered delays 0s/3s/6s/9s and `animationFillMode: 'backwards'` so they stay invisible until their spawn moment (no flash before delay).
+
+### InterlockingGears (workflow automation)
+- 3 gears generated by a `gearPath()` helper (square-wave toothed silhouette, centered at 0,0; `strokeLinejoin="round"` softens tooth corners).
+- Positions chosen so pitch circles are tangent (visually meshing): Gear 1 (95,195, r=48) ↔ Gear 2 (191,195, r=48) distance=96=48+48 ✓; Gear 2 ↔ Gear 3 (225,125, r=32) distance≈78 < 80 → teeth slightly interlock ✓.
+- Directions alternate (fwd/rev/fwd) via `nf-spin-slow` / `nf-spin-rev`. Durations overridden inline to 30s/30s/20s — speed inversely proportional to tooth count (12:12:8) so meshing teeth stay in sync.
+- Each spinning gear group has `transform-box: fill-box; transform-origin: center` inline (per contract) so rotation pivots on the gear's own bbox center = its geometric center, NOT the viewBox center.
+- Each gear = toothed silhouette (stroke 2) + inner pitch ring (stroke 1.2, opacity 0.45) + hub ring (stroke 2) + accent center dot.
+- 6 accent dots scattered in empty space around the gears (verified non-overlapping with gear circles), each `nf-brain-bubble` with staggered delays.
+
+## Technical notes
+- All 4 components follow the identical skeleton: `'use client'` → import `useMouseParallax` → `targetRef`/`kickRef`/`tiltRef` refs → tilt `useEffect` (empty deps, rAF lerp) → kick `useEffect` ([x,y]) → render `<div ref={ref}>` → `<svg className="nf-brain-svg">` → defs + glow circle + tilt group + float group + content.
+- Unique gradient IDs per component (`lead-glow`, `chat-glow`, `content-glow`, `gears-glow`) to avoid collisions when multiple SVGs render on the same page.
+- `vector-effect="non-scaling-stroke"` on all key strokes so they stay crisp at any render size (the SVGs scale to fill their containers).
+- No new CSS keyframes or classes added — all animation classes already exist in globals.css (`.nf-brain-svg`, `.nf-brain-line`, `.nf-brain-breathe`, `.nf-brain-float`, `.nf-brain-bubble`, `.nf-glow-radiate`, `.nf-spin-slow`, `.nf-spin-rev`, `.nf-drift-up`, `.nf-caret`).
+- Did NOT run dev server or lint (per instructions).
+
+Stage Summary:
+- All 4 service SVGs rebuilt to match the brain's visual language: line-art stroke 2 round caps/joins, soft radiating glow with `nf-glow-radiate`, gentle float via `nf-brain-float`, subtle mouse-tilt via `useMouseParallax` + rAF lerp + direct DOM (no React state on mousemove). Each component uses the existing keyframes/classes (no new CSS). Export names + file paths preserved. Ready for visual review in both themes.
+
+---
+Task ID: 34-b
+Agent: sub-agent (SVG redesign — 3 band components)
+Task: Rebuild FlowingLines, GeometricShapes, StarsMoon to match the brain SVG design language.
+
+## Files rewritten (export names + paths preserved)
+1. `src/components/svg/flowing-lines.tsx` → `FlowingLines` (About page band)
+2. `src/components/svg/geometric-shapes.tsx` → `GeometricShapes` (Pricing page band)
+3. `src/components/svg/stars-moon.tsx` → `StarsMoon` (CTA section backdrop)
+
+## Brain design language applied to all 3
+- **Stroke**: `var(--svg-stroke)`, width 2 (via shared `.nf-brain-line` class), `stroke-linecap: round`, `stroke-linejoin: round`, `fill: none`. `vector-effect="non-scaling-stroke"` on every stroked path so the 2px width stays crisp at any SVG scale.
+- **Glow**: soft radial gradient using `var(--svg-glow)` (3-stop fade 0.55 → 0.15 → 0), applied to a `nf-glow-radiate` circle/ellipse that expands + fades on a 6–7s loop.
+- **Animations**: EXISTING keyframes only — `nf-brain-breathe` (scale 1→1.015, 6s, staggered delays 0–2.1s), `nf-bubble-pulse` (opacity 0.45→1, 3.2–4.4s, staggered), `nf-glow-radiate` (scale 0.75→1.4 + fade, 6–7s), `nf-drift-up` (translateY +48→-48px + fade, 11–13s).
+- **Interactivity**: `useMouseParallax<HTMLDivElement>()` for the wrap ref + x,y. Mirrored to a `tgt` ref so the rAF loop has the latest target. `useEffect([x, y])` kicks a rAF loop that eases `cur` toward `tgt` at 0.08 lerp and applies transforms via `setAttribute('transform', ...)` on direct DOM refs. Eased `cur` lives in a ref (persists across effect re-runs). NO React state beyond the hook's internal pos. Max tilt ~5deg rotate + ~8px translate (GeometricShapes); max parallax translate only (FlowingLines, StarsMoon).
+- **Aesthetic**: smooth rounded curves, line-art only, premium/futuristic/dreamy.
+
+## Per-component design decisions
+- **FlowingLines** (viewBox 1200×300, `slice`): 5 sine-wave paths generated analytically as smooth cubic Béziers — control points derived from the sine's tangent (slope = amp·ω·cos), 4 segments per period, near-perfect sine. Each wave gets `nf-brain-line nf-brain-breathe` with staggered delays (0/0.8/1.2/1.6/2.1s) and per-line opacity (0.65–1.0). Two parallax layers: the wave field drifts subtly (cur×10/8), a cursor-following soft glow translates more strongly (cur×32/24). Static ambient ellipse glow behind. viewBox widened from spec's ~600×300 to 1200×300 so the band fills a wide container with only ~28vu cropped top/bottom (all 5 waves stay visible).
+
+- **GeometricShapes** (viewBox 500×200, `slice`): 5 line-art shapes — circle, rounded square (Q-corner radius 0.24·s), rounded triangle (true quadratic-rounded corners, not just stroke-linejoin), hexagon, plus. All centered on y=100 so the slice's vertical crop never clips them. Each shape wrapped in its own `nf-brain-breathe` group with staggered delays (0/0.7/1.1/1.6/2.0s). Single tilt group wraps all 5 — tilts as one pane (rotate around band center 250,100 + translate). Soft radiating ellipse glow behind.
+
+- **StarsMoon** (viewBox 600×300, `meet`): 14 small circle "particles" in two layers (7 back, 7 front), each `nf-brain-bubble` (opacity pulse, staggered 0–1.8s, varied 3.2–4.4s duration). 7 of them also wrapped in `nf-drift-up` for ambient upward drift (11–13s). Particles are FILLED dots — override the `.nf-brain-bubble` class's default `fill:none; stroke:...` via inline `style={{ fill: 'var(--svg-accent)', stroke: 'none' }}` (style beats class). Central orb = concentric line-art outlines (r=36, r=20) + center dot (r=2.5), wrapped in `nf-brain-breathe` (7s). Behind it: a `nf-glow-radiate` halo (r=115) + a constant soft-glow circle (r=76). Layered parallax: back=cur×8, orb=cur×14, front=cur×24 — gives real depth, no rotation (ambient backdrop). `meet` (not slice) so the whole composition stays visible inside the CTA card.
+
+## Unique gradient IDs
+- FlowingLines: `fl-cursor-glow`, `fl-band-ambient`
+- GeometricShapes: `gs-glow`
+- StarsMoon: `sm-orb-halo`, `sm-orb-core`
+
+## Verification
+- `npx tsc --noEmit -p tsconfig.json`: 0 errors in the 3 SVG files (only unrelated errors in `examples/` and `skills/`).
+- Did NOT run dev server or lint (per instructions).
+- All 3 files keep their export names + file paths + `'use client'` + `useMouseParallax` import.
+
+Stage Summary:
+- All 3 band SVGs now share the brain's visual language: 2px round line-art, soft `var(--svg-glow)` radiating gradients, staggered `nf-brain-breathe` / `nf-brain-bubble` / `nf-glow-radiate` / `nf-drift-up` animations, and subtle direct-DOM mouse parallax via `useMouseParallax` + rAF 0.08 lerp. Each band uses `xMidYMid slice` (or `meet` for the CTA backdrop) so it fills its container width without clipping key content.
+
+---
+Task ID: 34-final
+Agent: main (SVG redesign coordinator + fixes)
+Task: Redesign all SVG illustrations to match the brain; fix lint errors
+
+Work Log:
+- Dispatched 2 subagents (34-a, 34-b) to rebuild all 7 SVGs in the brain's visual language. Both completed.
+- Fixed lint errors in all 7 rebuilt SVGs: the subagents updated refs during render (`targetRef.current = { x, y }` or `tgt.current.x = x` during render — violates react-hooks/refs rule). Fix: removed the ref-mirror pattern entirely; changed each useEffect to depend on `[x, y]` and use `x, y` directly in the closure. Applied to: lead-network-map, chat-bubbles, content-agents, interlocking-gears, flowing-lines, geometric-shapes, stars-moon.
+- Verified all pages render the redesigned SVGs: home (17 SVGs), services, about, pricing, CTA. VLM confirmed all match the brain style: "thin line-art, rounded strokes, soft glow, elegant/consistent" across Services, About ("brain-style flow"), Pricing ("geometric shapes with rounded strokes + glow"), CTA ("soft ambient line-art particles/orb with glow"). Light theme: good contrast, matches brain style. Lint clean (0 errors), 0 page errors.
+
+Stage Summary:
+- All 7 SVG illustrations redesigned to match the brain's visual language: stroke var(--svg-stroke) width 2 round caps/joins, soft var(--svg-glow) radial glows, subtle breathe/float/bubble-pulse/glow-radiate animations, mouse/touch tilt via useMouseParallax + direct DOM refs. The entire site now feels cohesive — one design system across the brain, lead-gen radar, support chat, content agents, workflow gears, about flowing lines, pricing shapes, and CTA particles.

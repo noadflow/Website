@@ -1,104 +1,139 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
+
+// ============================================================
+// ChatBubbles — 24/7 customer support.
+//   • 3 stacked rounded chat bubbles (line-art, stroke 2) with little
+//     tails. One bubble has 3 typing dots (nf-brain-bubble opacity
+//     pulse, staggered → classic typing wave).
+//   • A small clock circle with 2 hands + 4 tick marks, pulsing softly
+//     via nf-brain-breathe (the "24/7" indicator).
+//   • Soft radiating glow behind. Whole group floats gently.
+//   • Subtle mouse/touch tilt (rAF lerp, direct DOM — no React state
+//     on mousemove).
+// All colors via CSS variables → switches with the theme.
+// ============================================================
+
+const CX = 150
+const CY = 150
 
 interface Bubble {
   x: number
   y: number
   w: number
   h: number
-  delay: number
-  depth: number
+  tail: 'bl' | 'br' | 'tl'
   typing: boolean
-  lines: [number, number][]
-  tail: 'left' | 'right'
+  lines: number[] // widths of text lines inside the bubble
 }
 
 const BUBBLES: Bubble[] = [
-  {
-    x: 50,
-    y: 120,
-    w: 190,
-    h: 72,
-    delay: 0,
-    depth: 16,
-    typing: false,
-    lines: [
-      [130, 0.9],
-      [90, 0.55],
-    ],
-    tail: 'left',
-  },
-  {
-    x: 230,
-    y: 230,
-    w: 210,
-    h: 88,
-    delay: 0.8,
-    depth: 28,
-    typing: true,
-    lines: [],
-    tail: 'right',
-  },
-  {
-    x: 110,
-    y: 350,
-    w: 180,
-    h: 66,
-    delay: 1.6,
-    depth: 22,
-    typing: false,
-    lines: [
-      [120, 0.85],
-      [80, 0.5],
-    ],
-    tail: 'left',
-  },
+  { x: 30, y: 95, w: 140, h: 58, tail: 'bl', typing: false, lines: [100, 75] },
+  { x: 130, y: 168, w: 140, h: 58, tail: 'br', typing: true, lines: [] },
+  { x: 40, y: 240, w: 120, h: 46, tail: 'tl', typing: false, lines: [85] },
+]
+
+// Tail = 2 line segments forming a triangle tip (no fill, pure line-art).
+function tailPath(b: Bubble): string {
+  const { x, y, w, h, tail } = b
+  if (tail === 'bl') return `M ${x + 14} ${y + h} L ${x + 8} ${y + h + 14} L ${x + 30} ${y + h}`
+  if (tail === 'br') return `M ${x + w - 30} ${y + h} L ${x + w - 8} ${y + h + 14} L ${x + w - 14} ${y + h}`
+  return `M ${x + 14} ${y} L ${x + 8} ${y - 14} L ${x + 30} ${y}` // tl
+}
+
+const CLOCK_CX = 240
+const CLOCK_CY = 58
+const CLOCK_R = 22
+
+// 4 tick directions at 12, 3, 6, 9 o'clock
+const TICK_DIRS = [
+  [0, -1],
+  [1, 0],
+  [0, 1],
+  [-1, 0],
 ]
 
 export function ChatBubbles({ className }: { className?: string }) {
   const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+  const tiltRef = useRef<SVGGElement>(null)
+
+  useEffect(() => {
+    const tilt = tiltRef.current
+    if (!tilt) return
+    let raf = 0
+    let curX = 0
+    let curY = 0
+
+    const apply = () => {
+      raf = 0
+      const tx_target = x
+      const ty_target = y
+      curX += (tx_target - curX) * 0.08
+      curY += (ty_target - curY) * 0.08
+      const rot = curX * 6
+      const tx = curX * 10
+      const ty = curY * 10
+      tilt.setAttribute(
+        'transform',
+        `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) rotate(${rot.toFixed(2)} ${CX} ${CY})`
+      )
+      if (Math.abs(tx_target - curX) > 0.001 || Math.abs(ty_target - curY) > 0.001) {
+        raf = requestAnimationFrame(apply)
+      }
+    }
+    raf = requestAnimationFrame(apply)
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [x, y])
+
+  const tickR_out = CLOCK_R - 3
+  const tickR_in = CLOCK_R - 7
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={{ overflow: 'visible' }}>
       <svg
-        viewBox="0 0 500 500"
+        className="nf-brain-svg"
+        viewBox="0 0 300 300"
         width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid meet"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ overflow: 'visible' }}
       >
         <defs>
-          <radialGradient id="cb-clock-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.4" />
+          <radialGradient id="chat-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.5" />
+            <stop offset="55%" stopColor="var(--svg-glow)" stopOpacity="0.14" />
             <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Chat bubbles — each parallaxed by its own depth for layered feel */}
-        {BUBBLES.map((b, i) => {
-          const tailPath =
-            b.tail === 'left'
-              ? `M ${b.x + 16} ${b.y + b.h} L ${b.x + 2} ${b.y + b.h + 18} L ${b.x + 36} ${b.y + b.h} Z`
-              : `M ${b.x + b.w - 36} ${b.y + b.h} L ${b.x + b.w - 2} ${b.y + b.h + 18} L ${b.x + b.w - 16} ${b.y + b.h} Z`
-          return (
-            <g key={i} style={{ transform: `translate3d(${x * b.depth}px, ${y * b.depth}px, 0)` }}>
-              <g
-                className="nf-float"
-                style={{ animationDelay: `${b.delay}s`, animationDuration: '6.5s' }}
-              >
-                {/* Tail */}
+        {/* Soft radiating glow behind — expands + fades, repeating */}
+        <circle cx={CX} cy={CY} r="125" fill="url(#chat-glow)" className="nf-glow-radiate" />
+
+        {/* Tilt group (outermost) → float group → content */}
+        <g ref={tiltRef}>
+          <g className="nf-brain-float">
+            {/* Chat bubbles */}
+            {BUBBLES.map((b, i) => (
+              <g key={`b-${i}`}>
+                {/* Tail (line-art, no fill) */}
                 <path
-                  d={tailPath}
-                  fill="var(--svg-fill)"
+                  d={tailPath(b)}
+                  fill="none"
                   stroke="var(--svg-stroke)"
-                  strokeWidth="1.1"
-                  vectorEffect="non-scaling-stroke"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
                 />
-                {/* Bubble body */}
+                {/* Body */}
                 <rect
                   x={b.x}
                   y={b.y}
@@ -106,145 +141,96 @@ export function ChatBubbles({ className }: { className?: string }) {
                   height={b.h}
                   rx="14"
                   ry="14"
-                  fill="var(--svg-fill)"
+                  fill="none"
                   stroke="var(--svg-stroke)"
-                  strokeWidth="1.1"
+                  strokeWidth="2"
                   vectorEffect="non-scaling-stroke"
                 />
-                {/* Content: typing dots OR text lines */}
+                {/* Content: typing dots or text lines */}
                 {b.typing ? (
-                  <g>
+                  [0, 1, 2].map((j) => (
                     <circle
-                      cx={b.x + 32}
+                      key={`d-${j}`}
+                      cx={b.x + 35 + j * 26}
                       cy={b.y + b.h / 2}
-                      r="4"
-                      fill="var(--svg-stroke)"
-                      className="nf-twinkle"
-                      style={{ animationDelay: '0s', animationDuration: '1.2s' }}
+                      r="3.5"
+                      fill="var(--svg-accent)"
+                      stroke="none"
+                      className="nf-brain-bubble"
+                      style={{ animationDelay: `${j * 0.4}s` }}
                     />
-                    <circle
-                      cx={b.x + 54}
-                      cy={b.y + b.h / 2}
-                      r="4"
-                      fill="var(--svg-stroke)"
-                      className="nf-twinkle"
-                      style={{ animationDelay: '0.2s', animationDuration: '1.2s' }}
-                    />
-                    <circle
-                      cx={b.x + 76}
-                      cy={b.y + b.h / 2}
-                      r="4"
-                      fill="var(--svg-stroke)"
-                      className="nf-twinkle"
-                      style={{ animationDelay: '0.4s', animationDuration: '1.2s' }}
-                    />
-                  </g>
+                  ))
                 ) : (
-                  b.lines.map((ln, j) => (
+                  b.lines.map((lw, j) => (
                     <line
-                      key={j}
-                      x1={b.x + 20}
-                      y1={b.y + 24 + j * 22}
-                      x2={b.x + 20 + ln[0]}
-                      y2={b.y + 24 + j * 22}
+                      key={`l-${j}`}
+                      x1={b.x + 18}
+                      y1={b.y + 20 + j * 20}
+                      x2={b.x + 18 + lw}
+                      y2={b.y + 20 + j * 20}
                       stroke="var(--svg-stroke)"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      opacity={ln[1]}
+                      opacity="0.7"
                       vectorEffect="non-scaling-stroke"
                     />
                   ))
                 )}
               </g>
-            </g>
-          )
-        })}
+            ))}
 
-        {/* 24/7 Clock — top right, gentle parallax */}
-        <g style={{ transform: `translate3d(${x * 10}px, ${y * 10}px, 0)` }}>
-          <circle
-            cx="400"
-            cy="130"
-            r="62"
-            fill="url(#cb-clock-glow)"
-            className="nf-pulse-soft"
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              animationDuration: '4s',
-            }}
-          />
-          <g
-            className="nf-pulse-soft"
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              animationDuration: '4s',
-            }}
-          >
-            <circle
-              cx="400"
-              cy="130"
-              r="48"
-              fill="var(--svg-fill)"
-              stroke="var(--svg-stroke)"
-              strokeWidth="1.2"
-              vectorEffect="non-scaling-stroke"
-            />
-            {/* 12 tick marks (longer at 12/3/6/9) */}
-            {Array.from({ length: 12 }, (_, i) => {
-              const a = (i / 12) * Math.PI * 2 - Math.PI / 2
-              const major = i % 3 === 0
-              const r1 = 42
-              const r2 = major ? 33 : 38
-              return (
+            {/* 24/7 Clock — top right, breathing softly (nf-brain-breathe) */}
+            <g className="nf-brain-breathe">
+              <circle
+                cx={CLOCK_CX}
+                cy={CLOCK_CY}
+                r={CLOCK_R}
+                fill="none"
+                stroke="var(--svg-stroke)"
+                strokeWidth="2"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* 4 tick marks at 12, 3, 6, 9 */}
+              {TICK_DIRS.map((dir, i) => (
                 <line
-                  key={i}
-                  x1={400 + Math.cos(a) * r1}
-                  y1={130 + Math.sin(a) * r1}
-                  x2={400 + Math.cos(a) * r2}
-                  y2={130 + Math.sin(a) * r2}
+                  key={`t-${i}`}
+                  x1={CLOCK_CX + dir[0] * tickR_out}
+                  y1={CLOCK_CY + dir[1] * tickR_out}
+                  x2={CLOCK_CX + dir[0] * tickR_in}
+                  y2={CLOCK_CY + dir[1] * tickR_in}
                   stroke="var(--svg-stroke)"
-                  strokeWidth={major ? 1.4 : 0.8}
+                  strokeWidth="1.5"
                   strokeLinecap="round"
+                  opacity="0.5"
+                  vectorEffect="non-scaling-stroke"
                 />
-              )
-            })}
-            {/* Hour hand */}
-            <line
-              x1="400"
-              y1="130"
-              x2="400"
-              y2="108"
-              stroke="var(--svg-accent)"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-            />
-            {/* Minute hand */}
-            <line
-              x1="400"
-              y1="130"
-              x2="423"
-              y2="130"
-              stroke="var(--svg-accent)"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-            <circle cx="400" cy="130" r="2.6" fill="var(--svg-accent)" stroke="none" />
+              ))}
+              {/* Hour hand (short, pointing to ~10 o'clock) */}
+              <line
+                x1={CLOCK_CX}
+                y1={CLOCK_CY}
+                x2={CLOCK_CX - 8}
+                y2={CLOCK_CY - 8}
+                stroke="var(--svg-accent)"
+                strokeWidth="2"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* Minute hand (longer, pointing to ~2 o'clock) */}
+              <line
+                x1={CLOCK_CX}
+                y1={CLOCK_CY}
+                x2={CLOCK_CX + 13}
+                y2={CLOCK_CY - 7}
+                stroke="var(--svg-accent)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* Center dot */}
+              <circle cx={CLOCK_CX} cy={CLOCK_CY} r="2" fill="var(--svg-accent)" stroke="none" />
+            </g>
           </g>
-          {/* 24/7 label */}
-          <text
-            x="400"
-            y="205"
-            textAnchor="middle"
-            fill="var(--svg-accent)"
-            fontSize="14"
-            fontWeight="600"
-            fontFamily="var(--font-sans), sans-serif"
-            letterSpacing="3"
-          >
-            24/7
-          </text>
         </g>
       </svg>
     </div>

@@ -1,120 +1,222 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { useMouseParallax } from '@/hooks/use-mouse-parallax'
 
-interface Star {
+// ============================================================
+// StarsMoon — floating particles + a soft glowing orb (CTA backdrop).
+// Built on the brain SVG design language:
+//   • ~14 small circle "particles" of varying sizes scattered across
+//     the band, each pulsing opacity (nf-brain-bubble, staggered)
+//   • a few particles also drift upward (nf-drift-up) for ambient motion
+//   • a central glowing orb that breathes (nf-brain-breathe) drawn as
+//     concentric line-art outlines + a center dot, with a radiating
+//     halo (nf-glow-radiate) and a constant soft glow behind it
+//   • subtle layered mouse PARALLAX (no tilt — it's an ambient backdrop):
+//     back particles drift least, the orb mid, front particles most.
+//     All via direct DOM rAF (0.08 lerp). No React state.
+// Wide band viewBox 600 x 300, `preserveAspectRatio="xMidYMid meet"`
+// (centered backdrop — content sits on top in the CTA card).
+// ============================================================
+
+const VB_W = 600
+const VB_H = 300
+const ORB_X = VB_W / 2
+const ORB_Y = VB_H / 2
+const ORB_R = 36
+
+interface Particle {
   x: number
   y: number
-  size: number
+  r: number
   delay: number
-  depth: number
   drift: boolean
+  driftDur: string
+  pulseDur: string
+  layer: 'back' | 'front'
 }
 
-// 12 stars of varying sizes scattered across the field.
-// Smaller stars get larger parallax depth (move more); the moon moves least.
-const STARS: Star[] = [
-  { x: 80, y: 80, size: 6, delay: 0, depth: 30, drift: false },
-  { x: 160, y: 50, size: 4, delay: 0.5, depth: 38, drift: true },
-  { x: 250, y: 95, size: 5, delay: 1.0, depth: 34, drift: false },
-  { x: 330, y: 60, size: 7, delay: 1.5, depth: 32, drift: true },
-  { x: 410, y: 105, size: 4, delay: 0.3, depth: 40, drift: false },
-  { x: 460, y: 50, size: 5, delay: 0.8, depth: 36, drift: true },
-  { x: 60, y: 200, size: 5, delay: 1.2, depth: 36, drift: false },
-  { x: 200, y: 250, size: 4, delay: 0.6, depth: 40, drift: true },
-  { x: 360, y: 280, size: 6, delay: 1.8, depth: 34, drift: false },
-  { x: 450, y: 230, size: 4, delay: 0.4, depth: 42, drift: true },
-  { x: 130, y: 340, size: 5, delay: 1.5, depth: 38, drift: false },
-  { x: 290, y: 360, size: 4, delay: 0.9, depth: 40, drift: true },
+// 14 particles scattered across the band, split into back/front layers
+// for parallax depth. Smaller ones tend to be in the back layer.
+const PARTICLES: Particle[] = [
+  { x: 55,  y: 55,  r: 2.4, delay: 0.0, drift: false, driftDur: '12s',   pulseDur: '3.6s', layer: 'back'  },
+  { x: 120, y: 95,  r: 1.8, delay: 0.6, drift: true,  driftDur: '11s',   pulseDur: '4.0s', layer: 'back'  },
+  { x: 195, y: 50,  r: 3.2, delay: 1.1, drift: false, driftDur: '13s',   pulseDur: '3.4s', layer: 'front' },
+  { x: 240, y: 110, r: 2.0, delay: 0.3, drift: true,  driftDur: '12.5s', pulseDur: '4.4s', layer: 'back'  },
+  { x: 80,  y: 210, r: 2.8, delay: 1.4, drift: false, driftDur: '11.5s', pulseDur: '3.2s', layer: 'front' },
+  { x: 165, y: 245, r: 1.6, delay: 0.8, drift: true,  driftDur: '12s',   pulseDur: '4.2s', layer: 'back'  },
+  { x: 230, y: 215, r: 2.4, delay: 1.8, drift: false, driftDur: '13s',   pulseDur: '3.8s', layer: 'front' },
+  { x: 370, y: 50,  r: 2.0, delay: 0.5, drift: true,  driftDur: '12.5s', pulseDur: '4.0s', layer: 'back'  },
+  { x: 440, y: 90,  r: 2.6, delay: 1.2, drift: false, driftDur: '11s',   pulseDur: '3.6s', layer: 'front' },
+  { x: 510, y: 55,  r: 1.7, delay: 0.2, drift: true,  driftDur: '13s',   pulseDur: '4.4s', layer: 'back'  },
+  { x: 545, y: 130, r: 3.0, delay: 1.6, drift: false, driftDur: '12s',   pulseDur: '3.4s', layer: 'front' },
+  { x: 385, y: 235, r: 2.2, delay: 0.9, drift: true,  driftDur: '11.5s', pulseDur: '3.8s', layer: 'back'  },
+  { x: 470, y: 215, r: 2.4, delay: 1.5, drift: false, driftDur: '12.5s', pulseDur: '4.0s', layer: 'front' },
+  { x: 540, y: 245, r: 1.9, delay: 0.4, drift: true,  driftDur: '12s',   pulseDur: '3.6s', layer: 'back'  },
 ]
 
-// 4-point sparkle star path, drawn centered at (0,0)
-function sparklePath(size: number): string {
-  const s = size
-  const w = s * 0.28 // inner waist for sharp points
-  return `M 0 ${-s} L ${w} ${-w} L ${s} 0 L ${w} ${w} L 0 ${s} L ${-w} ${w} L ${-s} 0 L ${-w} ${-w} Z`
-}
-
 export function StarsMoon({ className }: { className?: string }) {
-  const { ref, x, y } = useMouseParallax<HTMLDivElement>()
+  const { ref: wrapRef, x, y } = useMouseParallax<HTMLDivElement>()
+  const backRef = useRef<SVGGElement>(null)
+  const orbRef = useRef<SVGGElement>(null)
+  const frontRef = useRef<SVGGElement>(null)
+
+  const cur = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    let raf = 0
+    const apply = () => {
+      raf = 0
+      const tx = x
+      const ty = y
+      cur.current.x += (tx - cur.current.x) * 0.08
+      cur.current.y += (ty - cur.current.y) * 0.08
+      // Layered parallax: back particles drift least, orb mid, front most.
+      // No rotation — this is an ambient backdrop.
+      const set = (el: SVGGElement | null, factor: number) => {
+        if (!el) return
+        const dx = cur.current.x * factor
+        const dy = cur.current.y * factor
+        el.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)})`)
+      }
+      set(backRef.current, 8)
+      set(orbRef.current, 14)
+      set(frontRef.current, 24)
+      if (Math.abs(tx - cur.current.x) > 0.001 || Math.abs(ty - cur.current.y) > 0.001) {
+        raf = requestAnimationFrame(apply)
+      }
+    }
+    if (!raf) raf = requestAnimationFrame(apply)
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [x, y])
+
+  const renderParticle = (p: Particle, i: number) => {
+    // Particles are FILLED dots — override the .nf-brain-bubble class's
+    // default `fill:none; stroke:...` via inline style (style beats class).
+    const dot = (
+      <circle
+        r={p.r}
+        className="nf-brain-bubble"
+        vectorEffect="non-scaling-stroke"
+        style={{
+          fill: 'var(--svg-accent)',
+          stroke: 'none',
+          animationDelay: `${p.delay}s`,
+          animationDuration: p.pulseDur,
+        }}
+      />
+    )
+    return (
+      <g key={i} transform={`translate(${p.x} ${p.y})`}>
+        {p.drift ? (
+          <g
+            className="nf-drift-up"
+            style={{
+              animationDelay: `${p.delay}s`,
+              animationDuration: p.driftDur,
+            }}
+          >
+            {dot}
+          </g>
+        ) : (
+          dot
+        )}
+      </g>
+    )
+  }
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>
       <svg
-        viewBox="0 0 500 400"
+        className="nf-brain-svg"
+        viewBox={`0 0 ${VB_W} ${VB_H}`}
         width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid meet"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ overflow: 'visible' }}
       >
         <defs>
-          {/* Crescent moon: white disc minus an offset black disc carves the crescent */}
-          <mask id="sm-moon-mask">
-            <rect width="500" height="400" fill="black" />
-            <circle cx="120" cy="120" r="52" fill="white" />
-            <circle cx="142" cy="108" r="46" fill="black" />
-          </mask>
-          <radialGradient id="sm-moon-glow" cx="50%" cy="50%" r="50%">
+          <radialGradient id="sm-orb-halo" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.5" />
+            <stop offset="60%" stopColor="var(--svg-glow)" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="sm-orb-core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--svg-glow)" stopOpacity="0.55" />
             <stop offset="100%" stopColor="var(--svg-glow)" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Crescent moon — least parallax (farthest depth) */}
-        <g style={{ transform: `translate3d(${x * 6}px, ${y * 6}px, 0)` }}>
+        {/* Back-layer particles — smallest parallax depth */}
+        <g ref={backRef}>
+          {PARTICLES.filter((p) => p.layer === 'back').map(renderParticle)}
+        </g>
+
+        {/* Central glowing orb — mid parallax depth */}
+        <g ref={orbRef}>
+          {/* Radiating halo (expands + fades, repeating) */}
           <circle
-            cx="120"
-            cy="120"
-            r="82"
-            fill="url(#sm-moon-glow)"
-            className="nf-pulse-soft"
+            cx={ORB_X}
+            cy={ORB_Y}
+            r={ORB_R * 3.2}
+            fill="url(#sm-orb-halo)"
+            className="nf-glow-radiate"
             style={{
               transformBox: 'fill-box',
               transformOrigin: 'center',
-              animationDuration: '5s',
+              animationDuration: '6s',
             }}
           />
+          {/* Constant soft glow behind the orb */}
           <circle
-            cx="120"
-            cy="120"
-            r="52"
-            fill="var(--svg-accent)"
-            mask="url(#sm-moon-mask)"
+            cx={ORB_X}
+            cy={ORB_Y}
+            r={ORB_R * 2.1}
+            fill="url(#sm-orb-core)"
           />
+          {/* Breathing orb — concentric line-art outlines + center dot */}
+          <g
+            className="nf-brain-breathe"
+            style={{
+              transformBox: 'fill-box',
+              transformOrigin: 'center',
+              animationDuration: '7s',
+            }}
+          >
+            <circle
+              cx={ORB_X}
+              cy={ORB_Y}
+              r={ORB_R}
+              className="nf-brain-line"
+              vectorEffect="non-scaling-stroke"
+            />
+            <circle
+              cx={ORB_X}
+              cy={ORB_Y}
+              r={ORB_R * 0.55}
+              className="nf-brain-line"
+              vectorEffect="non-scaling-stroke"
+              style={{ opacity: 0.5 }}
+            />
+            <circle
+              cx={ORB_X}
+              cy={ORB_Y}
+              r="2.5"
+              fill="var(--svg-accent)"
+              stroke="none"
+            />
+          </g>
         </g>
 
-        {/* Stars — varied parallax depth (small stars move more) */}
-        {STARS.map((s, i) => (
-          <g key={i} style={{ transform: `translate3d(${x * s.depth}px, ${y * s.depth}px, 0)` }}>
-            <g transform={`translate(${s.x} ${s.y})`}>
-              {s.drift ? (
-                // Drifting sparks float upward and fade, layered with twinkle
-                <g
-                  className="nf-drift-up"
-                  style={{ animationDelay: `${s.delay}s`, animationDuration: '11s' }}
-                >
-                  <path
-                    d={sparklePath(s.size)}
-                    fill="var(--svg-accent)"
-                    stroke="none"
-                    className="nf-twinkle"
-                    style={{ animationDelay: `${s.delay * 0.7}s`, animationDuration: '3.5s' }}
-                  />
-                </g>
-              ) : (
-                <path
-                  d={sparklePath(s.size)}
-                  fill="var(--svg-accent)"
-                  stroke="none"
-                  className="nf-twinkle"
-                  style={{ animationDelay: `${s.delay}s`, animationDuration: '3s' }}
-                />
-              )}
-            </g>
-          </g>
-        ))}
+        {/* Front-layer particles — largest parallax depth */}
+        <g ref={frontRef}>
+          {PARTICLES.filter((p) => p.layer === 'front').map(renderParticle)}
+        </g>
       </svg>
     </div>
   )
