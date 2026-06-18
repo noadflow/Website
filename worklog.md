@@ -266,3 +266,23 @@ Work Log:
 
 Stage Summary:
 - Hero brain is now the user's DD.svg (nodes+lines brain with gears), theme-matched via CSS variables. The 2 gears constantly rotate in opposite directions (meshed). Travelling signal dots run along the brain's internal connections. Works in both dark and light themes.
+
+---
+Task ID: 24
+Agent: main (cazxca.svg brain + animations + hero spacing)
+Task: Add the uploaded cazxca.svg brain to the hero with subtle per-element animations, soft glow, idle float/breathe, mouse-tilt + touch parallax; remove empty space above the AI Agency badge
+
+Work Log:
+- Inspected upload/cazxca.svg: line-art brain (75 stroked paths, no fills, viewBox 284.81×281.83). Composed of brain folds + 26 radiating lines each ending in a "bubble" terminal.
+- Transformed → src/components/svg/brain-svg-data.ts: stripped XML/comments/style block, tagged the 26 radiating-line paths as class "nf-brain-bubble" (those starting outside the brain core bbox) and the rest as "nf-brain-line". Stroke styling applied via CSS (var(--svg-stroke), width 2, round caps) so the brain switches with the theme.
+- Added CSS keyframes + utility classes in globals.css:
+  • nf-bubble-pulse: bubbles gently scale 1→1.35 + opacity 0.55→1, 3.4s ease-in-out infinite (staggered via per-path animation-delay not set — they pulse together subtly). Each bubble path gets transform-box:fill-box + transform-origin:center so it scales around its own center.
+  • nf-glow-radiate: a soft radial glow circle behind the brain scales 0.7→1.6 + opacity 0→0.5→0, 5s ease-out infinite (radiates outward + fades, repeating).
+  • nf-brain-breathe: the brain group scales 1→1.025, 6s (subtle breathing).
+  • nf-brain-float: outer group translateY 0→-8px, 7s (gentle float). Nested float(breathe(brain)) so transforms compose.
+- Built src/components/svg/neural-network.tsx: renders the brain SVG (memoized) inside a tilt group. Mouse/touch handler tracks normalized cursor offset (-0.5..0.5), eases toward it (0.08 lerp), applies a gentle tilt to the outer group via direct DOM (translate max ±10px + rotate max ±6deg around brain center). rAF-batched, no React re-renders. Touch uses passive listeners (doesn't block scroll) — subtle parallax. Mouseleave/touchend eases back to center.
+- HERO SPACING FIX (home-page.tsx): removed min-h-[calc(100vh-9rem)] (forced full-height vertical centering) and the section's pt-4/sm:pt-6 top padding so the badge sits right under the navbar clearance (main's pt-24/sm:pt-28). pb-16→pb-12.
+- Verified: 75 paths (26 bubbles + 49 lines) + 1 glow circle render. Glow radiating (scale 0.75→1.03 confirmed). Brain breathing (scale 1.0003→1.0097). Mouse tilt responds (translate+rotate applied). Badge gap minimized (VLM: "badge has minimal empty space above it"). Light theme: brain visible with dark lines on light bg, matches theme. Lint clean, 0 errors.
+
+Stage Summary:
+- Hero now uses the user's cazxca.svg line-art brain with: pulsing bubbles, a soft radiating glow behind, gentle float + breathe idle animation, and smooth mouse-tilt / touch parallax (all subtle, premium, theme-aware). Empty space above the AI Automation Agency badge removed for a compact, balanced hero.

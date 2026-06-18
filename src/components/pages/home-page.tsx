@@ -35,8 +35,8 @@ export function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative px-4 pb-16 pt-6 sm:px-6 sm:pt-12">
-        <div className="mx-auto grid min-h-[calc(100vh-9rem)] max-w-7xl gap-8 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+      <section className="relative px-4 pb-12 sm:px-6">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_1.15fr] lg:items-center">
           <div>
             <FadeIn>
               <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-border px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
