@@ -362,3 +362,16 @@ Work Log:
 
 Stage Summary:
 - Brain is now a good size (362×360px), bigger, aligned beside the text, no overflow. Works in both themes.
+
+---
+Task ID: 30
+Agent: main (brain actually too small — reduce viewBox padding)
+Task: Brain still small despite bigger container — the artwork was tiny inside the padded viewBox
+
+Work Log:
+- Diagnosed: container was 643px (big) but brain CONTENT was only 361px — the 80px viewBox padding made the brain artwork fill only ~56% of its container. The brain LOOKED small even though the container was big.
+- Fix in neural-network.tsx: reduced viewBox PAD 80 → 30. Now the brain artwork fills most of its container (the 30px is just enough for the glow/bubbles not to clip at animation peaks).
+- Verified: brain content now 460×457px (was 361px — 27% bigger). Right edge 1268 (within 1440 viewport). VLM: "brain is big (fills most of its area), beside the text, no overflow." Glow fits within SVG (no clipping). Light theme: good. Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is now genuinely big (460×457px, fills most of its 643px container). The viewBox padding was the culprit — reduced to 30px so the artwork isn't shrunk inside excessive padding. Aligned beside text, no overflow, no clipping.
