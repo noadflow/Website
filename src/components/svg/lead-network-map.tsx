@@ -65,19 +65,20 @@ export function LeadNetworkMap({ className }: { className?: string }) {
         {/* Tilt group (outermost) → float group → content */}
         <g ref={tiltRef}>
           <g className="nf-brain-float">
-            {/* Faint outer guide ring — frames the radar */}
+            {/* Outer guide ring — frames the radar (clearly visible) */}
             <circle
               cx={CX}
               cy={CY}
               r={RING_R + 28}
               fill="none"
-              stroke="var(--svg-glow)"
-              strokeWidth="1"
-              opacity="0.35"
+              stroke="var(--svg-stroke)"
+              strokeWidth="1.5"
+              opacity="0.4"
               vectorEffect="non-scaling-stroke"
             />
 
-            {/* 3 staggered expanding ping rings — the sonar pings */}
+            {/* 3 staggered expanding ping rings — the sonar pings
+                (use SMIL for reliable r+opacity animation, clearly visible) */}
             {[0, 1.6, 3.2].map((delay, i) => (
               <circle
                 key={`ping-${i}`}
@@ -85,18 +86,30 @@ export function LeadNetworkMap({ className }: { className?: string }) {
                 cy={CY}
                 r={RING_R}
                 fill="none"
-                stroke="var(--svg-stroke)"
+                stroke="var(--svg-accent)"
                 strokeWidth="2"
-                className="nf-glow-radiate"
-                style={{ animationDelay: `${delay}s` }}
+                opacity="0"
                 vectorEffect="non-scaling-stroke"
-              />
+              >
+                <animate
+                  attributeName="r"
+                  values={`${RING_R};${RING_R + 60}`}
+                  dur="4.8s"
+                  begin={`${delay}s`}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0;0.8;0"
+                  keyTimes="0;0.15;1"
+                  dur="4.8s"
+                  begin={`${delay}s`}
+                  repeatCount="indefinite"
+                />
+              </circle>
             ))}
 
-            {/* Radar sweep line — rotates slowly around the radar center.
-                Drawn from (0, 0) to (0, -R) inside a group translated to
-                (CX, CY); transform-origin: center bottom (bottom-center of
-                the line's bbox) makes CSS rotation pivot at (CX, CY). */}
+            {/* Radar sweep line — rotates slowly, clearly visible */}
             <g transform={`translate(${CX} ${CY})`}>
               <g
                 className="nf-spin-slow"
@@ -112,25 +125,26 @@ export function LeadNetworkMap({ className }: { className?: string }) {
                   x2="0"
                   y2={-(RING_R + 22)}
                   stroke="var(--svg-accent)"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
-                  opacity="0.6"
+                  opacity="0.85"
                   vectorEffect="non-scaling-stroke"
                 />
               </g>
             </g>
 
-            {/* Prospect dots — opacity pulse, staggered (nf-brain-bubble) */}
+            {/* Prospect dots — clearly visible found leads (gentle pulse) */}
             {PROSPECTS.map((p, i) => (
               <circle
                 key={`p-${i}`}
                 cx={p.x.toFixed(2)}
                 cy={p.y.toFixed(2)}
-                r="3.5"
+                r="4"
                 fill="var(--svg-accent)"
                 stroke="none"
-                className="nf-brain-bubble"
-                style={{ animationDelay: `${i * 0.45}s` }}
+                opacity="0.85"
+                className="nf-pulse-soft"
+                style={{ animationDelay: `${i * 0.45}s`, animationDuration: '3.5s' }}
               />
             ))}
 

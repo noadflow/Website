@@ -589,3 +589,20 @@ Work Log:
 
 Stage Summary:
 - CTA redesigned as a premium concentric-ring radiating backdrop with orbiting dots + breathing central glow. Clean, animated, text fully visible. Both themes.
+
+---
+Task ID: 37
+Agent: main (fix lead gen SVG too faint)
+Task: Lead Gen Agents SVG was very light/faint on both themes
+
+Work Log:
+- Diagnosed: LeadNetworkMap used var(--svg-glow) (already a low-opacity color) + opacity 0.35 on the guide ring = nearly invisible. Ping rings used nf-glow-radiate (opacity 0→0.4→0, barely visible). Sweep line at opacity 0.6. Prospect dots used nf-brain-bubble (opacity 0.45→1, half-invisible).
+- Fixes in lead-network-map.tsx:
+  • Guide ring: var(--svg-glow) → var(--svg-stroke), strokeWidth 1→1.5, opacity 0.35→0.4 (now clearly visible).
+  • Ping rings: replaced nf-glow-radiate class with SMIL <animate> on r (RING_R→RING_R+60) + opacity (0→0.8→0), stroke var(--svg-accent) width 2. Now expand clearly to 0.8 opacity (was 0.4).
+  • Sweep line: opacity 0.6→0.85, strokeWidth 1.5→2 (clearly visible).
+  • Prospect dots: replaced nf-brain-bubble (0.45→1 pulse) with nf-pulse-soft (0.4→1.12 scale, always visible at 0.85 base opacity), r 3.5→4.
+- Verified: VLM dark theme "radar SVG clearly visible, rings/sweep/dots distinct, not too faint." Light theme: clearly visible. Lint clean, 0 errors.
+
+Stage Summary:
+- Lead Gen radar SVG is now clearly visible in both themes — guide ring, ping rings, sweep line, and prospect dots all use full-strength strokes with proper opacity. No more faintness.
