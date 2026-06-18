@@ -221,3 +221,29 @@ Work Log:
 
 Stage Summary:
 - Hero SVG is now an unmistakable brain (rounded silhouette + fissure + sulci + dense internal node network) with 34 flowing signal dots and strong per-node cursor interactivity (nodes light up + grow near the mouse with a following glow). Made bigger in the layout. Verified in both themes.
+
+---
+Task ID: 8
+Agent: main (brain symmetry + prominence fix)
+Task: Fix brain SVG that had become a lopsided blob — make it symmetric and clearly brain-shaped
+
+Work Log:
+- Diagnosed via VLM: the previous hand-crafted outline was (a) ASYMMETRIC — right side bulged to x=500 while left only reached x=132 (center sat at ~316, not 300), and (b) the gyri bumps were too subtle (20px) to read as brain texture. VLM called it "misshapen lumpy blob / squashed potato".
+- Replaced the hand-crafted Bézier outline with a mathematically-generated SYMMETRIC egg shape:
+  • 48 sample points around a tapered ellipse (rxBase = 176 - 26*sin(t): 202 wide at the back/top, 150 narrow at the front/bottom), centered at (300,300). Base shape is symmetric about x=300 by construction.
+  • Gentle gyri bumps via bump = 0.045 * cos(8*t) — 4 bumps per hemisphere. CRITICAL FIX: used cos (even function) not sin. sin(12t) is antisymmetric about the vertical axis (sin(12(π-t)) = -sin(12t)), so it bulged on one side where it dipped on the other — that was the cause of the asymmetry. cos(8t) is symmetric (cos(12(π-t))=cos(12t)), guaranteeing a mirrored left/right outline.
+  • Smooth closed Catmull-Rom spline through the 48 points → cubic Béziers.
+- Updated the node insideBrain() test to match the new egg (rx = 176 - 0.165*dy, ry=158, inset 0.80) so ~37 nodes sit cleanly inside the symmetric brain.
+- Made brain FEATURES prominent (they were too faint to read as brain):
+  • Central fissure: strokeWidth 1.3→2.0, opacity 0.5→0.75 (the #1 "this is a brain" signal).
+  • Sulci wrinkles: strokeWidth 1→1.4, opacity 0.32→0.55.
+  • Axon connections: strokeWidth 0.8→0.7, opacity 0.32→0.22 (faded back so the brain structure reads through the network).
+- Verification (VLM, brutally honest):
+  - Before: "not symmetric, does not look like a brain, blob/potato/abstract, vertical center line not centered".
+  - After: "(1) outline is symmetric left-to-right. (2) clear bold vertical line down the middle dividing two halves. (3) visible curved wrinkle lines inside each half. (4) it looks like a brain (not a blob/potato)."
+  - Light theme: "symmetric, organic shape with central vertical fissure, wrinkles, filled with nodes — resembles a brain."
+  - Mouse interactivity intact: 4 nodes scale up near cursor.
+  - lint: 0 errors. 0 page errors.
+
+Stage Summary:
+- Brain SVG is now symmetric and unambiguously brain-shaped (egg outline + bold central fissure + visible sulci + dense node network + flowing signal dots + cursor-reactive nodes). Verified in both themes.

@@ -20,49 +20,63 @@ interface NNode {
   delay: number
 }
 
-// ---------- Brain silhouette ----------
-// A hand-crafted, genuinely brain-shaped outline: rounded frontal
-// lobe at the front (left), rounded occipital pole at the back
-// (right), temporal lobe curving under, and soft gyri bumps along
-// the top. Drawn as smooth cubic Beziers so it reads instantly as a
-// brain (not a star). Center ~ (300, 295).
-const BC = { x: 300, y: 295 }
-const BRAIN_OUTLINE =
-  // Start at the front-bottom (frontal/temporal notch, lower-left),
-  // trace clockwise: temporal underside -> occipital back -> top gyri
-  // bumps -> frontal bulge -> back to start.
-  'M 132 330 ' +
-  // Temporal lobe curving under to the back-bottom
-  'C 150 405 215 452 300 452 ' +
-  'C 385 452 450 405 468 330 ' +
-  // Occipital pole (back, right) rounding up
-  'C 500 275 498 220 470 188 ' +
-  // Top-right gyri bumps (soft, rounded)
-  'C 460 168 444 170 436 186 ' +
-  'C 428 170 412 170 404 188 ' +
-  'C 396 170 380 170 372 190 ' +
-  // Crown — central dimple (top of the longitudinal fissure)
-  'C 362 168 344 170 336 192 ' +
-  'C 328 170 312 170 304 192 ' +
-  'C 296 170 280 170 272 192 ' +
-  'C 264 170 248 170 240 190 ' +
-  'C 232 170 216 170 208 188 ' +
-  // Frontal lobe (front, left) bulging forward and down
-  'C 196 168 184 172 176 192 ' +
-  'C 150 220 140 275 132 330 Z'
+// ---------- Brain silhouette (top-down / axial view) ----------
+// A symmetric egg-shaped brain: wider at the back (top of viewBox),
+// narrower at the front (bottom), with gentle gyri bumps around the
+// whole cortex. Built mathematically so it is perfectly bilaterally
+// symmetric about x = 300 (no lopsided blob). Center (300, 300).
+const BC = { x: 300, y: 300 }
+const BRAIN_OUTLINE = (() => {
+  // 48 sample points around the cortex. ry fixed; rx tapers so the
+  // back (theta = -PI/2) is wide and the front (theta = +PI/2) is
+  // narrower — the classic brain egg profile. A 12-lobe sine adds
+  // soft, rounded gyri bumps (5% amplitude = visible but not spiky).
+  const N = 48
+  const RY = 158
+  const pts: { x: number; y: number }[] = []
+  for (let i = 0; i < N; i++) {
+    const t = (i / N) * Math.PI * 2 - Math.PI / 2 // start at top (back)
+    const rxBase = 176 - 26 * Math.sin(t) // 202 at back, 150 at front
+    // cos (even function) keeps bumps mirrored left<->right; sin would
+    // bulge on one side where it dips on the other (asymmetric).
+    const bump = 0.045 * Math.cos(8 * t) // 4 gentle gyri per hemisphere
+    const rx = rxBase * (1 + bump)
+    const ry = RY * (1 + bump)
+    pts.push({
+      x: BC.x + Math.cos(t) * rx,
+      y: BC.y + Math.sin(t) * ry,
+    })
+  }
+  // Smooth closed Catmull-Rom -> cubic Bezier through the 48 points.
+  let d = ''
+  for (let i = 0; i < N; i++) {
+    const p0 = pts[(i - 1 + N) % N]
+    const p1 = pts[i]
+    const p2 = pts[(i + 1) % N]
+    const p3 = pts[(i + 2) % N]
+    const c1x = p1.x + (p2.x - p0.x) / 6
+    const c1y = p1.y + (p2.y - p0.y) / 6
+    const c2x = p2.x - (p3.x - p1.x) / 6
+    const c2y = p2.y - (p3.y - p1.y) / 6
+    d += i === 0 ? `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} ` : ''
+    d += `C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)} `
+  }
+  return d + 'Z'
+})()
 
 // ---------- Sulci (interior wrinkles) ----------
-// A few gentle curved folds inside each hemisphere + the central
-// longitudinal fissure dividing the two hemispheres.
-const CENTRAL_FISSURE =
-  'M 300 178 C 296 230 304 280 300 295 C 296 340 305 390 300 438'
+// Central longitudinal fissure (divides the two hemispheres) + a few
+// curved cortical folds per hemisphere. All symmetric about x = 300.
+const CENTRAL_FISSURE = 'M 300 146 C 297 200 303 250 300 300 C 297 350 303 400 300 454'
 const SULCI = [
-  // left hemisphere folds (frontal -> temporal)
-  'M 250 195 C 232 235 224 275 206 305 C 188 335 178 360 168 388',
-  'M 272 240 C 254 270 248 300 232 328 C 220 350 214 372 206 398',
-  // right hemisphere folds (mirrored)
-  'M 350 195 C 368 235 376 275 394 305 C 412 335 422 360 432 388',
-  'M 328 240 C 346 270 352 300 368 328 C 380 350 386 372 394 398',
+  // left hemisphere folds
+  'M 258 168 C 240 210 232 250 214 282 C 196 314 186 344 176 374',
+  'M 276 224 C 260 254 254 284 240 312 C 228 336 222 358 214 382',
+  'M 244 250 C 226 280 220 312 206 340 C 196 360 190 378 182 398',
+  // right hemisphere folds (mirror)
+  'M 342 168 C 360 210 368 250 386 282 C 404 314 414 344 424 374',
+  'M 324 224 C 340 254 346 284 360 312 C 372 336 378 358 386 382',
+  'M 356 250 C 374 280 380 312 394 340 C 404 360 410 378 418 398',
 ]
 
 // ---------- Internal node network ----------
@@ -78,37 +92,28 @@ function rng(seed: number) {
 const NODES: NNode[] = (() => {
   const rand = rng(7)
   const out: NNode[] = []
-  const step = 42
-  // jittered grid across the brain bbox; keep points inside the cortex.
-  // Inside-brain test approximates the hand-crafted silhouette: a tapered
-  // blob widest through the middle (y~300) and rounded at top/bottom, with
-  // the front (left, x<230) bulging a touch more and the back (right,
-  // x>370) rounded. Inset by ~14px so nodes sit inside the outline.
+  const step = 40
+  // jittered grid; keep points inside the egg-shaped cortex. The brain
+  // is wider at the back (top, y<300) and narrower at the front (bottom,
+  // y>300), symmetric about x=300. Inset so nodes sit inside the outline.
   const insideBrain = (x: number, y: number) => {
     const dx = x - BC.x
     const dy = y - BC.y
-    // vertical half-height shrinks toward top/bottom (rounded crown/base)
-    const ry = 150 - (dy * dy) / 520
-    if (ry <= 0) return false
-    // horizontal half-width: bulges at front (dx<0) and back (dx>0),
-    // narrows slightly at the very front tip.
-    let rx = 196
-    if (dx < 0) rx = 200 + Math.min(0, dx) * 0.12 // frontal bulge
-    if (dx > 0) rx = 198 + Math.min(18, dx * 0.05) // occipital round
-    // top crown is a bit narrower (the gyri bumps dip between hemispheres)
-    if (dy < -90) rx -= 8
-    return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 0.86
+    const rx = 176 - 0.165 * dy // 202 at top (back), 150 at bottom (front)
+    const ry = 158
+    if (rx <= 0) return false
+    return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 0.80
   }
   for (let gx = 130; gx <= 470; gx += step) {
-    for (let gy = 185; gy <= 430; gy += step) {
+    for (let gy = 160; gy <= 445; gy += step) {
       const jx = (rand() - 0.5) * 26
       const jy = (rand() - 0.5) * 26
       const x = gx + jx
       const y = gy + jy
       if (!insideBrain(x, y)) continue
       // thin the central fissure corridor
-      if (Math.abs(x - BC.x) < 11 && Math.abs(y - BC.y) < 110) {
-        if (rand() < 0.75) continue
+      if (Math.abs(x - BC.x) < 12 && Math.abs(y - BC.y) < 120) {
+        if (rand() < 0.78) continue
       }
       out.push({
         x,
@@ -213,7 +218,7 @@ export function NeuralNetwork({ className }: { className?: string }) {
         {/* Ambient breathing glow behind the brain */}
         <circle
           cx="300"
-          cy="295"
+          cy="300"
           r="270"
           fill="url(#nn-bg-glow)"
           className="nf-breathe"
@@ -236,34 +241,34 @@ export function NeuralNetwork({ className }: { className?: string }) {
             opacity="0.85"
             vectorEffect="non-scaling-stroke"
           />
-          {/* Sulci folds */}
+          {/* Sulci folds — visible cortical wrinkles */}
           <g
             stroke="var(--svg-stroke)"
-            strokeWidth="1"
-            opacity="0.32"
+            strokeWidth="1.4"
+            opacity="0.55"
             vectorEffect="non-scaling-stroke"
           >
             {SULCI.map((d, i) => (
               <path key={`sul-${i}`} d={d} />
             ))}
           </g>
-          {/* Central longitudinal fissure (divides hemispheres) */}
+          {/* Central longitudinal fissure (divides hemispheres) — bold */}
           <path
             d={CENTRAL_FISSURE}
             stroke="var(--svg-stroke)"
-            strokeWidth="1.3"
-            opacity="0.5"
+            strokeWidth="2"
+            opacity="0.75"
             vectorEffect="non-scaling-stroke"
           />
 
           {/* Soft glow that follows the cursor through the cortex */}
           <circle cx={cx} cy={cy} r={PROX_R * 1.25} fill="url(#nn-cursor-glow)" />
 
-          {/* ----- Axon connections ----- */}
+          {/* ----- Axon connections (faint, so brain structure reads) ----- */}
           <g
             stroke="var(--svg-stroke)"
-            strokeWidth="0.8"
-            opacity="0.32"
+            strokeWidth="0.7"
+            opacity="0.22"
             vectorEffect="non-scaling-stroke"
           >
             {EDGES.map((e, i) => (
