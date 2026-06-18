@@ -216,6 +216,9 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+/* Force the brain SVG + its wrapper to never clip the radiating glow
+   or pulsing bubbles (they extend beyond the brain's natural bbox). */
+.nf-brain-svg { overflow: visible !important; }
 
 /* SVG groups need transform-box fill-box for proper pivot */
 svg g[data-pivot] { transform-box: fill-box; transform-origin: center; }

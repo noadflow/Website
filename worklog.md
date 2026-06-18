@@ -286,3 +286,19 @@ Work Log:
 
 Stage Summary:
 - Hero now uses the user's cazxca.svg line-art brain with: pulsing bubbles, a soft radiating glow behind, gentle float + breathe idle animation, and smooth mouse-tilt / touch parallax (all subtle, premium, theme-aware). Empty space above the AI Automation Agency badge removed for a compact, balanced hero.
+
+---
+Task ID: 25
+Agent: main (fix brain glow/bubble clipping)
+Task: Radiating glow + bubbles were getting cut off at the SVG boundary — fix the clipping
+
+Work Log:
+- Diagnosed: the brain SVG's computed overflow was "hidden" (inline style was being overridden), so the radiating glow circle (which scales up to 1.6× = r=208, beyond the 285-wide viewBox) and the pulsing bubbles at the edge (scale 1.35) were clipped at the viewBox boundary.
+- Fix in neural-network.tsx:
+  • Expanded the viewBox with 70px padding on all sides: viewBox changed from "0 0 284.81 281.83" to "-70 -70 424.81 421.83" (VB_X/VB_Y = -PAD). The brain content stays at its original coordinates; the extra space gives the glow + bubbles room to expand.
+  • Added className="nf-brain-svg" + inline style overflow:visible + wrapper div overflow:visible.
+- Fix in globals.css: added `.nf-brain-svg { overflow: visible !important; }` to force overflow visible (the plain inline style was being overridden by the browser's default SVG overflow:hidden).
+- Verified: SVG overflow now "visible". Glow (310px) fits within SVG (668px) with room. VLM dark theme: "radiating lines/bubbles and glow fully visible (not cut off), contained nicely." Light theme: confirmed not cut off. Lint clean, 0 errors.
+
+Stage Summary:
+- The radiating glow and pulsing bubbles no longer get clipped. The SVG viewBox now has 70px padding so everything has room to expand, and overflow:visible is forced via CSS !important. Verified in both themes.

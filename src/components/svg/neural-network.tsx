@@ -16,9 +16,17 @@ import { BRAIN_SVG } from './brain-svg-data'
 // All colors use CSS variables so it switches with the theme.
 // ============================================================
 
-const VB_W = 284.81
-const VB_H = 281.83
-const BC = { x: VB_W / 2, y: VB_H / 2 } // brain center
+// The brain SVG's natural bbox is 284.81×281.83. We add PAD on every
+// side in the viewBox so the radiating glow + pulsing bubbles have room
+// to expand without being clipped at the SVG boundary.
+const PAD = 70
+const BRAIN_W = 284.81
+const BRAIN_H = 281.83
+const VB_X = -PAD
+const VB_Y = -PAD
+const VB_W = BRAIN_W + PAD * 2
+const VB_H = BRAIN_H + PAD * 2
+const BC = { x: BRAIN_W / 2, y: BRAIN_H / 2 } // brain center (in padded coords = same)
 
 const Brain = memo(function Brain() {
   // The brain group floats (outer) + breathes (inner) so the two
@@ -102,15 +110,17 @@ export function NeuralNetwork({ className }: { className?: string }) {
   }, [])
 
   return (
-    <div ref={wrapRef} className={className}>
+    <div ref={wrapRef} className={className} style={{ overflow: 'visible' }}>
       <svg
-        viewBox={`0 0 ${VB_W} ${VB_H}`}
+        className="nf-brain-svg"
+        viewBox={`${VB_X} ${VB_Y} ${VB_W} ${VB_H}`}
         width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid meet"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ overflow: 'visible' }}
       >
         <defs>
           <radialGradient id="nn-glow" cx="50%" cy="50%" r="50%">
