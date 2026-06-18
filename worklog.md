@@ -375,3 +375,15 @@ Work Log:
 
 Stage Summary:
 - Brain is now genuinely big (460×457px, fills most of its 643px container). The viewBox padding was the culprit — reduced to 30px so the artwork isn't shrunk inside excessive padding. Aligned beside text, no overflow, no clipping.
+
+---
+Task ID: 31
+Agent: main (brain MORE BIGGER)
+Task: Make the brain even bigger
+
+Work Log:
+- home-page.tsx: brain container max-w-[680px] → max-w-[820px]; grid lg:grid-cols-[1fr_1.05fr] → [0.85fr_1.15fr] (brain column wider); gap-6 → gap-4.
+- Verified: brain content now 520px wide (was 460px), right edge 1256 (within 1440 viewport). VLM: "brain prominent (large, detailed), beside the text, fully on-screen." Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is now bigger (520px), prominent, beside the text, fully on-screen.
