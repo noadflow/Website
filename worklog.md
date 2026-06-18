@@ -320,3 +320,17 @@ Work Log:
 
 Stage Summary:
 - Bubbles now pulse opacity-only (fixed in place, no scaling → never grow into brain or clip). ViewBox padding increased to 120px so all outer elements stay fully visible. Brain breathe/float made subtler. Glow stays within bounds. Nothing overlaps the brain. Original brain shape preserved.
+
+---
+Task ID: 27
+Agent: main (fix brain positioning/centering)
+Task: Brain was positioned wrong — going left and down, not aligned with the text
+
+Work Log:
+- Diagnosed: the brain artwork's actual content bbox (measured via getBBox on all brain paths) is centered at (140, 139) in SVG coordinates, but the viewBox was centered at (142.4, 140.9) nominal / (111, 123) after my first fix attempt. The mismatch caused the brain to render offset (left + down) within its column, misaligned with the headline.
+- Initial wrong fix: computed artwork center from path coordinate min/max in Python = (111.2, 122.9), but that didn't match the rendered getBBox center (140, 139) because the inner SVG's coordinate transform differs from raw path coords.
+- Correct fix: measured the ACTUAL rendered path center in-browser via getBBox = (140, 139). Rebuilt the outer viewBox to center ON that point: VB_X = ART_CX - VB_W/2, VB_Y = ART_CY - VB_H/2, with PAD=110 on all sides. Now viewBox center = (140, 139) = brain path center.
+- Verified: path center (140,139) == viewBox center (140,139), offset (0,0). VLM: "brain well-centered in the right column and vertically aligned with the headline." Light theme: centered, no clipping. Lint clean, 0 errors.
+
+Stage Summary:
+- Brain is now perfectly centered in its column and aligned with the headline (path center = viewBox center, offset 0,0). The 110px viewBox padding is preserved so no clipping of glow/bubbles. Works in both themes.

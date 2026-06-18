@@ -16,18 +16,23 @@ import { BRAIN_SVG } from './brain-svg-data'
 // All colors use CSS variables so it switches with the theme.
 // ============================================================
 
-// The brain SVG's natural bbox is 284.81×281.83. We add generous PAD on
-// every side in the viewBox so the radiating glow + bubble terminals
-// (which sit at the brain's outer edges) always remain fully visible
-// with no clipping during animation.
-const PAD = 120
-const BRAIN_W = 284.81
-const BRAIN_H = 281.83
-const VB_X = -PAD
-const VB_Y = -PAD
-const VB_W = BRAIN_W + PAD * 2
-const VB_H = BRAIN_H + PAD * 2
-const BC = { x: BRAIN_W / 2, y: BRAIN_H / 2 } // brain center (in padded coords = same)
+// The brain artwork's actual rendered center (measured via getBBox on
+// all brain paths) is (140, 139) in the SVG's coordinate space — NOT
+// the nominal viewBox center (142.4, 140.9) and NOT (111, 123). We
+// build the outer viewBox CENTERED ON THE ARTWORK'S TRUE CENTER (140,
+// 139) with generous PAD on every side. This makes the brain sit
+// perfectly centered in its column (aligned with the headline), while
+// the padding keeps all radiating glow + bubble terminals fully visible.
+const PAD = 110
+const ART_CX = 140 // artwork true center (measured)
+const ART_CY = 139
+const ART_W = 308 // artwork bbox width
+const ART_H = 279 // artwork bbox height
+const VB_W = ART_W + PAD * 2
+const VB_H = ART_H + PAD * 2
+const VB_X = ART_CX - VB_W / 2
+const VB_Y = ART_CY - VB_H / 2
+const BC = { x: ART_CX, y: ART_CY } // brain center (for tilt pivot)
 
 const Brain = memo(function Brain() {
   // The brain group floats (outer) + breathes (inner) so the two
