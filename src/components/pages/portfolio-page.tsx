@@ -50,7 +50,7 @@ export function PortfolioPage() {
                         className="nf-pulse-soft h-1.5 w-1.5 rounded-full"
                         style={{ background: "var(--fg)" }}
                       />
-                      Uploading Soon
+                      Adding Video Soon
                     </div>
                   </div>
                   {/* Body */}
