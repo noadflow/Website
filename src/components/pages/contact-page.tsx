@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Mail, Clock, MapPin, ArrowRight, Check } from "lucide-react";
 import Cal from "@calcom/embed-react";
+import { useAppStore } from "@/lib/theme-store";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
 
@@ -24,6 +25,9 @@ const INFO = [
 ];
 
 export function ContactPage() {
+  // Subscribe to the live theme so the Cal.com widget can re-mount
+  // with the matching theme (light/dark) when the user toggles.
+  const theme = useAppStore((s) => s.theme);
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -212,13 +216,16 @@ export function ContactPage() {
               </div>
               {/* Cal.com inline embed — full width, fixed landscape
                   height so the scheduler is usable without dominating
-                  the page. */}
+                  the page. The `key={theme}` forces React to remount
+                  the widget whenever the site theme changes, so Cal.com
+                  re-initializes with the matching theme instantly. */}
               <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                 <Cal
+                  key={theme}
                   calLink="noadflow/45-min-meeting"
                   style={{ width: "100%", height: "640px" }}
                   config={{
-                    theme: "dark",
+                    theme,
                     hideEventTypeDetails: false,
                     layout: "month_view",
                   }}

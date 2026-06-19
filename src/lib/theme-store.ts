@@ -52,13 +52,20 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   hydrate: () => {
     if (typeof document === "undefined") return;
-    const attr = document.documentElement.getAttribute("data-theme") as Theme | null;
-    let t: Theme = attr ?? "dark";
+    // Priority: explicit user choice (localStorage) > browser/OS
+    // preference (prefers-color-scheme) > dark.
+    let t: Theme;
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      if (stored === "dark" || stored === "light") t = stored;
+      if (stored === "dark" || stored === "light") {
+        t = stored;
+      } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+        t = "light";
+      } else {
+        t = "dark";
+      }
     } catch {
-      /* ignore */
+      t = "dark";
     }
     applyTheme(t);
     set({ theme: t, hydrated: true });
