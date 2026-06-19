@@ -3,23 +3,19 @@
 import { cn } from "@/lib/utils";
 
 /**
- * NoadFlow logo mark — "Converging Streams".
+ * NoadFlow logo mark — "Droplet + Ripple".
  *
- * Three soft wavy streams on the left represent the three core
- * services NoadFlow offers:
- *   - top stream    → Lead Generation Agents
- *   - middle stream → Customer Support Agents
- *   - bottom stream → Workflow Automation
+ * A single soft rounded droplet at the top represents one task,
+ * lead, or customer message entering the system. Beneath it,
+ * three concentric ripple arcs spread outward — symbolizing the
+ * automated effects that ripple out from each input (responses
+ * sent, workflows triggered, follow-ups scheduled).
  *
- * They converge into a single rounded node (the AI core that
- * unifies them), then flow out as one thick accent-colored
- * ribbon — symbolizing many chaotic business processes becoming
- * one smooth, automated flow.
- *
- * Every stroke uses round caps + joins and smooth cubic Béziers
- * so nothing ever comes to a sharp point. Uses CSS-variable
- * colors so it switches with the theme. Used identically in
- * header and footer.
+ * The droplet has a rounded (not pointed) apex thanks to cubic
+ * Bézier control points placed nearly horizontal at the top, so
+ * the curve flattens briefly before curving back down. All
+ * strokes use round caps + joins. Uses CSS-variable colors so
+ * it switches with the theme. Used identically in header/footer.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
@@ -32,56 +28,47 @@ export function LogoMark({ className }: { className?: string }) {
       strokeLinejoin="round"
     >
       {/*
-        Three converging streams — each starts at the left edge
-        at a different height and curves smoothly toward the
-        convergence node at (20, 16). All use round caps so the
-        stream ends are soft.
+        Droplet — smooth rounded teardrop. Apex at (16, 4) is
+        rounded (not pointed) because the cubic Bézier control
+        points on either side are placed nearly horizontal, so
+        the curve flattens briefly at the top before curving
+        down. Body is a semicircle (radius 5) centered at (16, 13),
+        bottom at y=18.
       */}
-      {/* Top stream — Lead Generation */}
       <path
-        d="M 2 8 C 6 6.5, 9 9.5, 12 9 S 17 13.5, 20 16"
-        stroke="var(--fg)"
-        strokeWidth="1.5"
-        opacity="0.55"
-      />
-      {/* Middle stream — Customer Support (most direct) */}
-      <path
-        d="M 2 16 C 6 15.5, 9 16.5, 12 16 S 17 16, 20 16"
-        stroke="var(--fg)"
-        strokeWidth="1.5"
-        opacity="0.75"
-      />
-      {/* Bottom stream — Workflow Automation */}
-      <path
-        d="M 2 24 C 6 25.5, 9 22.5, 12 23 S 17 18.5, 20 16"
-        stroke="var(--fg)"
-        strokeWidth="1.5"
-        opacity="0.55"
-      />
-
-      {/*
-        Convergence node — the AI core where three streams
-        become one. Soft, rounded, accent-filled.
-      */}
-      <circle cx="20" cy="16" r="2.3" fill="var(--accent)" />
-      <circle
-        cx="20"
-        cy="16"
-        r="2.3"
-        fill="none"
+        d="M 16 4
+           C 17.6 4.6, 21 9, 21 13
+           A 5 5 0 1 1 11 13
+           C 11 9, 14.4 4.6, 16 4 Z"
+        fill="var(--accent)"
         stroke="var(--fg)"
         strokeWidth="0.6"
       />
 
       {/*
-        Merged flowing ribbon — the single unified output.
-        Thicker than the input streams, accent-colored, with a
-        gentle wave so it feels like it's actually flowing.
+        Three concentric ripples — bottom halves of circles
+        centered at (16, 20), just below the droplet. Each
+        larger ripple is slightly thinner and more transparent,
+        so the eye reads them as fading outward like real water
+        ripples losing energy.
       */}
       <path
-        d="M 22.3 16 C 25 14, 27 18, 30 16"
-        stroke="var(--accent)"
-        strokeWidth="3.2"
+        d="M 13 20 A 3 3 0 0 1 19 20"
+        stroke="var(--fg)"
+        strokeWidth="1.3"
+        opacity="0.75"
+      />
+      <path
+        d="M 11 20 A 5 5 0 0 1 21 20"
+        stroke="var(--fg)"
+        strokeWidth="1.2"
+        opacity="0.5"
+      />
+      <path
+        d="M 9 20 A 7 7 0 0 1 23 20"
+        stroke="var(--fg)"
+        strokeWidth="1.1"
+        opacity="0.28"
       />
     </svg>
   );
