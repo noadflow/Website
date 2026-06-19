@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
 import { CTASection } from "@/components/site/cta-section";
@@ -26,6 +27,85 @@ export function AboutPage() {
         headline="Hi, I'm Anas."
         subtitle="I started NoadFlow to bring practical, intelligent automation to businesses that don't have the time to build it themselves."
       />
+
+      {/* Portrait + intro band */}
+      <section className="relative px-4 py-8 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-7xl">
+          <FadeIn>
+            <div className="grid gap-6 lg:grid-cols-[420px_1fr] lg:items-stretch">
+              {/* Portrait card */}
+              <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
+                <div className="relative aspect-[3/4] w-full">
+                  <Image
+                    src="/anas.png"
+                    alt="Anas — founder of NoadFlow"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 420px"
+                    className="object-cover object-top"
+                    priority
+                  />
+                  {/* Subtle gradient at the bottom for text legibility if
+                      we ever overlay anything. Kept minimal for now. */}
+                  <div
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+                    style={{
+                      background:
+                        "linear-gradient(to top, var(--card), transparent)",
+                    }}
+                  />
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                      Founder
+                    </p>
+                    <p className="mt-1 font-serif text-xl font-semibold tracking-tight">
+                      Anas
+                    </p>
+                  </div>
+                  <span className="rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] backdrop-blur">
+                    NoadFlow
+                  </span>
+                </div>
+              </div>
+
+              {/* Intro narrative */}
+              <div className="flex h-full flex-col justify-center rounded-3xl border border-border bg-card p-8 sm:p-10">
+                <div className="mb-4 inline-flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+                  <span className="h-px w-7 bg-current opacity-40" />
+                  Quick intro
+                </div>
+                <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+                  I build AI agents that handle the busywork — so you can
+                  focus on growing your business.
+                </h2>
+                <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+                  NoadFlow is a one-person studio. That means every
+                  conversation, every line of code, every deployment —
+                  it's all me. If you're tired of generic automation tools
+                  that don't quite fit, I'll build you something that
+                  actually does.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {[
+                    "AI Agents",
+                    "Lead Generation",
+                    "Customer Support",
+                    "Workflow Automation",
+                  ].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* Flowing lines band */}
       <section className="relative px-4 sm:px-6">

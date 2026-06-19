@@ -2,6 +2,7 @@
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Mail, Clock, MapPin, ArrowRight, Check } from "lucide-react";
+import Cal from "@calcom/embed-react";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
 
@@ -183,15 +184,24 @@ export function ContactPage() {
                   Prefer to talk it through?
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Pick a time that works for you, and we'll go through what's
-                  possible for your business.
+                  Pick a time that works for you — this is a free 45-minute
+                  call. We'll go through what's slowing your business down
+                  and what AI agents can do about it.
                 </p>
-                <button
-                  onClick={() => window.open("mailto:hello@noadflow.com", "_self")}
-                  className="mt-5 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-secondary"
-                >
-                  Book a Call <ArrowRight className="h-4 w-4" />
-                </button>
+                {/* Cal.com inline embed — shows the scheduler directly
+                    on the page. The user picked a 45-min meeting on
+                    cal.com/noadflow. */}
+                <div className="mt-5 -mx-2 sm:mx-0">
+                  <Cal
+                    calLink="noadflow/45-min-meeting"
+                    style={{ width: "100%", height: "100%", overflow: "scroll" }}
+                    config={{
+                      theme: "dark",
+                      hideEventTypeDetails: false,
+                      layout: "month_view",
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </FadeIn>
