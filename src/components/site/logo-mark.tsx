@@ -3,12 +3,23 @@
 import { cn } from "@/lib/utils";
 
 /**
- * NoadFlow logo mark — a soft, rounded compass rose.
- * Four directional petals with genuinely rounded tips
- * (control points spread wide so the curve doesn't pinch
- * to a point). North is slightly elongated. Uses round
- * line caps + joins and CSS-variable colors so it switches
- * with the theme. Used identically in the header and footer.
+ * NoadFlow logo mark — "Converging Streams".
+ *
+ * Three soft wavy streams on the left represent the three core
+ * services NoadFlow offers:
+ *   - top stream    → Lead Generation Agents
+ *   - middle stream → Customer Support Agents
+ *   - bottom stream → Workflow Automation
+ *
+ * They converge into a single rounded node (the AI core that
+ * unifies them), then flow out as one thick accent-colored
+ * ribbon — symbolizing many chaotic business processes becoming
+ * one smooth, automated flow.
+ *
+ * Every stroke uses round caps + joins and smooth cubic Béziers
+ * so nothing ever comes to a sharp point. Uses CSS-variable
+ * colors so it switches with the theme. Used identically in
+ * header and footer.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
@@ -20,55 +31,58 @@ export function LogoMark({ className }: { className?: string }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {/* Outer ring (soft, thin) */}
-      <circle cx="16" cy="16" r="13" stroke="var(--fg)" strokeWidth="1.2" opacity="0.85" />
-      {/* Faint inner ring */}
-      <circle cx="16" cy="16" r="9.5" stroke="var(--fg)" strokeWidth="0.6" opacity="0.25" />
+      {/*
+        Three converging streams — each starts at the left edge
+        at a different height and curves smoothly toward the
+        convergence node at (20, 16). All use round caps so the
+        stream ends are soft.
+      */}
+      {/* Top stream — Lead Generation */}
+      <path
+        d="M 2 8 C 6 6.5, 9 9.5, 12 9 S 17 13.5, 20 16"
+        stroke="var(--fg)"
+        strokeWidth="1.5"
+        opacity="0.55"
+      />
+      {/* Middle stream — Customer Support (most direct) */}
+      <path
+        d="M 2 16 C 6 15.5, 9 16.5, 12 16 S 17 16, 20 16"
+        stroke="var(--fg)"
+        strokeWidth="1.5"
+        opacity="0.75"
+      />
+      {/* Bottom stream — Workflow Automation */}
+      <path
+        d="M 2 24 C 6 25.5, 9 22.5, 12 23 S 17 18.5, 20 16"
+        stroke="var(--fg)"
+        strokeWidth="1.5"
+        opacity="0.55"
+      />
 
       {/*
-        Compass petals — each is a smooth lens/leaf shape with a
-        genuinely rounded tip. The control points are spread WIDE
-        (≈4px) relative to the tip, so the curve approaches the
-        tip gradually instead of pinching to a sharp point.
-        North is slightly elongated and accent-filled.
+        Convergence node — the AI core where three streams
+        become one. Soft, rounded, accent-filled.
       */}
-      {/* North (longer, accent-filled) */}
-      <path
-        d="M16 4 C18.4 8, 17.8 13, 16 14.6 C14.2 13, 13.6 8, 16 4 Z"
-        fill="var(--accent)"
+      <circle cx="20" cy="16" r="2.3" fill="var(--accent)" />
+      <circle
+        cx="20"
+        cy="16"
+        r="2.3"
+        fill="none"
         stroke="var(--fg)"
         strokeWidth="0.6"
       />
-      {/* South (shorter, soft, rounded) */}
-      <path
-        d="M16 28 C17.2 24, 16.9 19, 16 17.4 C15.1 19, 14.8 24, 16 28 Z"
-        fill="var(--fg)"
-        opacity="0.42"
-      />
-      {/* East (short, rounded) */}
-      <path
-        d="M28 16 C24 17.2, 19 16.9, 17.4 16 C19 15.1, 24 14.8, 28 16 Z"
-        fill="var(--fg)"
-        opacity="0.42"
-      />
-      {/* West (short, rounded) */}
-      <path
-        d="M4 16 C8 14.8, 13 15.1, 14.6 16 C13 16.9, 8 17.2, 4 16 Z"
-        fill="var(--fg)"
-        opacity="0.42"
-      />
 
-      {/* Cardinal tick marks (rounded caps, soft) */}
-      <g stroke="var(--fg)" strokeWidth="1" opacity="0.45" strokeLinecap="round">
-        <line x1="16" y1="1.6" x2="16" y2="2.8" />
-        <line x1="16" y1="29.2" x2="16" y2="30.4" />
-        <line x1="1.6" y1="16" x2="2.8" y2="16" />
-        <line x1="29.2" y1="16" x2="30.4" y2="16" />
-      </g>
-
-      {/* Center hub (soft, rounded) */}
-      <circle cx="16" cy="16" r="2.3" fill="var(--accent)" />
-      <circle cx="16" cy="16" r="2.3" fill="none" stroke="var(--fg)" strokeWidth="0.7" />
+      {/*
+        Merged flowing ribbon — the single unified output.
+        Thicker than the input streams, accent-colored, with a
+        gentle wave so it feels like it's actually flowing.
+      */}
+      <path
+        d="M 22.3 16 C 25 14, 27 18, 30 16"
+        stroke="var(--accent)"
+        strokeWidth="3.2"
+      />
     </svg>
   );
 }
