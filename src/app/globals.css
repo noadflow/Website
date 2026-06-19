@@ -194,6 +194,16 @@
   30% { opacity: 0.4; }
   100% { transform: scale(1.4); opacity: 0; }
 }
+/* Logo theme-flip — plays once when the theme changes.
+   Goes 0 → 180 → 0 so the logo "turns 180 and then back". */
+@keyframes nf-theme-flip {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(180deg); }
+  100% { transform: rotate(0deg); }
+}
+.nf-theme-flip {
+  animation: nf-theme-flip 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 /* ---------- Utility animation classes ---------- */
 .nf-float { animation: nf-float 6s ease-in-out infinite; }

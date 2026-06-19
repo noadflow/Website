@@ -58,7 +58,7 @@ export function Navbar() {
             className="group flex items-center gap-1.5"
             aria-label="NoadFlow home"
           >
-            <LogoMark className="h-7 w-7 transition-transform duration-700 ease-out group-hover:rotate-180" />
+            <LogoMark className="h-7 w-7" />
             <span className="font-serif text-lg font-semibold tracking-tight">
               Noad<span className="text-muted-foreground">Flow</span>
             </span>

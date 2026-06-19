@@ -1,118 +1,85 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { useAppStore } from "@/lib/theme-store";
 import { cn } from "@/lib/utils";
 
 /**
- * NoadFlow logo mark — "Compass Needle" (recreated from reference).
+ * NoadFlow logo mark — recreated from the user's uploaded SVG
+ * (tyjt.svg). Two interlocking curved swooshes:
  *
- * Structure (matches the user's reference image):
- *   1. Outer circle split diagonally (lower-left → upper-right)
- *      into two colored halves. No outer outline — the halves
- *      themselves define the edge.
- *   2. A vertical NEEDLE (thin diamond, pointed at both ends)
- *      overlaid in the center, in the card color so it shows
- *      clearly against both halves. This is what makes it a
- *      compass, not a pokeball.
- *   3. A small dot at the pivot point (where the needle's
- *      waist sits), in the primary color.
+ *   - LOWER part (st0 in original): light grey in both themes
+ *       → var(--fg) at 0.4 opacity
  *
- * Theme adaptation (per user spec):
- *   - Dark theme:  upper-left half = white,      lower-right half = light grey
- *   - Light theme: upper-left half = dark grey,  lower-right half = light grey
- *                  (opposite of dark — primary swaps to dark)
+ *   - UPPER part (st1 in original): primary color (the "opposite"
+ *     mapping the user asked for — white in dark theme, dark grey
+ *     in light theme, both via var(--fg) solid)
  *
- *   The needle is always the card color (dark in dark theme,
- *   white in light theme) so it contrasts against both halves.
- *   The center dot is always the primary color (matches the
- *   upper-left half).
+ * ANIMATIONS
+ *   - HOVER (when parent has .group): inner span scales to 1.08
+ *     ("expand a little bit not too much") and rotates 180°
+ *     smoothly over 700ms. Reverses when mouse leaves.
  *
- * The whole mark rotates 180° smoothly on hover (configured on
- * the parent <button> via group-hover:rotate-180). Used
- * identically in header and footer.
+ *   - THEME CHANGE: outer wrapper does a one-shot 0 → 180 → 0
+ *     rotation over 900ms (the "180 and then back" the user asked
+ *     for). Triggered by subscribing to the theme store; the
+ *     keyframe is restarted on every theme toggle.
+ *
+ * The two animations are on separate elements so they don't
+ * conflict — hover can be active while a theme-flip plays, and
+ * vice versa. Used identically in header and footer.
  */
 export function LogoMark({ className }: { className?: string }) {
-  // Outer circle: r=13, center (16,16). Diagonal goes from
-  // lower-left edge to upper-right edge at 45°. Perimeter points
-  // at 45° are at (16 ± 13/√2, 16 ∓ 13/√2) ≈ (6.81, 25.19) and
-  // (25.19, 6.81).
-  const lx = 6.81; // lower-left x
-  const ly = 25.19; // lower-left y
-  const ux = 25.19; // upper-right x
-  const uy = 6.81; // upper-right y
+  const theme = useAppStore((s) => s.theme);
+  const flipRef = useRef<HTMLSpanElement>(null);
+  const firstRun = useRef(true);
 
-  // Needle vertices — a thin vertical diamond, pointed at top
-  // and bottom, narrow waist at the center. Extends from near
-  // the top of the circle to near the bottom.
-  const nTipY = 3.5; // top tip (just inside the circle top)
-  const bTipY = 28.5; // bottom tip
-  const wRight = 18.4; // right waist x
-  const wLeft = 13.6; // left waist x
-  const waistY = 16; // waist y (center)
+  useEffect(() => {
+    // Skip the very first theme emission (initial mount) so we
+    // don't play the flip animation on page load.
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    const el = flipRef.current;
+    if (!el) return;
+    // Restart the keyframe animation by removing the class,
+    // forcing a reflow, then re-adding it.
+    el.classList.remove("nf-theme-flip");
+    void el.offsetWidth;
+    el.classList.add("nf-theme-flip");
+  }, [theme]);
 
   return (
-    <svg
-      viewBox="0 0 32 32"
-      className={cn("block", className)}
-      fill="none"
-      aria-hidden="true"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <span ref={flipRef} className={cn("inline-block", className)}>
       {/*
-        Lower-right half — secondary color (light grey in both
-        themes). Drawn first so the primary half overlays cleanly
-        at the diagonal seam. Foreground at 35% opacity gives a
-        clear light grey on both dark and light cards.
+        Inner span handles the hover transition: rotate 180° +
+        scale up slightly. duration-700 = smooth but not sluggish.
+        ease-out = snappy start, gentle settle.
+        group-hover only triggers when an ancestor has .group
+        (the header button does; the footer/mobile menu don't, so
+        the logo stays still there — same as before).
       */}
-      <path
-        d={`M ${ux} ${uy} A 13 13 0 0 1 ${lx} ${ly} L 16 16 Z`}
-        fill="var(--fg)"
-        fillOpacity="0.35"
-      />
-
-      {/*
-        Upper-left half — primary color (white in dark theme,
-        dark grey in light theme). Full-opacity foreground.
-      */}
-      <path
-        d={`M ${lx} ${ly} A 13 13 0 0 1 ${ux} ${uy} L 16 16 Z`}
-        fill="var(--fg)"
-      />
-
-      {/*
-        Diagonal division line — card-colored, thin. Visible
-        across the outer ring (the needle covers the middle
-        portion). Sits on top of the two halves.
-      */}
-      <line
-        x1={lx}
-        y1={ly}
-        x2={ux}
-        y2={uy}
-        stroke="var(--card)"
-        strokeWidth="1.2"
-      />
-
-      {/*
-        THE NEEDLE — vertical diamond, pointed at top and bottom,
-        narrow waist at center. Card-colored so it shows clearly
-        against both halves. This is what makes it a compass,
-        not a pokeball.
-      */}
-      <path
-        d={`M 16 ${nTipY}
-            L ${wRight} ${waistY}
-            L 16 ${bTipY}
-            L ${wLeft} ${waistY}
-            Z`}
-        fill="var(--card)"
-      />
-
-      {/*
-        Center dot — primary color at the needle's pivot point.
-        Small radius so it reads as a pivot, not a button.
-      */}
-      <circle cx="16" cy="16" r="1.4" fill="var(--fg)" />
-    </svg>
+      <span className="block h-full w-full transition-transform duration-700 ease-out group-hover:rotate-180 group-hover:scale-[1.08]">
+        <svg
+          viewBox="0 0 612 792"
+          preserveAspectRatio="xMidYMid meet"
+          className="block h-full w-full"
+          fill="none"
+          aria-hidden="true"
+        >
+          {/* Lower part — light grey in both themes (var(--fg) at 0.4) */}
+          <g fill="var(--fg)" fillOpacity="0.4">
+            <path d="M242.58,367.54c0.05-26.94,25.24-50.87,54.94-49.09c28.64,1.72,46.1,19.81,46.26,50.57 c0.14,27.72-19.22,52.88-47.19,52.13C263.61,420.27,245.64,406.17,242.58,367.54z" />
+            <path d="M476.19,366.09c2.13,39.27-9,73.76-27.96,105.41c-15.55,25.96-38.5,44.95-65.02,59.79 c-28.77,16.1-59.81,23.8-92.22,23.19c-30.67-0.57-59.92-8.97-85.8-26.46c-18.37-12.41-20.91-11.36-41.78,7.15 c-22.43,19.89-46.06,38.41-69.23,57.46c-1.71,1.41-3.9,3.02-6.22,1.02c-2.54-2.19,0.08-3.54,1.2-4.87 c16.08-19.09,31.76-38.54,48.46-57.08c17.58-19.52,36.2-38.09,54.23-57.2c12.5-13.25,16.14-12,33.46-0.63 c29.05,19.05,60.39,28.67,96.19,20.09c26.27-6.3,48.93-17.06,65.8-38.32c17.53-22.11,30.73-45.76,31.52-75.4 c0.89-33.43-7.35-63.08-28.98-88.88c-5.9-7.04,1.87-11.06,5.2-14.89c7.91-9.12,16.88-17.32,25.45-25.86 c8.04-8.01,11.17-0.36,15.02,4.78c16.17,21.58,28.72,45.05,35.8,71.15C474.94,339.94,478.53,353.5,476.19,366.09z" />
+          </g>
+          {/* Upper part — primary color (white in dark, dark grey in light) */}
+          <g fill="var(--fg)">
+            <path d="M503.77,145.63c-1.14-2.58-3.81-0.85-5.1,0.14c-26.16,20-50.68,41.33-75.54,62.97 c-7.23,5.29-11.91,14.24-22.08,12.04c-5.71-1.25-10.91-5.42-16.03-8.76c-25.81-16.8-54.52-25.06-84.86-25.44 c-15.34-0.19-31.11,1.03-46.37,5.48c-19.53,5.69-38.86,11.69-55.86,23.19c-24.15,16.34-43.51,37.17-58.5,62.31 c-14.11,23.68-21.8,49.38-24.52,76.38c-1.52,15.19-0.56,30.6,2.37,45.96c2.41,12.62,5.05,25.22,10.18,36.71 c6.61,14.83,14.88,29.06,23.82,42.63c3.41,5.15,6.62,17.43,16.88,9.59c9.38-7.17,16.8-16.86,25.26-25.26 c4.87-4.84,4.77-9.56,1.16-15.06c-15.5-23.62-25.92-48.92-25.28-77.85c0.37-21.54,4.21-42.17,14.85-61.31 c19.46-35.02,49.21-56.85,87.77-65.12c37.81-8.11,72.22,1.51,101.2,27.5c5.2,4.65,7.5,2.57,10.87-0.8 c19.75-19.8,39.52-39.6,59.25-59.41c19.89-19.97,39.78-39.92,59.5-60.05C503.93,150.26,504.46,147.17,503.77,145.63z M469.75,176.72 c-0.33-0.21-0.69-0.39-0.94-0.67c-0.06-0.07,0.29-0.69,0.38-0.68c0.37,0.07,0.71,0.29,1.09,0.46 C470.04,176.23,469.89,176.48,469.75,176.72z" />
+            <path d="M470.28,175.83c-0.24,0.4-0.39,0.65-0.53,0.89c-0.33-0.21-0.69-0.39-0.94-0.67c-0.06-0.07,0.29-0.69,0.38-0.68 C469.56,175.44,469.9,175.66,470.28,175.83z" />
+          </g>
+        </svg>
+      </span>
+    </span>
   );
 }
