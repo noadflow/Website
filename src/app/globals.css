@@ -144,14 +144,7 @@
 @keyframes nf-spin-rev {
   to { transform: rotate(-360deg); }
 }
-@keyframes nf-twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
-@keyframes nf-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
+
 @keyframes nf-drift-up {
   0% { transform: translateY(24px); opacity: 0; }
   12% { opacity: 1; }
@@ -162,18 +155,7 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-@keyframes nf-ping-ring {
-  0% { transform: scale(0.6); opacity: 0.85; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-@keyframes nf-fade-up {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes nf-grid-pan {
-  from { background-position: 0 0; }
-  to { background-position: 60px 60px; }
-}
+
 @keyframes nf-brain-breathe {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.015); }
@@ -211,11 +193,10 @@
 .nf-pulse-soft { animation: nf-pulse-soft 4s ease-in-out infinite; }
 .nf-spin-slow { animation: nf-spin-slow 28s linear infinite; transform-origin: center; }
 .nf-spin-rev { animation: nf-spin-rev 34s linear infinite; transform-origin: center; }
-.nf-twinkle { animation: nf-twinkle 3s ease-in-out infinite; }
-.nf-breathe { animation: nf-breathe 5s ease-in-out infinite; transform-origin: center; }
+
 .nf-drift-up { animation: nf-drift-up 12s linear infinite; }
 .nf-caret { animation: nf-caret 1s step-end infinite; }
-.nf-ping-ring { animation: nf-ping-ring 3s ease-out infinite; transform-origin: center; }
+
 .nf-brain-breathe { animation: nf-brain-breathe 6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
 .nf-brain-float { animation: nf-brain-float 7s ease-in-out infinite; }
 .nf-brain-bubble { animation: nf-bubble-pulse 3.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
