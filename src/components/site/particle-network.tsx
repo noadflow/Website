@@ -107,6 +107,11 @@ export function ParticleNetwork({
 
     // ---- Build / rebuild particle field on resize.
     let particles: Particle[] = [];
+    // Active link distance — recalculated per build so we can shrink
+    // it on mobile (where the canvas is small and links would otherwise
+    // look cluttered). The render loop reads from this closure.
+    let activeLinkDistance = linkDistance;
+    let activeLineAlpha = 0.45;
     const buildField = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = canvas.getBoundingClientRect();
@@ -118,10 +123,23 @@ export function ParticleNetwork({
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+      // Mobile / small-screen tuning: the canvas is narrow so the
+      // same density looks cluttered. Dial down particle count,
+      // link distance, and line opacity to keep the field subtle.
+      // Breakpoint matches Tailwind's `sm` (640px) — anything
+      // narrower is treated as mobile.
+      const isMobile = w < 640;
+      const effectiveDensity = isMobile ? density * 0.45 : density;
+      activeLinkDistance = isMobile ? linkDistance * 0.7 : linkDistance;
+      activeLineAlpha = isMobile ? 0.28 : 0.45;
+
       // Particle count scales with area but stays modest.
       const count = Math.min(
         240,
-        Math.max(60, Math.floor((w * h) / 10000) * density),
+        Math.max(
+          isMobile ? 30 : 60,
+          Math.floor((w * h) / 10000) * effectiveDensity,
+        ),
       );
 
       particles = Array.from({ length: count }, () => ({
@@ -175,16 +193,18 @@ export function ParticleNetwork({
 
       // ---- Draw connection lines (faint, fade with distance).
       //      O(n²) is fine here because count is capped (~140) and
-      //      we short-circuit on dx/dy bounds.
-      const linkD2 = linkDistance * linkDistance;
+      //      we short-circuit on dx/dy bounds. Uses the
+      //      mobile-aware `activeLinkDistance` / `activeLineAlpha`
+      //      so the field stays subtle on small screens.
+      const linkD2 = activeLinkDistance * activeLinkDistance;
       for (let i = 0; i < particles.length; i++) {
         const a = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
           const b = particles[j];
           const dx = a.x - b.x;
-          if (dx > linkDistance || dx < -linkDistance) continue;
+          if (dx > activeLinkDistance || dx < -activeLinkDistance) continue;
           const dy = a.y - b.y;
-          if (dy > linkDistance || dy < -linkDistance) continue;
+          if (dy > activeLinkDistance || dy < -activeLinkDistance) continue;
           const d2 = dx * dx + dy * dy;
           if (d2 > linkD2) continue;
 
@@ -199,7 +219,7 @@ export function ParticleNetwork({
               Math.sin(b.blinkPhase),
             );
           const lineAlpha =
-            (1 - dist / linkDistance) * 0.45 * blinkMod;
+            (1 - dist / activeLinkDistance) * activeLineAlpha * blinkMod;
           if (lineAlpha < 0.02) continue;
 
           ctx.beginPath();
