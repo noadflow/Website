@@ -22,8 +22,8 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2.5">
               <LogoMark className="h-7 w-7" />
-              <span className="font-serif text-lg font-semibold">
-                Noad Flow
+              <span className="font-serif text-lg font-semibold tracking-tight">
+                Noad<span className="text-muted-foreground">Flow</span>
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
