@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Mail, Clock, MapPin, ArrowRight, Check } from "lucide-react";
-import Cal, { getCalApi } from "@calcom/embed-react";
+import Cal from "@calcom/embed-react";
 import { useAppStore } from "@/lib/theme-store";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
@@ -25,10 +25,22 @@ const INFO = [
 ];
 
 export function ContactPage() {
-  // Subscribe to the live theme so the Cal.com widget can update
-  // its theme in real time when the user toggles.
+  // Subscribe to the live theme so the Cal.com widget can re-mount
+  // with the matching theme (light/dark) when the user toggles.
   const theme = useAppStore((s) => s.theme);
-  const calApiRef = useRef<Awaited<ReturnType<typeof getCalApi>> | null>(null);
+
+  // Cal.com's iframe caches its initial theme and ignores config
+  // changes at runtime — the only reliable way to swap themes is
+  // to fully unmount and remount the iframe with the new config.
+  // We use a `mountKey` that changes whenever the theme changes,
+  // which forces React to tear down the old iframe and create a
+  // fresh one. The brief blank state during the swap is masked by
+  // a same-colored placeholder behind the iframe.
+  const [mountKey, setMountKey] = useState(0);
+  useEffect(() => {
+    setMountKey((k) => k + 1);
+  }, [theme]);
+
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -38,39 +50,6 @@ export function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
     "idle",
   );
-
-  // Grab the Cal.com SDK instance once on mount. We'll use it to
-  // push theme updates to the embedded iframe at runtime — without
-  // unmounting/remounting the iframe (which is what `key={theme}`
-  // did before, and which Cal.com's iframe didn't reliably honor
-  // because it caches the initial theme).
-  useEffect(() => {
-    let cancelled = false;
-    getCalApi().then((api) => {
-      if (cancelled) return;
-      calApiRef.current = api;
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Push theme changes to Cal.com at runtime. The `ui()` method
-  // tells the embedded iframe to swap its color scheme live, with
-  // no remount flicker.
-  useEffect(() => {
-    if (!calApiRef.current) return;
-    try {
-      calApiRef.current("ui", {
-        theme,
-        hideEventTypeDetails: false,
-      });
-    } catch {
-      /* Cal API not ready yet — ignore. The initial render below
-         still passes the theme via config, so the widget will
-         load with the correct theme on first mount. */
-    }
-  }, [theme]);
 
   const update =
     (k: keyof FormState) =>
@@ -251,17 +230,26 @@ export function ContactPage() {
               {/* Cal.com inline embed — full width, fixed landscape
                   height so the scheduler is usable without dominating
                   the page.
-                  - `config.theme` sets the initial theme on mount.
-                  - Runtime theme swaps are pushed via the Cal SDK's
-                    `ui()` method (see the useEffect above) — this
-                    is the reliable way to change Cal.com's theme
-                    without unmounting/remounting the iframe.
+                  - The `key={mountKey}` forces a full unmount + remount
+                    of the iframe whenever the theme changes. Cal.com's
+                    iframe caches its initial theme and ignores runtime
+                    config changes, so the only reliable way to swap
+                    themes is to tear it down and rebuild with the new
+                    config.theme.
+                  - The container's background matches the current
+                    theme's card color, so the brief blank state during
+                    the remount reads as a smooth color swap rather
+                    than a flash of wrong color.
                   - No explicit `layout` is set — Cal.com's responsive
                     default adapts better to the container width than
                     forcing month_view (which caused month-label
                     misalignment in narrow containers). */}
-              <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+              <div
+                className="mt-6 overflow-hidden rounded-2xl border border-border"
+                style={{ background: "var(--card)" }}
+              >
                 <Cal
+                  key={mountKey}
                   calLink="noadflow/45-min-meeting"
                   style={{ width: "100%", height: "720px" }}
                   config={{
