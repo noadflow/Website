@@ -58,13 +58,51 @@ export function ParticleNetwork({
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    // ---- Resolve foreground color from CSS variable on this element's
-    //      inherited theme. Re-read on each frame in case theme toggles.
-    const readFg = () => {
-      const raw = getComputedStyle(canvas).getPropertyValue("--fg").trim();
-      // raw looks like "248 248 246" (HSL channel triple) on this site.
-      const m = raw.match(/^(\d+)\s+(\d+)\s+(\d+)$/);
-      return m ? `${m[1]}, ${m[2]}, ${m[3]}` : "255, 255, 255";
+    // ---- Resolve foreground color from the --fg CSS variable.
+    //      Re-read on each frame so theme toggles take effect
+    //      immediately. Handles hex (#rgb / #rrggbb), rgb()/rgba(),
+    //      and space- or comma-separated channel triples.
+    const readFg = (): string => {
+      const raw = getComputedStyle(canvas)
+        .getPropertyValue("--fg")
+        .trim();
+      if (!raw) return "255, 255, 255";
+
+      // #rrggbb or #rgb
+      const hexMatch = raw.match(
+        /^#([0-9a-f]{3}|[0-9a-f]{6})$/i,
+      );
+      if (hexMatch) {
+        let h = hexMatch[1];
+        if (h.length === 3) {
+          h = h
+            .split("")
+            .map((c) => c + c)
+            .join("");
+        }
+        const r = parseInt(h.slice(0, 2), 16);
+        const g = parseInt(h.slice(2, 4), 16);
+        const b = parseInt(h.slice(4, 6), 16);
+        return `${r}, ${g}, ${b}`;
+      }
+
+      // rgb(r, g, b) / rgba(r, g, b, a)
+      const rgbMatch = raw.match(
+        /^rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/i,
+      );
+      if (rgbMatch) {
+        return `${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}`;
+      }
+
+      // "r g b" or "r, g, b" channel triple
+      const tripleMatch = raw.match(
+        /^([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)$/,
+      );
+      if (tripleMatch) {
+        return `${tripleMatch[1]}, ${tripleMatch[2]}, ${tripleMatch[3]}`;
+      }
+
+      return "255, 255, 255";
     };
 
     // ---- Build / rebuild particle field on resize.
