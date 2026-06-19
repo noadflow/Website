@@ -222,25 +222,19 @@ export function ContactPage() {
                     theme changes. Cal.com's iframe caches its initial
                     theme, so the only reliable way to swap themes is
                     to tear it down and rebuild with the new config.theme.
-                  - `styles.body.background: "transparent"` makes the
-                    iframe's body transparent so the parent card's
-                    background shows through — this means the widget's
-                    background updates instantly with the theme (via
-                    CSS variables) instead of being stuck on the
-                    server-rendered color.
-                  - No explicit `layout` is set — Cal.com's responsive
-                    default adapts better to the container width. */}
+                    This is the approach that was working before —
+                    the `styles.body.background: "transparent"` config
+                    I tried adding made things WORSE (Cal.com rendered
+                    its cached server-side background under the
+                    transparency), so it's been removed. */}
               <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                 <Cal
                   key={theme}
                   calLink="noadflow/45-min-meeting"
-                  style={{ width: "100%", height: "720px" }}
+                  style={{ width: "100%", height: "640px" }}
                   config={{
                     theme,
                     hideEventTypeDetails: false,
-                    styles: {
-                      body: { background: "transparent" },
-                    },
                   }}
                 />
               </div>
