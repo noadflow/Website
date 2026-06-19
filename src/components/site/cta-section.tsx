@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { StarsMoon } from "@/components/svg/stars-moon";
+import { ParticleNetwork } from "@/components/site/particle-network";
 import { useAppStore } from "@/lib/theme-store";
 import { FadeIn } from "./fade-in";
 
@@ -23,10 +23,11 @@ export function CTASection({
       <div className="mx-auto max-w-5xl">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-6 py-16 sm:px-12 sm:py-20">
-            {/* Premium animated backdrop — interactive (captures pointer
-                for parallax), sits behind the text layer. */}
+            {/* Premium animated backdrop — particle constellation.
+                Dots drift slowly, connect with faint lines, and each
+                dot twinkles on its own random blink cycle. */}
             <div className="absolute inset-0">
-              <StarsMoon className="h-full w-full" />
+              <ParticleNetwork className="h-full w-full" />
             </div>
 
             {/* Text layer — pointer-events-none so mouse/touch reach the
