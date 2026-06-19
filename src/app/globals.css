@@ -51,14 +51,14 @@
 
 /* ---------- THEME: LIGHT (warm, premium, with depth) ---------- */
 :root[data-theme="light"] {
-  --bg: #F4F1EA;
+  --bg: #ffffff;
   --fg: #1b1a17;
   --accent: #1b1a17;
   --muted-fg: #6c655a;
   --card: #ffffff;
-  --card-2: #ECE7DC;
+  --card-2: #f5f3ee;
   --border: rgba(27, 26, 23, 0.10);
-  --nav-bg: rgba(248, 245, 239, 0.82);
+  --nav-bg: rgba(255, 255, 255, 0.82);
   --svg-stroke: #1b1a17;
   --svg-fill: rgba(27, 26, 23, 0.05);
   --svg-accent: #1b1a17;
