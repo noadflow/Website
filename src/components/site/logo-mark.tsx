@@ -62,7 +62,7 @@ export function LogoMark({ className }: { className?: string }) {
       */}
       <span className="block h-full w-full transition-transform duration-700 ease-out group-hover:rotate-180 group-hover:scale-[1.08]">
         <svg
-          viewBox="0 0 612 792"
+          viewBox="46 120 498 498"
           preserveAspectRatio="xMidYMid meet"
           className="block h-full w-full"
           fill="none"
