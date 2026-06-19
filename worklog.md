@@ -606,3 +606,16 @@ Work Log:
 
 Stage Summary:
 - Lead Gen radar SVG is now clearly visible in both themes — guide ring, ping rings, sweep line, and prospect dots all use full-strength strokes with proper opacity. No more faintness.
+
+---
+Task ID: 38
+Agent: main (fewer lead gen rings + slower CTA)
+Task: Lead gen has too many rings; CTA animation too fast
+
+Work Log:
+- Lead gen (lead-network-map.tsx): removed the outer guide ring entirely; reduced ping rings from 3 → 2 (delays [0, 2.4]s, dur 5.5s each). Now only 2 expanding ping rings + the central node = clean, not cluttered.
+- CTA (stars-moon.tsx): slowed everything down. Expanding rings dur 6s → 10s, stagger 1.5s → 2.5s. Orbiting dots speeds 24/32/40/50s → 45/60/75/90s (nearly double). Now calm, not frantic.
+- Verified: lead gen "fewer rings, clean, minimal, not cluttered." CTA ring dur confirmed 10s. VLM: "animation feels slower/calm." Lint clean, 0 errors.
+
+Stage Summary:
+- Lead gen radar has fewer rings (2 pings, no outer guide). CTA animations slowed (rings 10s, orbits 45-90s). Both clean and calm.

@@ -65,21 +65,9 @@ export function LeadNetworkMap({ className }: { className?: string }) {
         {/* Tilt group (outermost) → float group → content */}
         <g ref={tiltRef}>
           <g className="nf-brain-float">
-            {/* Outer guide ring — frames the radar (clearly visible) */}
-            <circle
-              cx={CX}
-              cy={CY}
-              r={RING_R + 28}
-              fill="none"
-              stroke="var(--svg-stroke)"
-              strokeWidth="1.5"
-              opacity="0.4"
-              vectorEffect="non-scaling-stroke"
-            />
-
-            {/* 3 staggered expanding ping rings — the sonar pings
+            {/* 2 staggered expanding ping rings — the sonar pings
                 (use SMIL for reliable r+opacity animation, clearly visible) */}
-            {[0, 1.6, 3.2].map((delay, i) => (
+            {[0, 2.4].map((delay, i) => (
               <circle
                 key={`ping-${i}`}
                 cx={CX}
@@ -93,8 +81,8 @@ export function LeadNetworkMap({ className }: { className?: string }) {
               >
                 <animate
                   attributeName="r"
-                  values={`${RING_R};${RING_R + 60}`}
-                  dur="4.8s"
+                  values={`${RING_R};${RING_R + 50}`}
+                  dur="5.5s"
                   begin={`${delay}s`}
                   repeatCount="indefinite"
                 />
@@ -102,7 +90,7 @@ export function LeadNetworkMap({ className }: { className?: string }) {
                   attributeName="opacity"
                   values="0;0.8;0"
                   keyTimes="0;0.15;1"
-                  dur="4.8s"
+                  dur="5.5s"
                   begin={`${delay}s`}
                   repeatCount="indefinite"
                 />

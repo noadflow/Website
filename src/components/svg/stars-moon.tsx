@@ -20,10 +20,10 @@ const CY = VB_H / 2
 
 // Orbiting dots at different radii + speeds (CSS spin animations).
 const ORBITS = [
-  { r: 140, speed: 24, delay: 0, dot: 3.5 },
-  { r: 200, speed: 32, delay: -4, dot: 3 },
-  { r: 260, speed: 40, delay: -8, dot: 2.5 },
-  { r: 320, speed: 50, delay: -2, dot: 2 },
+  { r: 140, speed: 45, delay: 0, dot: 3.5 },
+  { r: 200, speed: 60, delay: -8, dot: 3 },
+  { r: 260, speed: 75, delay: -15, dot: 2.5 },
+  { r: 320, speed: 90, delay: -4, dot: 2 },
 ]
 
 export function StarsMoon({ className }: { className?: string }) {
@@ -94,16 +94,16 @@ export function StarsMoon({ className }: { className?: string }) {
               <animate
                 attributeName="r"
                 values="60;360"
-                dur="6s"
-                begin={`${i * 1.5}s`}
+                dur="10s"
+                begin={`${i * 2.5}s`}
                 repeatCount="indefinite"
               />
               <animate
                 attributeName="opacity"
                 values="0;0.5;0"
                 keyTimes="0;0.2;1"
-                dur="6s"
-                begin={`${i * 1.5}s`}
+                dur="10s"
+                begin={`${i * 2.5}s`}
                 repeatCount="indefinite"
               />
             </circle>
