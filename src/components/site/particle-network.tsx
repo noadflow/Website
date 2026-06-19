@@ -188,17 +188,19 @@ export function ParticleNetwork({
           const d2 = dx * dx + dy * dy;
           if (d2 > linkD2) continue;
 
-          // Line opacity fades from ~0.22 (touching) to 0 (at linkDistance).
-          // Modulated by the dimmer of the two endpoints' blink values
-          // so a twinkle on one end softens the line too.
+          // Line opacity fades with distance. Base alpha is high enough
+          // to read on both light and dark cards; modulated gently by
+          // the dimmer endpoint's blink so lines breathe with the field
+          // without ever vanishing.
           const dist = Math.sqrt(d2);
-          const lineAlpha =
-            (1 - dist / linkDistance) * 0.22 *
-            (0.6 + 0.4 * Math.min(
+          const blinkMod =
+            0.75 + 0.25 * Math.min(
               Math.sin(a.blinkPhase),
               Math.sin(b.blinkPhase),
-            ));
-          if (lineAlpha < 0.01) continue;
+            );
+          const lineAlpha =
+            (1 - dist / linkDistance) * 0.45 * blinkMod;
+          if (lineAlpha < 0.02) continue;
 
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
