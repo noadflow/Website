@@ -619,3 +619,22 @@ Work Log:
 
 Stage Summary:
 - Lead gen radar has fewer rings (2 pings, no outer guide). CTA animations slowed (rings 10s, orbits 45-90s). Both clean and calm.
+
+---
+Task ID: 39
+Agent: main (radar dots detected by sweep)
+Task: Radar dots were just sitting there with weird motion — make them get "scanned" by the sweep
+
+Work Log:
+- Diagnosed: prospect dots used nf-pulse-soft (independent pulsing) — they just sat there pulsing randomly, not connected to the sweep. Pointless for a radar.
+- Fix in lead-network-map.tsx: each dot now has a SMIL opacity + radius animation SYNCED to the sweep rotation. The sweep completes 360° in SWEEP_SECS=9s. A dot at angle A (from north, clockwise) is "detected" at time A/360*9s. Each dot:
+  • Starts invisible (opacity 0)
+  • Lights up brightly (opacity 0→1) the moment the sweep crosses it
+  • Briefly enlarges (r 4→6) on detection
+  • Fades over ~2.5s (opacity 1→0.7→0) — like a real radar blip fading after detection
+  • Repeats every 9s when the sweep comes back around
+  • Each dot has a different `begin` time based on its angle, so they light up in sequence as the sweep rotates
+- Verified: 7 animated dots, first begins at 0.625s (25° angle), all dur 9s synced to sweep. VLM: "dots light up at different times as the sweep passes them, creating a radar detection effect." Lint clean, 0 errors.
+
+Stage Summary:
+- Lead gen radar dots now behave like real radar: invisible until the sweep crosses their position, then they flash on + enlarge + fade — discovered one by one as the sweep rotates. No more pointless static pulsing.

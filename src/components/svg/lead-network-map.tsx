@@ -22,6 +22,10 @@ const RING_R = 82
 
 // 7 prospect dots at varied radii (68–96) and angles around the radar
 // center. Angles measured from north (12 o'clock), clockwise.
+// The sweep completes a full 360° rotation in SWEEP_SECS, so a dot at
+// angle A is "detected" at time A/360*SWEEP_SECS — we time each dot's
+// SMIL opacity to light up exactly when the sweep crosses it, then fade.
+const SWEEP_SECS = 9
 const PROSPECTS = [
   { angle: 25, r: 72 },
   { angle: 80, r: 92 },
@@ -32,7 +36,8 @@ const PROSPECTS = [
   { angle: 350, r: 80 },
 ].map((p) => {
   const a = ((p.angle - 90) * Math.PI) / 180
-  return { x: CX + p.r * Math.cos(a), y: CY + p.r * Math.sin(a) }
+  const detectAt = (p.angle / 360) * SWEEP_SECS
+  return { x: CX + p.r * Math.cos(a), y: CY + p.r * Math.sin(a), detectAt }
 })
 
 export function LeadNetworkMap({ className }: { className?: string }) {
@@ -121,7 +126,9 @@ export function LeadNetworkMap({ className }: { className?: string }) {
               </g>
             </g>
 
-            {/* Prospect dots — clearly visible found leads (gentle pulse) */}
+            {/* Prospect dots — "detected" by the sweep. Each dot is invisible
+                until the sweep crosses its angle, then it lights up brightly and
+                fades over ~2.5s (like a real radar blip). Synced to SWEEP_SECS. */}
             {PROSPECTS.map((p, i) => (
               <circle
                 key={`p-${i}`}
@@ -130,10 +137,25 @@ export function LeadNetworkMap({ className }: { className?: string }) {
                 r="4"
                 fill="var(--svg-accent)"
                 stroke="none"
-                opacity="0.85"
-                className="nf-pulse-soft"
-                style={{ animationDelay: `${i * 0.45}s`, animationDuration: '3.5s' }}
-              />
+                opacity="0"
+              >
+                <animate
+                  attributeName="opacity"
+                  values="0;1;0.7;0"
+                  keyTimes="0;0.04;0.28;1"
+                  dur={`${SWEEP_SECS}s`}
+                  begin={`${p.detectAt}s`}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="r"
+                  values="4;6;4"
+                  keyTimes="0;0.04;0.28"
+                  dur={`${SWEEP_SECS}s`}
+                  begin={`${p.detectAt}s`}
+                  repeatCount="indefinite"
+                />
+              </circle>
             ))}
 
             {/* Central origin node — the radar source, breathing */}
