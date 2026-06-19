@@ -230,20 +230,22 @@ export function ContactPage() {
               {/* Cal.com inline embed — full width, fixed landscape
                   height so the scheduler is usable without dominating
                   the page.
-                  - The `key={mountKey}` forces a full unmount + remount
-                    of the iframe whenever the theme changes. Cal.com's
-                    iframe caches its initial theme and ignores runtime
-                    config changes, so the only reliable way to swap
-                    themes is to tear it down and rebuild with the new
-                    config.theme.
-                  - The container's background matches the current
-                    theme's card color, so the brief blank state during
-                    the remount reads as a smooth color swap rather
-                    than a flash of wrong color.
+                  - `styles.body.background: "transparent"` makes the
+                    iframe's own body background transparent, so the
+                    container's `var(--card)` background shows through.
+                    This is the key fix: without it, Cal.com's iframe
+                    loads with a server-rendered background that matches
+                    the INITIAL theme and never updates — so when you
+                    toggle themes, the calendar UI changes but the
+                    outer background stays stuck in the old theme.
+                    With transparency, the container handles the
+                    background and updates instantly via the CSS
+                    variable.
+                  - `key={mountKey}` forces a full remount on theme
+                    change so the calendar UI inside the iframe
+                    re-initializes with the new theme.
                   - No explicit `layout` is set — Cal.com's responsive
-                    default adapts better to the container width than
-                    forcing month_view (which caused month-label
-                    misalignment in narrow containers). */}
+                    default adapts better to the container width. */}
               <div
                 className="mt-6 overflow-hidden rounded-2xl border border-border"
                 style={{ background: "var(--card)" }}
@@ -255,6 +257,9 @@ export function ContactPage() {
                   config={{
                     theme,
                     hideEventTypeDetails: false,
+                    styles: {
+                      body: { background: "transparent" },
+                    },
                   }}
                 />
               </div>
