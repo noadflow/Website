@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { UserRound, Bot, Globe2 } from "lucide-react";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
 import { CTASection } from "@/components/site/cta-section";
-import { FlowingLines } from "@/components/svg/flowing-lines";
 
 const STORY = [
   {
@@ -16,6 +16,24 @@ const STORY = [
     eyebrow: "How I Work",
     title: "Hands-on, from start to finish",
     body: "I handle every build myself — from the first conversation about what's slowing you down, to designing the agent, to making sure it keeps running smoothly after launch. No handoffs, no account managers — just direct communication with the person actually building your automation.",
+  },
+];
+
+const PRINCIPLES = [
+  {
+    icon: UserRound,
+    title: "Personal builds",
+    body: "No account managers, no handoffs. You work directly with the person building your automation — from first call to launch and beyond.",
+  },
+  {
+    icon: Bot,
+    title: "Real AI agents",
+    body: "Not just Zapier with a chatbot skin. Agents that actually reason through each situation and decide what to do next.",
+  },
+  {
+    icon: Globe2,
+    title: "US & UK focus",
+    body: "Timezones that overlap with your working hours, fast replies, and contracts that work for both regions.",
   },
 ];
 
@@ -35,7 +53,7 @@ export function AboutPage() {
             <div className="grid gap-6 lg:grid-cols-[420px_1fr] lg:items-stretch">
               {/* Portrait card */}
               <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
-                <div className="relative aspect-[3/4] w-full">
+                <div className="relative aspect-[5/7] w-full">
                   <Image
                     src="/anas.png"
                     alt="Anas — founder of NoadFlow"
@@ -44,8 +62,7 @@ export function AboutPage() {
                     className="object-cover object-top"
                     priority
                   />
-                  {/* Subtle gradient at the bottom for text legibility if
-                      we ever overlay anything. Kept minimal for now. */}
+                  {/* Subtle gradient at the bottom for caption legibility. */}
                   <div
                     className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
                     style={{
@@ -107,12 +124,29 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Flowing lines band */}
+      {/* Principles strip — replaces the empty decorative wave band.
+          Three concrete value props with icons, so the section actually
+          says something instead of just being decoration. */}
       <section className="relative px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
-            <div className="relative h-[200px] w-full overflow-hidden rounded-3xl border border-border bg-card/40 sm:h-[260px]">
-              <FlowingLines className="h-full w-full" />
+            <div className="grid gap-4 rounded-3xl border border-border bg-card p-6 sm:grid-cols-3 sm:p-8">
+              {PRINCIPLES.map(({ icon: Icon, title, body }) => (
+                <div
+                  key={title}
+                  className="flex flex-col gap-3 sm:px-2 sm:first:pl-0 sm:last:pr-0"
+                >
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <h3 className="text-base font-semibold tracking-tight">
+                    {title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {body}
+                  </p>
+                </div>
+              ))}
             </div>
           </FadeIn>
         </div>

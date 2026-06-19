@@ -66,96 +66,98 @@ export function ContactPage() {
       />
 
       <section className="relative px-4 py-12 sm:px-6 sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.3fr_1fr]">
-          {/* Form / success */}
-          <FadeIn>
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
-              {status === "success" ? (
-                <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
-                  <div
-                    className="flex h-16 w-16 items-center justify-center rounded-full border border-border"
-                    style={{ background: "var(--card-2)" }}
-                  >
-                    <Check className="h-7 w-7" />
+        <div className="mx-auto max-w-7xl">
+          {/* Row 1 — form (left) + contact info (right), side by side
+              on desktop. Both cards take their natural height. */}
+          <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr]">
+            {/* Form / success */}
+            <FadeIn>
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
+                {status === "success" ? (
+                  <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
+                    <div
+                      className="flex h-16 w-16 items-center justify-center rounded-full border border-border"
+                      style={{ background: "var(--card-2)" }}
+                    >
+                      <Check className="h-7 w-7" />
+                    </div>
+                    <h3 className="mt-6 text-2xl font-semibold tracking-tight">
+                      Thanks!
+                    </h3>
+                    <p className="mt-3 max-w-sm text-muted-foreground">
+                      Your message has been sent — I'll be in touch shortly.
+                    </p>
                   </div>
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight">
-                    Thanks!
-                  </h3>
-                  <p className="mt-3 max-w-sm text-muted-foreground">
-                    Your message has been sent — I'll be in touch shortly.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={onSubmit} className="flex flex-col gap-5">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Name" required>
+                ) : (
+                  <form onSubmit={onSubmit} className="flex flex-col gap-5">
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <Field label="Name" required>
+                        <input
+                          type="text"
+                          required
+                          value={form.name}
+                          onChange={update("name")}
+                          placeholder="Your name"
+                          className="nf-input"
+                        />
+                      </Field>
+                      <Field label="Email" required>
+                        <input
+                          type="email"
+                          required
+                          value={form.email}
+                          onChange={update("email")}
+                          placeholder="you@company.com"
+                          className="nf-input"
+                        />
+                      </Field>
+                    </div>
+                    <Field label="Business Name (optional)">
                       <input
                         type="text"
-                        required
-                        value={form.name}
-                        onChange={update("name")}
-                        placeholder="Your name"
+                        value={form.business}
+                        onChange={update("business")}
+                        placeholder="Your business"
                         className="nf-input"
                       />
                     </Field>
-                    <Field label="Email" required>
-                      <input
-                        type="email"
+                    <Field label="Message" required>
+                      <textarea
                         required
-                        value={form.email}
-                        onChange={update("email")}
-                        placeholder="you@company.com"
-                        className="nf-input"
+                        rows={6}
+                        value={form.message}
+                        onChange={update("message")}
+                        placeholder="Tell me a bit about what you're trying to automate..."
+                        className="nf-input resize-none"
                       />
                     </Field>
-                  </div>
-                  <Field label="Business Name (optional)">
-                    <input
-                      type="text"
-                      value={form.business}
-                      onChange={update("business")}
-                      placeholder="Your business"
-                      className="nf-input"
-                    />
-                  </Field>
-                  <Field label="Message" required>
-                    <textarea
-                      required
-                      rows={6}
-                      value={form.message}
-                      onChange={update("message")}
-                      placeholder="Tell me a bit about what you're trying to automate..."
-                      className="nf-input resize-none"
-                    />
-                  </Field>
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <p className="max-w-xs text-xs text-muted-foreground">
-                      I read and reply to every message personally — usually
-                      within a day.
-                    </p>
-                    <button
-                      type="submit"
-                      disabled={status === "sending"}
-                      className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60"
-                    >
-                      {status === "sending" ? "Sending..." : "Send Message"}
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                  {status === "error" && (
-                    <p className="text-sm text-destructive">
-                      Something went wrong. Please email hello@noadflow.com
-                      directly.
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          </FadeIn>
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <p className="max-w-xs text-xs text-muted-foreground">
+                        I read and reply to every message personally — usually
+                        within a day.
+                      </p>
+                      <button
+                        type="submit"
+                        disabled={status === "sending"}
+                        className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+                      >
+                        {status === "sending" ? "Sending..." : "Send Message"}
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                    {status === "error" && (
+                      <p className="text-sm text-destructive">
+                        Something went wrong. Please email hello@noadflow.com
+                        directly.
+                      </p>
+                    )}
+                  </form>
+                )}
+              </div>
+            </FadeIn>
 
-          {/* Info column */}
-          <FadeIn delay={0.12}>
-            <div className="flex h-full flex-col gap-4">
+            {/* Contact info card */}
+            <FadeIn delay={0.12}>
               <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
                 <h3 className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Contact details
@@ -178,30 +180,49 @@ export function ContactPage() {
                   ))}
                 </ul>
               </div>
+            </FadeIn>
+          </div>
 
-              <div className="relative flex-1 overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8">
-                <h3 className="text-lg font-semibold tracking-tight">
-                  Prefer to talk it through?
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Pick a time that works for you — this is a free 45-minute
-                  call. We'll go through what's slowing your business down
-                  and what AI agents can do about it.
-                </p>
-                {/* Cal.com inline embed — shows the scheduler directly
-                    on the page. The user picked a 45-min meeting on
-                    cal.com/noadflow. */}
-                <div className="mt-5 -mx-2 sm:mx-0">
-                  <Cal
-                    calLink="noadflow/45-min-meeting"
-                    style={{ width: "100%", height: "100%", overflow: "scroll" }}
-                    config={{
-                      theme: "dark",
-                      hideEventTypeDetails: false,
-                      layout: "month_view",
-                    }}
-                  />
+          {/* Row 2 — Cal.com scheduler as a full-width landscape card.
+              Width spans the combined width of the form + contact info
+              cards above it, so the scheduler has room to breathe in
+              landscape. Cal.com's month_view layout is responsive and
+              will fill the horizontal space. */}
+          <FadeIn delay={0.2}>
+            <div className="mt-8 rounded-3xl border border-border bg-card p-6 sm:p-8">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    Prefer to talk it through?
+                  </h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    Pick a time that works for you — this is a free 45-minute
+                    call. We'll go through what's slowing your business down
+                    and what AI agents can do about it.
+                  </p>
                 </div>
+                <a
+                  href="https://cal.com/noadflow/45-min-meeting"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-border px-4 py-2 text-xs font-medium transition-colors hover:bg-secondary sm:self-auto"
+                >
+                  Open in new tab <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+              {/* Cal.com inline embed — full width, fixed landscape
+                  height so the scheduler is usable without dominating
+                  the page. */}
+              <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+                <Cal
+                  calLink="noadflow/45-min-meeting"
+                  style={{ width: "100%", height: "640px" }}
+                  config={{
+                    theme: "dark",
+                    hideEventTypeDetails: false,
+                    layout: "month_view",
+                  }}
+                />
               </div>
             </div>
           </FadeIn>
