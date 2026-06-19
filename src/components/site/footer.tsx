@@ -27,8 +27,8 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Custom AI agents that automate the busywork for small businesses
-              in the US and UK.
+              Custom AI agents that automate the busywork for businesses
+              worldwide.
             </p>
           </div>
 
@@ -62,10 +62,10 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:hello@noadflow.com"
+                  href="mailto:contact@noadflow.com"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  hello@noadflow.com
+                  contact@noadflow.com
                 </a>
               </li>
               <li>

@@ -15,15 +15,15 @@ const STORY = [
   {
     eyebrow: "How I Work",
     title: "Hands-on, from start to finish",
-    body: "I handle every build myself — from the first conversation about what's slowing you down, to designing the agent, to making sure it keeps running smoothly after launch. No handoffs, no account managers — just direct communication with the person actually building your automation.",
+    body: "Every build is handled with care from the first conversation about what's slowing you down, to designing the agent, to making sure it keeps running smoothly after launch. Direct communication, no layers of account managers — just clear, focused work that gets your automation shipped and performing.",
   },
 ];
 
 const PRINCIPLES = [
   {
     icon: UserRound,
-    title: "Personal builds",
-    body: "No account managers, no handoffs. You work directly with the person building your automation — from first call to launch and beyond.",
+    title: "Built around you",
+    body: "Every solution is designed from scratch around your specific workflows. No templates, no copy-paste automation — just systems built specifically for how your business runs.",
   },
   {
     icon: Bot,
@@ -32,8 +32,8 @@ const PRINCIPLES = [
   },
   {
     icon: Globe2,
-    title: "US & UK focus",
-    body: "Timezones that overlap with your working hours, fast replies, and contracts that work for both regions.",
+    title: "Built to scale",
+    body: "What starts as one agent can grow into a full automation fleet. Systems are designed to scale with your business, not get rebuilt as you grow.",
   },
 ];
 
@@ -97,10 +97,11 @@ export function AboutPage() {
                   focus on growing your business.
                 </h2>
                 <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-                  NoadFlow is a one-person studio. That means every
-                  conversation, every line of code, every deployment —
-                  it's all me. If you're tired of generic automation tools
-                  that don't quite fit, I'll build you something that
+                  NoadFlow is a focused studio built around direct
+                  communication and careful work. Every project gets the same
+                  attention to detail — no templated solutions, no bloated
+                  teams, no handoffs. If you're tired of generic automation
+                  tools that don't quite fit, I'll build you something that
                   actually does.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">

@@ -14,12 +14,12 @@ interface FormState {
 }
 
 const INFO = [
-  { icon: Mail, label: "Email", value: "hello@noadflow.com" },
+  { icon: Mail, label: "Email", value: "contact@noadflow.com" },
   { icon: Clock, label: "Response time", value: "Usually within a day" },
   {
     icon: MapPin,
     label: "Where I work",
-    value: "Serving small businesses across the US & UK",
+    value: "Working with businesses worldwide",
   },
 ];
 
@@ -147,7 +147,7 @@ export function ContactPage() {
                     </div>
                     {status === "error" && (
                       <p className="text-sm text-destructive">
-                        Something went wrong. Please email hello@noadflow.com
+                        Something went wrong. Please email contact@noadflow.com
                         directly.
                       </p>
                     )}

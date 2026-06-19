@@ -21,7 +21,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "NoadFlow — Automation that thinks for itself.",
   description:
-    "NoadFlow builds custom AI agents that automate the busywork for small businesses in the US and UK. Lead generation, customer support, and workflow automation that actually thinks.",
+    "NoadFlow builds custom AI agents that automate the busywork for businesses worldwide. Lead generation, customer support, and workflow automation that actually thinks.",
   keywords: [
     "NoadFlow",
     "AI automation",
@@ -31,10 +31,22 @@ export const metadata: Metadata = {
     "workflow automation",
   ],
   authors: [{ name: "NoadFlow" }],
+  icons: {
+    // Theme-aware SVG favicon — swaps colors via prefers-color-scheme
+    // inside the SVG. Modern browsers pick this up automatically.
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16.png", type: "image/png", sizes: "16x16" },
+    ],
+    // Apple touch icon — single PNG (iOS doesn't support theme variants).
+    // Light-theme version (dark logo on white) so it reads on iOS home screens.
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "NoadFlow — Automation that thinks for itself.",
     description:
-      "Custom AI agents that automate the busywork for small businesses in the US and UK.",
+      "Custom AI agents that automate the busywork for businesses worldwide.",
     url: "https://noadflow.com",
     siteName: "NoadFlow",
     type: "website",
