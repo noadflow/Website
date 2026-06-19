@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Mail, Clock, MapPin, ArrowRight, Check } from "lucide-react";
 import Cal from "@calcom/embed-react";
 import { useAppStore } from "@/lib/theme-store";
@@ -28,18 +28,6 @@ export function ContactPage() {
   // Subscribe to the live theme so the Cal.com widget can re-mount
   // with the matching theme (light/dark) when the user toggles.
   const theme = useAppStore((s) => s.theme);
-
-  // Cal.com's iframe caches its initial theme and ignores config
-  // changes at runtime — the only reliable way to swap themes is
-  // to fully unmount and remount the iframe with the new config.
-  // We use a `mountKey` that changes whenever the theme changes,
-  // which forces React to tear down the old iframe and create a
-  // fresh one. The brief blank state during the swap is masked by
-  // a same-colored placeholder behind the iframe.
-  const [mountKey, setMountKey] = useState(0);
-  useEffect(() => {
-    setMountKey((k) => k + 1);
-  }, [theme]);
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -230,28 +218,21 @@ export function ContactPage() {
               {/* Cal.com inline embed — full width, fixed landscape
                   height so the scheduler is usable without dominating
                   the page.
+                  - `key={theme}` forces a full remount whenever the
+                    theme changes. Cal.com's iframe caches its initial
+                    theme, so the only reliable way to swap themes is
+                    to tear it down and rebuild with the new config.theme.
                   - `styles.body.background: "transparent"` makes the
-                    iframe's own body background transparent, so the
-                    container's `var(--card)` background shows through.
-                    This is the key fix: without it, Cal.com's iframe
-                    loads with a server-rendered background that matches
-                    the INITIAL theme and never updates — so when you
-                    toggle themes, the calendar UI changes but the
-                    outer background stays stuck in the old theme.
-                    With transparency, the container handles the
-                    background and updates instantly via the CSS
-                    variable.
-                  - `key={mountKey}` forces a full remount on theme
-                    change so the calendar UI inside the iframe
-                    re-initializes with the new theme.
+                    iframe's body transparent so the parent card's
+                    background shows through — this means the widget's
+                    background updates instantly with the theme (via
+                    CSS variables) instead of being stuck on the
+                    server-rendered color.
                   - No explicit `layout` is set — Cal.com's responsive
                     default adapts better to the container width. */}
-              <div
-                className="mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ background: "var(--card)" }}
-              >
+              <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                 <Cal
-                  key={mountKey}
+                  key={theme}
                   calLink="noadflow/45-min-meeting"
                   style={{ width: "100%", height: "720px" }}
                   config={{
