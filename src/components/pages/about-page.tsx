@@ -55,7 +55,7 @@ export function AboutPage() {
               <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
                 <div className="relative aspect-[5/7] w-full">
                   <Image
-                    src="/anas.png"
+                    src="/anas.png?v=2"
                     alt="Anas — founder of NoadFlow"
                     fill
                     sizes="(max-width: 1024px) 100vw, 420px"

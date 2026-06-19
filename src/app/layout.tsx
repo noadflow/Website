@@ -32,15 +32,32 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "NoadFlow" }],
   icons: {
-    // Theme-aware SVG favicon — swaps colors via prefers-color-scheme
-    // inside the SVG. Modern browsers pick this up automatically.
+    // Theme-aware favicons via media-queried <link> tags.
+    // The browser picks the matching SVG based on the OS/browser theme.
+    // This is the proper cross-browser approach (Safari ignores
+    // prefers-color-scheme inside SVG, but DOES respect it on <link>).
+    //
+    //   light OS  → /favicon-light.svg  (dark grey logo)
+    //   dark OS   → /favicon-dark.svg   (white logo)
+    //
+    // PNG fallbacks for legacy browsers (single static light variant).
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      {
+        url: "/favicon-light.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-dark.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: dark)",
+      },
       { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
       { url: "/favicon-16.png", type: "image/png", sizes: "16x16" },
     ],
-    // Apple touch icon — single PNG (iOS doesn't support theme variants).
-    // Light-theme version (dark logo on white) so it reads on iOS home screens.
+    // Apple touch icon — single PNG (iOS doesn't support theme variants
+    // for apple-touch-icon). Light-theme version (dark logo on white)
+    // so it reads on iOS home screens.
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   openGraph: {
