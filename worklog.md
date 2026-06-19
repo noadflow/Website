@@ -638,3 +638,16 @@ Work Log:
 
 Stage Summary:
 - Lead gen radar dots now behave like real radar: invisible until the sweep crosses their position, then they flash on + enlarge + fade — discovered one by one as the sweep rotates. No more pointless static pulsing.
+
+---
+Task ID: 40
+Agent: main (soften logo + same in header/footer)
+Task: Logo too hard-edged/sharp; make it softer; ensure header + footer use the same logo
+
+Work Log:
+- Rewrote logo-mark.tsx: replaced the sharp triangular compass needle paths with smooth LENS/LEAF shapes (quadratic Béziers) — each point is now a rounded lens with no sharp tips. North point slightly elongated, still accent-filled. Added strokeLinecap="round" + strokeLinejoin="round" on the root svg. Softened the center hub (r 2→2.2) and tick marks (rounded caps, shorter).
+- Header + footer consistency: both navbar.tsx and footer.tsx already import + use the SAME LogoMark component, so the soft redesign applies identically to both automatically. No separate footer logo.
+- Verified: VLM header "compass shape with soft/rounded tips." Footer "same compass shape as header, soft/rounded." Light theme: soft + clearly visible. Lint clean, 0 errors.
+
+Stage Summary:
+- Logo is now soft and rounded (lens-shaped needle points instead of sharp triangles). Identical in header and footer (same component). Both themes.
