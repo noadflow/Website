@@ -20,7 +20,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5">
               <LogoMark className="h-7 w-7" />
               <span className="font-serif text-lg font-semibold tracking-tight">
                 Noad<span className="text-muted-foreground">Flow</span>

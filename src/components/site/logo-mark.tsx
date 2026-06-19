@@ -38,7 +38,7 @@ export function LogoMark({ className }: { className?: string }) {
         cy="16"
         r="13"
         stroke="var(--fg)"
-        strokeWidth="2"
+        strokeWidth="2.4"
         fill="none"
       />
 
@@ -55,7 +55,7 @@ export function LogoMark({ className }: { className?: string }) {
            C14.2 13, 13.6 8, 16 3.5 Z"
         fill="var(--accent)"
         stroke="var(--fg)"
-        strokeWidth="1.4"
+        strokeWidth="1.8"
       />
       {/* South — shorter, soft fill */}
       <path
@@ -63,9 +63,9 @@ export function LogoMark({ className }: { className?: string }) {
            C17.2 24, 16.9 19, 16 17.4
            C15.1 19, 14.8 24, 16 28.5 Z"
         fill="var(--fg)"
-        fillOpacity="0.35"
+        fillOpacity="0.5"
         stroke="var(--fg)"
-        strokeWidth="1.4"
+        strokeWidth="1.8"
       />
       {/* East — short, soft fill */}
       <path
@@ -73,9 +73,9 @@ export function LogoMark({ className }: { className?: string }) {
            C24 17.2, 19 16.9, 17.4 16
            C19 15.1, 24 14.8, 28.5 16 Z"
         fill="var(--fg)"
-        fillOpacity="0.35"
+        fillOpacity="0.5"
         stroke="var(--fg)"
-        strokeWidth="1.4"
+        strokeWidth="1.8"
       />
       {/* West — short, soft fill */}
       <path
@@ -83,9 +83,9 @@ export function LogoMark({ className }: { className?: string }) {
            C8 14.8, 13 15.1, 14.6 16
            C13 16.9, 8 17.2, 3.5 16 Z"
         fill="var(--fg)"
-        fillOpacity="0.35"
+        fillOpacity="0.5"
         stroke="var(--fg)"
-        strokeWidth="1.4"
+        strokeWidth="1.8"
       />
 
       {/*
@@ -99,7 +99,7 @@ export function LogoMark({ className }: { className?: string }) {
         r="2.4"
         fill="none"
         stroke="var(--fg)"
-        strokeWidth="1.2"
+        strokeWidth="1.6"
       />
     </svg>
   );

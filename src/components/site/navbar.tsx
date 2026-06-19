@@ -55,10 +55,10 @@ export function Navbar() {
           {/* Logo */}
           <button
             onClick={() => setPage("home")}
-            className="group flex items-center gap-2.5"
+            className="group flex items-center gap-1.5"
             aria-label="NoadFlow home"
           >
-            <LogoMark className="h-7 w-7 transition-transform duration-500 ease-out group-hover:-translate-y-0.5" />
+            <LogoMark className="h-7 w-7 transition-transform duration-500 ease-out group-hover:rotate-90" />
             <span className="font-serif text-lg font-semibold tracking-tight">
               Noad<span className="text-muted-foreground">Flow</span>
             </span>
@@ -110,7 +110,7 @@ export function Navbar() {
                 className="w-[300px] border-border bg-background"
               >
                 <div className="flex flex-col gap-1 pt-10">
-                  <div className="mb-4 flex items-center gap-2.5 px-4">
+                  <div className="mb-4 flex items-center gap-1.5 px-4">
                     <LogoMark className="h-6 w-6" />
                     <span className="font-serif text-base font-semibold">
                       Noad<span className="text-muted-foreground">Flow</span>
