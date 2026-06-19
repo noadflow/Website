@@ -3,26 +3,28 @@
 import { cn } from "@/lib/utils";
 
 /**
- * NoadFlow logo mark — "Half-Divided Target".
+ * NoadFlow logo mark — "Compass Needle" (recreated from reference).
  *
- * Recreated from the user's reference:
- *   - Outer circle split by a visible diagonal line into two
- *     colored halves (lower-left → upper-right diagonal).
- *   - Solid inner circle (card-colored) sits on top, covering
- *     the center — creates the "target" look.
- *   - Tiny center dot (primary-colored) sits inside the inner
- *     circle.
- *   - No outer outline; the halves themselves define the edge.
+ * Structure (matches the user's reference image):
+ *   1. Outer circle split diagonally (lower-left → upper-right)
+ *      into two colored halves. No outer outline — the halves
+ *      themselves define the edge.
+ *   2. A vertical NEEDLE (thin diamond, pointed at both ends)
+ *      overlaid in the center, in the card color so it shows
+ *      clearly against both halves. This is what makes it a
+ *      compass, not a pokeball.
+ *   3. A small dot at the pivot point (where the needle's
+ *      waist sits), in the primary color.
  *
  * Theme adaptation (per user spec):
- *   - Dark theme:  half1 = white,        half2 = light grey
- *   - Light theme: half1 = dark grey,    half2 = light grey
+ *   - Dark theme:  upper-left half = white,      lower-right half = light grey
+ *   - Light theme: upper-left half = dark grey,  lower-right half = light grey
  *                  (opposite of dark — primary swaps to dark)
  *
- *   The inner circle is always the card/background color so it
- *   contrasts against both halves in both themes. The center dot
- *   always matches half1 (the primary). The diagonal line is
- *   always the card color so it reads as a clean dividing line.
+ *   The needle is always the card color (dark in dark theme,
+ *   white in light theme) so it contrasts against both halves.
+ *   The center dot is always the primary color (matches the
+ *   upper-left half).
  *
  * The whole mark rotates 180° smoothly on hover (configured on
  * the parent <button> via group-hover:rotate-180). Used
@@ -30,13 +32,22 @@ import { cn } from "@/lib/utils";
  */
 export function LogoMark({ className }: { className?: string }) {
   // Outer circle: r=13, center (16,16). Diagonal goes from
-  // lower-left edge (7:30 position) through center to upper-right
-  // edge (1:30 position). At 45°, the perimeter points are at
-  // (16 ± 13/√2, 16 ± 13/√2) ≈ (6.81, 25.19) and (25.19, 6.81).
+  // lower-left edge to upper-right edge at 45°. Perimeter points
+  // at 45° are at (16 ± 13/√2, 16 ∓ 13/√2) ≈ (6.81, 25.19) and
+  // (25.19, 6.81).
   const lx = 6.81; // lower-left x
   const ly = 25.19; // lower-left y
   const ux = 25.19; // upper-right x
   const uy = 6.81; // upper-right y
+
+  // Needle vertices — a thin vertical diamond, pointed at top
+  // and bottom, narrow waist at the center. Extends from near
+  // the top of the circle to near the bottom.
+  const nTipY = 3.5; // top tip (just inside the circle top)
+  const bTipY = 28.5; // bottom tip
+  const wRight = 18.4; // right waist x
+  const wLeft = 13.6; // left waist x
+  const waistY = 16; // waist y (center)
 
   return (
     <svg
@@ -69,11 +80,9 @@ export function LogoMark({ className }: { className?: string }) {
       />
 
       {/*
-        Diagonal division line — card-colored, thin. Drawn on top
-        of the two halves so the split reads as a clean line. The
-        inner circle (next) will cover the middle portion, leaving
-        the line visible only on the outer ring — matching the
-        reference image.
+        Diagonal division line — card-colored, thin. Visible
+        across the outer ring (the needle covers the middle
+        portion). Sits on top of the two halves.
       */}
       <line
         x1={lx}
@@ -81,21 +90,29 @@ export function LogoMark({ className }: { className?: string }) {
         x2={ux}
         y2={uy}
         stroke="var(--card)"
-        strokeWidth="1.4"
+        strokeWidth="1.2"
       />
 
       {/*
-        Inner solid circle — card-colored. Sits on top of the
-        halves + diagonal line, creating the "target" look.
-        Radius 4.5 ≈ 35% of outer radius (reference shows ~33%).
+        THE NEEDLE — vertical diamond, pointed at top and bottom,
+        narrow waist at center. Card-colored so it shows clearly
+        against both halves. This is what makes it a compass,
+        not a pokeball.
       */}
-      <circle cx="16" cy="16" r="4.5" fill="var(--card)" />
+      <path
+        d={`M 16 ${nTipY}
+            L ${wRight} ${waistY}
+            L 16 ${bTipY}
+            L ${wLeft} ${waistY}
+            Z`}
+        fill="var(--card)"
+      />
 
       {/*
-        Center dot — primary color, matching the upper-left half.
-        Radius 1.5 ≈ 12% of outer radius (reference shows ~10%).
+        Center dot — primary color at the needle's pivot point.
+        Small radius so it reads as a pivot, not a button.
       */}
-      <circle cx="16" cy="16" r="1.5" fill="var(--fg)" />
+      <circle cx="16" cy="16" r="1.4" fill="var(--fg)" />
     </svg>
   );
 }
