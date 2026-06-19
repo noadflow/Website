@@ -3,19 +3,21 @@
 import { cn } from "@/lib/utils";
 
 /**
- * NoadFlow logo mark — "Droplet + Ripple".
+ * NoadFlow logo mark — "Node → Flow".
  *
- * A single soft rounded droplet at the top represents one task,
- * lead, or customer message entering the system. Beneath it,
- * three concentric ripple arcs spread outward — symbolizing the
- * automated effects that ripple out from each input (responses
- * sent, workflows triggered, follow-ups scheduled).
+ * A solid filled circle on the left (the "node") represents the
+ * structured input — a task, a lead, a customer message. From its
+ * right edge, a smooth flowing ribbon exits and becomes
+ * progressively wavier as it travels right, symbolizing that
+ * input being transformed into smooth, automated flow.
  *
- * The droplet has a rounded (not pointed) apex thanks to cubic
- * Bézier control points placed nearly horizontal at the top, so
- * the curve flattens briefly before curving back down. All
- * strokes use round caps + joins. Uses CSS-variable colors so
- * it switches with the theme. Used identically in header/footer.
+ *   node (solid, structured)  →  flow (wavy, dynamic)
+ *          "Noad"                     "Flow"
+ *
+ * Every stroke uses round caps + joins and smooth cubic Béziers
+ * so nothing ever comes to a sharp point. Uses CSS-variable
+ * colors so it switches with the theme. Used identically in
+ * header and footer.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
@@ -28,47 +30,38 @@ export function LogoMark({ className }: { className?: string }) {
       strokeLinejoin="round"
     >
       {/*
-        Droplet — smooth rounded teardrop. Apex at (16, 4) is
-        rounded (not pointed) because the cubic Bézier control
-        points on either side are placed nearly horizontal, so
-        the curve flattens briefly at the top before curving
-        down. Body is a semicircle (radius 5) centered at (16, 13),
-        bottom at y=18.
+        Flowing ribbon — exits the node's right edge at (11.5, 16)
+        and travels right with progressively larger waves:
+          - small wave up   (peak ≈ y=14)
+          - small wave down (dip  ≈ y=18)
+          - bigger S-wave   (peak ≈ y=13, dip ≈ y=19)
+          - short straight tail to the right edge
+        The increasing amplitude reads as "structured → flowing".
       */}
       <path
-        d="M 16 4
-           C 17.6 4.6, 21 9, 21 13
-           A 5 5 0 1 1 11 13
-           C 11 9, 14.4 4.6, 16 4 Z"
-        fill="var(--accent)"
-        stroke="var(--fg)"
-        strokeWidth="0.6"
+        d="M 11.5 16
+           C 14 16, 15 14, 17 16
+           C 19 18, 20 18, 22 16
+           C 24 13, 26 19, 28 16
+           L 30 16"
+        stroke="var(--accent)"
+        strokeWidth="2.4"
+        fill="none"
       />
 
       {/*
-        Three concentric ripples — bottom halves of circles
-        centered at (16, 20), just below the droplet. Each
-        larger ripple is slightly thinner and more transparent,
-        so the eye reads them as fading outward like real water
-        ripples losing energy.
+        Node — solid filled circle on the left. Accent-filled
+        with a thin foreground outline so it stays visible on
+        both light and dark themes.
       */}
-      <path
-        d="M 13 20 A 3 3 0 0 1 19 20"
+      <circle cx="8" cy="16" r="3.6" fill="var(--accent)" />
+      <circle
+        cx="8"
+        cy="16"
+        r="3.6"
+        fill="none"
         stroke="var(--fg)"
-        strokeWidth="1.3"
-        opacity="0.75"
-      />
-      <path
-        d="M 11 20 A 5 5 0 0 1 21 20"
-        stroke="var(--fg)"
-        strokeWidth="1.2"
-        opacity="0.5"
-      />
-      <path
-        d="M 9 20 A 7 7 0 0 1 23 20"
-        stroke="var(--fg)"
-        strokeWidth="1.1"
-        opacity="0.28"
+        strokeWidth="0.6"
       />
     </svg>
   );
