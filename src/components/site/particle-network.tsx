@@ -40,8 +40,8 @@ interface ParticleNetworkProps {
 
 export function ParticleNetwork({
   className,
-  density = 0.6,
-  linkDistance = 120,
+  density = 1.5,
+  linkDistance = 130,
 }: ParticleNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -82,8 +82,8 @@ export function ParticleNetwork({
 
       // Particle count scales with area but stays modest.
       const count = Math.min(
-        140,
-        Math.max(24, Math.floor((w * h) / 10000) * density),
+        240,
+        Math.max(60, Math.floor((w * h) / 10000) * density),
       );
 
       particles = Array.from({ length: count }, () => ({
@@ -91,7 +91,7 @@ export function ParticleNetwork({
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.18, // slow drift
         vy: (Math.random() - 0.5) * 0.18,
-        baseR: 0.9 + Math.random() * 1.2,
+        baseR: 1.1 + Math.random() * 1.5,
         blinkPhase: Math.random() * Math.PI * 2,
         blinkSpeed: 0.6 + Math.random() * 1.6, // each dot blinks at its own pace
       }));
