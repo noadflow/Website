@@ -218,16 +218,19 @@ export function ContactPage() {
                   height so the scheduler is usable without dominating
                   the page. The `key={theme}` forces React to remount
                   the widget whenever the site theme changes, so Cal.com
-                  re-initializes with the matching theme instantly. */}
+                  re-initializes with the matching theme instantly.
+                  No explicit `layout` is set — Cal.com's responsive
+                  default adapts better to the container width than
+                  forcing month_view (which caused month-label
+                  misalignment in narrow containers). */}
               <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                 <Cal
                   key={theme}
                   calLink="noadflow/45-min-meeting"
-                  style={{ width: "100%", height: "640px" }}
+                  style={{ width: "100%", height: "720px" }}
                   config={{
                     theme,
                     hideEventTypeDetails: false,
-                    layout: "month_view",
                   }}
                 />
               </div>
