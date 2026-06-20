@@ -215,27 +215,18 @@ export function ContactPage() {
                   Open in new tab <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               </div>
-              {/* Cal.com inline embed — full width, fixed landscape
-                  height so the scheduler is usable without dominating
-                  the page.
-                  - `key={theme}` forces a full remount whenever the
-                    theme changes. Cal.com's iframe caches its initial
-                    theme, so the only reliable way to swap themes is
-                    to tear it down and rebuild with the new config.theme.
-                    This is the approach that was working before —
-                    the `styles.body.background: "transparent"` config
-                    I tried adding made things WORSE (Cal.com rendered
-                    its cached server-side background under the
-                    transparency), so it's been removed. */}
+              {/* Cal.com inline embed.
+                  Pass the live theme string directly. `key={theme}`
+                  forces a full unmount + remount when the theme
+                  changes so the iframe loads fresh with the new
+                  theme baked in — white in light mode, black in
+                  dark mode. */}
               <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                 <Cal
                   key={theme}
                   calLink="noadflow/45-min-meeting"
                   style={{ width: "100%", height: "640px" }}
-                  config={{
-                    theme,
-                    hideEventTypeDetails: false,
-                  }}
+                  config={{ theme }}
                 />
               </div>
             </div>
