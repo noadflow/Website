@@ -216,16 +216,26 @@ export function ContactPage() {
                 </a>
               </div>
               {/* Cal.com inline embed.
-                  Pass the live theme string directly. `key={theme}`
-                  forces a full unmount + remount when the theme
-                  changes so the iframe loads fresh with the new
-                  theme baked in — white in light mode, black in
-                  dark mode. */}
-              <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+                  - `key={theme}` forces a full unmount + remount when
+                    the theme changes so the iframe loads fresh with
+                    the new theme baked in.
+                  - The container's `background` uses `var(--card)` so
+                    it always matches the current theme. Cal.com's
+                    footer (the "Cal.com" branding bar at the bottom)
+                    renders with a server-set background that doesn't
+                    update on theme toggle — by giving the container
+                    a matching theme-aware background AND trimming
+                    36px off the iframe's visible height, the stuck
+                    footer sits behind the container's bottom edge
+                    and is hidden from view. */}
+              <div
+                className="mt-6 overflow-hidden rounded-2xl border border-border"
+                style={{ background: "var(--card)" }}
+              >
                 <Cal
                   key={theme}
                   calLink="noadflow/45-min-meeting"
-                  style={{ width: "100%", height: "640px" }}
+                  style={{ width: "100%", height: "676px" }}
                   config={{ theme }}
                 />
               </div>
