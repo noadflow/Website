@@ -110,13 +110,19 @@ export function ContactPage() {
     if (!form.name || !form.email || !form.message) return;
     setStatus("sending");
     try {
-      const res = await fetch("/api/contact", {
+      const formData = new FormData();
+      formData.append("access_key", "cb4cd635-b07a-4ab6-9587-480eecad0151");
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("business", form.business);
+      formData.append("message", form.message);
+
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: formData,
       });
-      const data = await res.json();
-      if (data.ok) setStatus("success");
+
+      if (res.ok) setStatus("success");
       else setStatus("error");
     } catch {
       setStatus("error");
