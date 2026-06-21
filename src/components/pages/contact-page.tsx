@@ -265,13 +265,29 @@ export function ContactPage() {
                   The effect destroys + recreates the widget whenever
                   the theme changes, so the entire widget — including
                   the Cal.com footer branding — initializes fresh in
-                  the new theme. The container just needs to be a
-                  target for `cal("inline", { elementOrSelector })`
-                  and tall enough to show the scheduler. */}
+                  the new theme.
+
+                  Container height: 750px. Cal.com's iframe renders
+                  the booking UI + a footer with "Cal.com" branding
+                  at the bottom. If the container is too short
+                  (e.g. 640px), the iframe's footer overflows OUT
+                  of the iframe and renders on top of our container,
+                  which makes it look like the footer is "stuck in
+                  the wrong theme" — but really it's just bleeding
+                  through. 750px gives the iframe enough room to
+                  render its full content (including the footer)
+                  inside itself, so the footer's color updates
+                  correctly with the theme.
+
+                  No `background` is set on the container — the
+                  iframe renders its own background per the theme
+                  we pass via `cal("ui", { theme })`. Adding a
+                  background here would only mask the real problem
+                  (footer overflow) without fixing it. */}
               <div
                 ref={calContainerRef}
                 className="mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ minHeight: "676px", background: "var(--card)" }}
+                style={{ minHeight: "750px" }}
               />
             </div>
           </FadeIn>
