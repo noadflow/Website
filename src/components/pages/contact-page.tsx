@@ -261,33 +261,33 @@ export function ContactPage() {
                 </a>
               </div>
               {/* Cal.com inline embed — using Cal's vanilla API via
-                  the useEffect above (NOT the React <Cal> component).
-                  The effect destroys + recreates the widget whenever
-                  the theme changes, so the entire widget — including
-                  the Cal.com footer branding — initializes fresh in
-                  the new theme.
+                  the useEffect above. The effect destroys + recreates
+                  the widget whenever the theme changes.
 
-                  Container height: 750px. Cal.com's iframe renders
-                  the booking UI + a footer with "Cal.com" branding
-                  at the bottom. If the container is too short
-                  (e.g. 640px), the iframe's footer overflows OUT
-                  of the iframe and renders on top of our container,
-                  which makes it look like the footer is "stuck in
-                  the wrong theme" — but really it's just bleeding
-                  through. 750px gives the iframe enough room to
-                  render its full content (including the footer)
-                  inside itself, so the footer's color updates
-                  correctly with the theme.
+                  ROOT CAUSE OF THE THEME MISMATCH BUG (now fixed):
+                  Cal.com's iframe renders at a fixed 570px tall, but
+                  our container was 750px tall. The 180px gap below
+                  the iframe was transparent, so the parent card's
+                  `--card` background showed through. That card
+                  background has a 0.45s CSS transition on
+                  background-color (from globals.css's universal
+                  `* { transition: ... }` rule). When the user
+                  toggled themes, the iframe swapped instantly
+                  (destroy + recreate) but the card background took
+                  450ms to transition — so during that window, the
+                  iframe was in the new theme but the gap below it
+                  was still showing the old theme's card color.
+                  That was the "stuck footer" the user saw.
 
-                  No `background` is set on the container — the
-                  iframe renders its own background per the theme
-                  we pass via `cal("ui", { theme })`. Adding a
-                  background here would only mask the real problem
-                  (footer overflow) without fixing it. */}
+                  FIX: Size the container to match the iframe's
+                  actual height (570px). No gap = no card bg
+                  showing through = no transition mismatch. The
+                  `overflow-hidden` clips any minor rendering
+                  variance. */}
               <div
                 ref={calContainerRef}
-                className="mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ minHeight: "750px" }}
+                className="cal-inline-container mt-6 overflow-hidden rounded-2xl border border-border"
+                style={{ height: "570px" }}
               />
             </div>
           </FadeIn>
