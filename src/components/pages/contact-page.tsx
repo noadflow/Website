@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Mail, Clock, MapPin, ArrowRight, Check } from "lucide-react";
-import Cal from "@calcom/embed-react";
+import { getCalApi } from "@calcom/embed-react";
 import { useAppStore } from "@/lib/theme-store";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn } from "@/components/site/fade-in";
@@ -25,9 +25,51 @@ const INFO = [
 ];
 
 export function ContactPage() {
-  // Subscribe to the live theme so the Cal.com widget can re-mount
-  // with the matching theme (light/dark) when the user toggles.
+  // Subscribe to the live theme so the Cal.com widget can be destroyed
+  // and recreated with the matching theme when the user toggles.
   const theme = useAppStore((s) => s.theme);
+
+  // Ref to the container div that holds the Cal.com iframe.
+  // We bypass @calcom/embed-react's <Cal> component and use Cal's
+  // vanilla API directly so we have full control over the destroy +
+  // recreate lifecycle. The React wrapper's `key={theme}` remount
+  // wasn't enough — Cal.com's internal state survived the remount
+  // and left the footer branding stuck in the old theme.
+  const calContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Destroy + recreate the widget whenever the theme changes.
+  // Steps:
+  //   1. Get the Cal SDK instance (loads embed.js once, cached after).
+  //   2. Set the theme via `ui()` BEFORE rendering — Cal.com reads
+  //      this when initializing the iframe.
+  //   3. Wipe the container's innerHTML to destroy any existing
+  //      iframe + Cal internal state.
+  //   4. Call `inline()` to render a fresh iframe with the new theme.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const cal = await getCalApi();
+      if (cancelled || !calContainerRef.current) return;
+
+      // Set theme BEFORE rendering so Cal.com initializes with it.
+      cal("ui", { theme });
+
+      // Destroy the old widget — wipes the iframe and any cached
+      // state Cal.com keeps about the previous render.
+      calContainerRef.current.innerHTML = "";
+
+      // Recreate the widget fresh. The iframe loads with the
+      // theme we just set, so the entire widget (including the
+      // Cal.com footer branding) initializes in the new theme.
+      cal("inline", {
+        elementOrSelector: calContainerRef.current,
+        calLink: "noadflow/45-min-meeting",
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [theme]);
 
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -215,30 +257,19 @@ export function ContactPage() {
                   Open in new tab <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               </div>
-              {/* Cal.com inline embed.
-                  - `key={theme}` forces a full unmount + remount when
-                    the theme changes so the iframe loads fresh with
-                    the new theme baked in.
-                  - The container's `background` uses `var(--card)` so
-                    it always matches the current theme. Cal.com's
-                    footer (the "Cal.com" branding bar at the bottom)
-                    renders with a server-set background that doesn't
-                    update on theme toggle — by giving the container
-                    a matching theme-aware background AND trimming
-                    36px off the iframe's visible height, the stuck
-                    footer sits behind the container's bottom edge
-                    and is hidden from view. */}
+              {/* Cal.com inline embed — using Cal's vanilla API via
+                  the useEffect above (NOT the React <Cal> component).
+                  The effect destroys + recreates the widget whenever
+                  the theme changes, so the entire widget — including
+                  the Cal.com footer branding — initializes fresh in
+                  the new theme. The container just needs to be a
+                  target for `cal("inline", { elementOrSelector })`
+                  and tall enough to show the scheduler. */}
               <div
+                ref={calContainerRef}
                 className="mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ background: "var(--card)" }}
-              >
-                <Cal
-                  key={theme}
-                  calLink="noadflow/45-min-meeting"
-                  style={{ width: "100%", height: "676px" }}
-                  config={{ theme }}
-                />
-              </div>
+                style={{ minHeight: "640px", background: "var(--card)" }}
+              />
             </div>
           </FadeIn>
         </div>
