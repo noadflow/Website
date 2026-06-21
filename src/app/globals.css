@@ -236,18 +236,6 @@ svg g[data-pivot] { transform-box: fill-box; transform-origin: center; }
   background-size: 60px 60px;
 }
 
-/* Cal.com embed container — exempt from the universal theme
-   transition so its background snaps instantly when the theme
-   changes. The Cal.com iframe swaps themes via destroy+recreate
-   (instant), so the container must also swap instantly to match.
-   Without this exemption, the 0.45s background-color transition
-   on `*` causes a brief mismatch where the iframe is in the new
-   theme but the container is still mid-transition. */
-.cal-inline-container,
-.cal-inline-container * {
-  transition: none !important;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

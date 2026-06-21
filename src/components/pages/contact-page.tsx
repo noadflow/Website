@@ -37,69 +37,53 @@ export function ContactPage() {
   // and left the footer branding stuck in the old theme.
   const calContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Re-render the Cal.com widget whenever the theme changes.
+  // Cal.com inline embed — official SDK usage with destroy+recreate.
   //
-  // ROOT CAUSE OF THE THEME MISMATCH BUG (found via DOM inspection):
-  // Cal.com's SDK caches iframe instances per namespace. When we call
-  // `cal("inline", ...)` after toggling the theme, Cal.com REUSES the
-  // cached iframe — it updates the `src` attribute (so the URL says
-  // `ui.color-scheme=dark`) but the iframe content NEVER RELOADS.
-  // Verified: `iframe.addEventListener('load')` fired 0 times after a
-  // theme toggle. The iframe stays in whatever theme it was initialized
-  // with on first load. `innerHTML = ""` clears the DOM but Cal.com's
-  // internal `actionsManagers` registry holds a reference to the old
-  // iframe, so `cal("inline", ...)` reattaches to it.
+  // ROOT CAUSE (found via DOM inspection + direct URL testing):
+  // Two issues were causing the theme mismatch:
   //
-  // FIX: Bypass Cal.com's SDK entirely for the theme swap. After Cal.com
-  // creates the iframe on first load, we directly manipulate the iframe
-  // element — remove it from the DOM, create a brand new <iframe> with
-  // the correct theme in the URL, and append it to the container. This
-  // forces a real iframe reload (load event fires) so the content
-  // renders in the correct theme.
+  // 1. WRONG URL PARAMETER: `cal("ui", { theme })` generates
+  //    `?ui.color-scheme=dark` in the iframe URL, but Cal.com's SERVER
+  //    IGNORES `ui.color-scheme` — it only respects `?theme=dark`.
+  //    Verified by opening the URLs directly:
+  //      - .../embed?ui.color-scheme=dark  → renders LIGHT (ignored)
+  //      - .../embed?theme=dark            → renders DARK ✅
+  //    FIX: Pass `theme` via `cal("inline", { config: { theme } })`
+  //    instead of `cal("ui", { theme })`. This generates the correct
+  //    `?theme=` URL parameter.
+  //
+  // 2. BROWSER CACHING: Even with the correct `?theme=dark` URL, the
+  //    browser may serve a cached version of Cal.com's embed page from
+  //    a previous load (with the old theme). Verified: opening the URL
+  //    directly renders correctly, but loading it in an iframe after a
+  //    theme toggle renders with the old theme (cached).
+  //    FIX: Add a cache-busting `_t` timestamp parameter to the iframe
+  //    URL via `config`. This forces the browser to fetch a fresh copy
+  //    every time, so Cal.com's server always renders the current theme.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const cal = await getCalApi();
       if (cancelled || !calContainerRef.current) return;
 
-      // Check if Cal.com has already created an iframe. If not (first
-      // load), let Cal.com handle the initial render. If yes (theme
-      // toggle), bypass the SDK and force a fresh iframe.
-      const existingIframe = calContainerRef.current.querySelector("iframe");
-
-      if (!existingIframe) {
-        // First load — use Cal.com's SDK to create the widget.
-        cal("ui", { theme });
-        cal("inline", {
-          elementOrSelector: calContainerRef.current,
-          calLink: "noadflow/45-min-meeting",
-        });
-        return;
-      }
-
-      // Theme toggle — bypass the SDK. Extract the current iframe's
-      // src, swap the theme parameter, and create a fresh iframe
-      // element that actually reloads.
-      const currentSrc = existingIframe.src;
-      const newSrc = currentSrc.replace(
-        /ui\.color-scheme=(dark|light)/,
-        `ui.color-scheme=${theme}`,
-      );
-
-      // Remove the old iframe + Cal.com's wrapper element.
+      // 1. Destroy the existing iframe + Cal.com's wrapper element.
       calContainerRef.current.innerHTML = "";
 
-      // Create a fresh iframe with the new theme URL. Setting src
-      // on a newly-created element always triggers a load — unlike
-      // modifying an existing iframe's src, which Cal.com's SDK
-      // intercepts and suppresses.
-      const newIframe = document.createElement("iframe");
-      newIframe.src = newSrc;
-      newIframe.style.cssText =
-        "width: 100%; height: 100%; border: 0; display: block;";
-      newIframe.allow = "camera; microphone; fullscreen; clipboard-read; clipboard-write";
-      newIframe.title = "Book a meeting with NoadFlow";
-      calContainerRef.current.appendChild(newIframe);
+      // 2. Render the widget with:
+      //    - `theme` via config (generates `?theme=dark/light` — the
+      //      parameter Cal.com's server actually respects)
+      //    - `_t` cache-buster (forces fresh fetch so the browser
+      //      doesn't serve a cached version with the old theme)
+      cal("inline", {
+        elementOrSelector: calContainerRef.current,
+        calLink: "noadflow/45-min-meeting",
+        config: {
+          theme,
+          // Cache-buster: changes every render, so the browser
+          // always fetches a fresh copy from Cal.com's server.
+          _t: String(Date.now()),
+        },
+      });
     })();
     return () => {
       cancelled = true;
@@ -292,18 +276,12 @@ export function ContactPage() {
                   Open in new tab <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               </div>
-              {/* Cal.com inline embed container.
-                  On first load, Cal.com's SDK creates the iframe here.
-                  On theme toggle, the useEffect bypasses the SDK and
-                  creates a fresh <iframe> element directly (because
-                  Cal.com's SDK reuses a cached iframe that never
-                  reloads — see the useEffect comment for details).
-                  The container is 570px to match Cal.com's iframe
-                  height, with overflow-hidden to clip any variance. */}
+              {/* Cal.com inline embed — official SDK renders into this
+                  container via `cal("inline", { elementOrSelector })`. */}
               <div
                 ref={calContainerRef}
-                className="cal-inline-container mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ height: "570px" }}
+                className="mt-6 overflow-hidden rounded-2xl border border-border"
+                style={{ minHeight: "640px" }}
               />
             </div>
           </FadeIn>
