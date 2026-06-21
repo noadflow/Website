@@ -37,37 +37,69 @@ export function ContactPage() {
   // and left the footer branding stuck in the old theme.
   const calContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Destroy + recreate the widget whenever the theme changes.
-  // Matches the official troubleshooting guide pattern:
-  //   1. el.innerHTML = "" — destroy the existing iframe
-  //   2. cal("ui", { theme }) — set the theme FIRST (before rendering)
-  //   3. cal("inline", { ... }) — render the widget fresh with the
-  //      theme already applied
-  // This ensures the iframe URL is generated with the correct theme
-  // from the start, preventing the mismatch where the calendar
-  // updates but the Cal.com footer branding stays stuck in the
-  // old theme.
+  // Re-render the Cal.com widget whenever the theme changes.
+  //
+  // ROOT CAUSE OF THE THEME MISMATCH BUG (found via DOM inspection):
+  // Cal.com's SDK caches iframe instances per namespace. When we call
+  // `cal("inline", ...)` after toggling the theme, Cal.com REUSES the
+  // cached iframe — it updates the `src` attribute (so the URL says
+  // `ui.color-scheme=dark`) but the iframe content NEVER RELOADS.
+  // Verified: `iframe.addEventListener('load')` fired 0 times after a
+  // theme toggle. The iframe stays in whatever theme it was initialized
+  // with on first load. `innerHTML = ""` clears the DOM but Cal.com's
+  // internal `actionsManagers` registry holds a reference to the old
+  // iframe, so `cal("inline", ...)` reattaches to it.
+  //
+  // FIX: Bypass Cal.com's SDK entirely for the theme swap. After Cal.com
+  // creates the iframe on first load, we directly manipulate the iframe
+  // element — remove it from the DOM, create a brand new <iframe> with
+  // the correct theme in the URL, and append it to the container. This
+  // forces a real iframe reload (load event fires) so the content
+  // renders in the correct theme.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const cal = await getCalApi();
       if (cancelled || !calContainerRef.current) return;
 
-      // 1. Destroy the existing iframe + any cached Cal state.
+      // Check if Cal.com has already created an iframe. If not (first
+      // load), let Cal.com handle the initial render. If yes (theme
+      // toggle), bypass the SDK and force a fresh iframe.
+      const existingIframe = calContainerRef.current.querySelector("iframe");
+
+      if (!existingIframe) {
+        // First load — use Cal.com's SDK to create the widget.
+        cal("ui", { theme });
+        cal("inline", {
+          elementOrSelector: calContainerRef.current,
+          calLink: "noadflow/45-min-meeting",
+        });
+        return;
+      }
+
+      // Theme toggle — bypass the SDK. Extract the current iframe's
+      // src, swap the theme parameter, and create a fresh iframe
+      // element that actually reloads.
+      const currentSrc = existingIframe.src;
+      const newSrc = currentSrc.replace(
+        /ui\.color-scheme=(dark|light)/,
+        `ui.color-scheme=${theme}`,
+      );
+
+      // Remove the old iframe + Cal.com's wrapper element.
       calContainerRef.current.innerHTML = "";
 
-      // 2. Set the theme BEFORE rendering so the iframe URL is
-      //    generated with the correct theme from the start.
-      cal("ui", { theme });
-
-      // 3. Render the widget fresh — it picks up the theme we
-      //    just set, so the entire widget (calendar, sidebar,
-      //    time slots, AND the Cal.com footer branding) all
-      //    initialize in the new theme together.
-      cal("inline", {
-        elementOrSelector: calContainerRef.current,
-        calLink: "noadflow/45-min-meeting",
-      });
+      // Create a fresh iframe with the new theme URL. Setting src
+      // on a newly-created element always triggers a load — unlike
+      // modifying an existing iframe's src, which Cal.com's SDK
+      // intercepts and suppresses.
+      const newIframe = document.createElement("iframe");
+      newIframe.src = newSrc;
+      newIframe.style.cssText =
+        "width: 100%; height: 100%; border: 0; display: block;";
+      newIframe.allow = "camera; microphone; fullscreen; clipboard-read; clipboard-write";
+      newIframe.title = "Book a meeting with NoadFlow";
+      calContainerRef.current.appendChild(newIframe);
     })();
     return () => {
       cancelled = true;
@@ -260,30 +292,14 @@ export function ContactPage() {
                   Open in new tab <ArrowRight className="h-3.5 w-3.5" />
                 </a>
               </div>
-              {/* Cal.com inline embed — using Cal's vanilla API via
-                  the useEffect above. The effect destroys + recreates
-                  the widget whenever the theme changes.
-
-                  ROOT CAUSE OF THE THEME MISMATCH BUG (now fixed):
-                  Cal.com's iframe renders at a fixed 570px tall, but
-                  our container was 750px tall. The 180px gap below
-                  the iframe was transparent, so the parent card's
-                  `--card` background showed through. That card
-                  background has a 0.45s CSS transition on
-                  background-color (from globals.css's universal
-                  `* { transition: ... }` rule). When the user
-                  toggled themes, the iframe swapped instantly
-                  (destroy + recreate) but the card background took
-                  450ms to transition — so during that window, the
-                  iframe was in the new theme but the gap below it
-                  was still showing the old theme's card color.
-                  That was the "stuck footer" the user saw.
-
-                  FIX: Size the container to match the iframe's
-                  actual height (570px). No gap = no card bg
-                  showing through = no transition mismatch. The
-                  `overflow-hidden` clips any minor rendering
-                  variance. */}
+              {/* Cal.com inline embed container.
+                  On first load, Cal.com's SDK creates the iframe here.
+                  On theme toggle, the useEffect bypasses the SDK and
+                  creates a fresh <iframe> element directly (because
+                  Cal.com's SDK reuses a cached iframe that never
+                  reloads — see the useEffect comment for details).
+                  The container is 570px to match Cal.com's iframe
+                  height, with overflow-hidden to clip any variance. */}
               <div
                 ref={calContainerRef}
                 className="cal-inline-container mt-6 overflow-hidden rounded-2xl border border-border"
