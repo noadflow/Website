@@ -38,29 +38,32 @@ export function ContactPage() {
   const calContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Destroy + recreate the widget whenever the theme changes.
-  // Steps:
-  //   1. Get the Cal SDK instance (loads embed.js once, cached after).
-  //   2. Set the theme via `ui()` BEFORE rendering — Cal.com reads
-  //      this when initializing the iframe.
-  //   3. Wipe the container's innerHTML to destroy any existing
-  //      iframe + Cal internal state.
-  //   4. Call `inline()` to render a fresh iframe with the new theme.
+  // Matches the official troubleshooting guide pattern:
+  //   1. el.innerHTML = "" — destroy the existing iframe
+  //   2. cal("ui", { theme }) — set the theme FIRST (before rendering)
+  //   3. cal("inline", { ... }) — render the widget fresh with the
+  //      theme already applied
+  // This ensures the iframe URL is generated with the correct theme
+  // from the start, preventing the mismatch where the calendar
+  // updates but the Cal.com footer branding stays stuck in the
+  // old theme.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const cal = await getCalApi();
       if (cancelled || !calContainerRef.current) return;
 
-      // Set theme BEFORE rendering so Cal.com initializes with it.
-      cal("ui", { theme });
-
-      // Destroy the old widget — wipes the iframe and any cached
-      // state Cal.com keeps about the previous render.
+      // 1. Destroy the existing iframe + any cached Cal state.
       calContainerRef.current.innerHTML = "";
 
-      // Recreate the widget fresh. The iframe loads with the
-      // theme we just set, so the entire widget (including the
-      // Cal.com footer branding) initializes in the new theme.
+      // 2. Set the theme BEFORE rendering so the iframe URL is
+      //    generated with the correct theme from the start.
+      cal("ui", { theme });
+
+      // 3. Render the widget fresh — it picks up the theme we
+      //    just set, so the entire widget (calendar, sidebar,
+      //    time slots, AND the Cal.com footer branding) all
+      //    initialize in the new theme together.
       cal("inline", {
         elementOrSelector: calContainerRef.current,
         calLink: "noadflow/45-min-meeting",
@@ -268,7 +271,7 @@ export function ContactPage() {
               <div
                 ref={calContainerRef}
                 className="mt-6 overflow-hidden rounded-2xl border border-border"
-                style={{ minHeight: "640px", background: "var(--card)" }}
+                style={{ minHeight: "676px", background: "var(--card)" }}
               />
             </div>
           </FadeIn>
