@@ -1,0 +1,4 @@
+﻿unoptimized flag (true/!0) => True
+/_next/image loader URLs => False
+--- context around anas.jpg ---
+-2v-1a2 2 0 0 0-2-2H2.05",key:"14pb5j"}],["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]),lp=[{name:"Anas",role:"Founder & Automation Lead",image:"/anas.jpg",alt:"Anas â€” founder of NoadFlow",bio:"Anas runs NoadFlow and builds every automation that ships from it. He sits down with each client, works out where the business is losing time, and turns that into AI agents and workflows that actually

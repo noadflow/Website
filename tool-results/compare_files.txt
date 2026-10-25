@@ -1,0 +1,9 @@
+﻿.github/workflows/nextjs.yml
+.zscripts/build.sh
+.zscripts/dev.pid
+.zscripts/dev.sh
+.zscripts/mini-services-build.sh
+.zscripts/mini-services-install.sh
+.zscripts/mini-services-start.sh
+.zscripts/start.sh
+mini-services/.gitkeep

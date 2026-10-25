@@ -1,0 +1,10 @@
+﻿HTTP: 200 OK
+--- dev.txt ---
+â–² Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.18.95:3000
+- Environments: .env
+âœ“ Ready in 1345ms
+
+ GET / 200 in 725ms (next.js: 299ms, application-code: 427ms)
+

@@ -13,18 +13,18 @@ import { InterlockingGears } from "@/components/svg/interlocking-gears";
 
 const SERVICES = [
   {
-    title: "Lead Generation Agents",
-    desc: "Finds and researches prospects, then writes personalized outreach automatically.",
+    title: "Lead Research Agent",
+    desc: "Finds prospects daily and writes personalized outreach that gets replies — built around how you actually sell.",
     Svg: LeadNetworkMap,
   },
   {
-    title: "Customer Support Agents",
-    desc: "Answers customer questions 24/7 using your business's own knowledge.",
+    title: "Customer Support Agent",
+    desc: "Answers customer questions 24/7 using your own knowledge base. Your team stops answering the same questions over and over.",
     Svg: ChatBubbles,
   },
   {
     title: "Workflow Automation",
-    desc: "Connects your tools so they work together without manual effort.",
+    desc: "Connects your tools so they work together without manual effort. We build it around your process, not the other way around.",
     Svg: InterlockingGears,
   },
 ];
@@ -44,16 +44,20 @@ export function HomePage() {
                   className="nf-pulse-soft h-1.5 w-1.5 rounded-full"
                   style={{ background: "var(--fg)" }}
                 />
-                AI Automation Agency
+                NoadFlow Studio
               </div>
             </FadeIn>
             <h1 className="text-4xl font-semibold leading-[1.02] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <TypingText text="Automation that thinks for itself." delay={300} />
+              <TypingText text="Automation that actually thinks." delay={300} />
             </h1>
             <FadeIn delay={0.5}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                We build AI agents that handle the busywork — so you can focus on
-                growing your business.
+                We build AI agents that reason through your business — finding
+                leads, answering customers, handling the busywork. Not fixed
+                steps, not chatbot skins: intelligence built around how you
+                actually work. Anas builds the systems, Sumiya handles the
+                client side. No account managers, no templates, no corporate
+                AI agency fluff.
               </p>
             </FadeIn>
             <FadeIn delay={0.65}>
@@ -86,15 +90,21 @@ export function HomePage() {
       <section className="relative px-4 py-20 sm:px-6 sm:py-28">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow="What We Do"
-            title="Not just automation. Intelligence."
-            subtitle="Most automation tools follow fixed steps. Our AI agents think through each situation and decide what to do — finding leads, answering customers, and managing your busywork around the clock."
+            eyebrow="What We Build"
+            title="AI agents that think through your work."
+            subtitle={
+              <>
+                Most automation follows fixed steps. Our agents reason through
+                each situation — finding leads, answering customers, managing
+                your busywork. Built by Anas, delivered with Sumiya.
+              </>
+            }
           />
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {SERVICES.map((s, i) => (
               <FadeIn key={s.title} delay={i * 0.12}>
                 <button
-                  onClick={() => setPage("services")}
+                  onClick={() => setPage("contact")}
                   className="group flex h-full w-full flex-col rounded-3xl border border-border bg-card p-6 text-left transition-all duration-500 hover:-translate-y-1 hover:border-foreground/30"
                 >
                   <div className="mb-6 h-40 w-full">
@@ -107,7 +117,7 @@ export function HomePage() {
                     {s.desc}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/70 transition-colors group-hover:text-foreground">
-                    Learn more <ArrowRight className="h-3.5 w-3.5" />
+                    Book a call <ArrowRight className="h-3.5 w-3.5" />
                   </span>
                 </button>
               </FadeIn>
@@ -117,7 +127,8 @@ export function HomePage() {
       </section>
 
       <CTASection
-        title="Let's build something that works while you sleep."
+        title="Let's build something that actually works for your business."
+        subtitle="No templates. No handoffs. Just Anas and Sumiya building your automation from start to finish."
         buttonLabel="Book a Free 30-Minute Call"
       />
     </>

@@ -3,7 +3,6 @@ import { create } from "zustand";
 export type Theme = "dark" | "light";
 export type PageId =
   | "home"
-  | "services"
   | "portfolio"
   | "about"
   | "pricing"

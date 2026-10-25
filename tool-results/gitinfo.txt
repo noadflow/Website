@@ -1,0 +1,15 @@
+﻿--- git version ---
+--- .git exists ---
+True
+--- git status ---
+--- git remote ---
+--- deploy configs ---
+vercel.json: False
+netlify.toml: False
+wrangler.toml: False
+firebase.json: False
+.github: False
+README.md: False
+.gitignore: True
+CNAME: False
+.env.example: False

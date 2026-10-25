@@ -1,0 +1,29 @@
+{
+  "total_count": 2,
+  "workflows": [
+    {
+      "id": 295830218,
+      "node_id": "W_kwDOS6iyns4RogLK",
+      "name": "Deploy Next.js site to Pages",
+      "path": ".github/workflows/nextjs.yml",
+      "state": "active",
+      "created_at": "2026-06-14T15:53:21.000Z",
+      "updated_at": "2026-06-21T20:18:33.000Z",
+      "url": "https://api.github.com/repos/noadflow/Website/actions/workflows/295830218",
+      "html_url": "https://github.com/noadflow/Website/blob/main/.github/workflows/nextjs.yml",
+      "badge_url": "https://github.com/noadflow/Website/workflows/Deploy%20Next.js%20site%20to%20Pages/badge.svg"
+    },
+    {
+      "id": 296717974,
+      "node_id": "W_kwDOS6iyns4Rr46W",
+      "name": "pages-build-deployment",
+      "path": "dynamic/pages/pages-build-deployment",
+      "state": "active",
+      "created_at": "2026-06-16T05:06:41.000Z",
+      "updated_at": "2026-06-16T05:06:41.000Z",
+      "url": "https://api.github.com/repos/noadflow/Website/actions/workflows/296717974",
+      "html_url": "https://github.com/noadflow/Website/actions/workflows/pages/pages-build-deployment",
+      "badge_url": "https://github.com/noadflow/Website/actions/workflows/pages/pages-build-deployment/badge.svg"
+    }
+  ]
+}

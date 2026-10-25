@@ -1,0 +1,10 @@
+﻿HTTP_STATUS: 200 OK
+--- dev.txt tail ---
+- Local:         http://localhost:3000
+- Network:       http://192.168.18.95:3000
+- Environments: .env
+âœ“ Ready in 4.2s
+
+â—‹ Compiling / ...
+ GET / 200 in 142ms (next.js: 11ms, application-code: 131ms)
+

@@ -1,0 +1,17 @@
+﻿--- NS ---
+noadflow.com -> ns77.domaincontrol.com
+noadflow.com -> ns78.domaincontrol.com
+ns77.domaincontrol.com -> 
+ns77.domaincontrol.com -> 
+--- A ---
+noadflow.com -> 185.199.108.153
+noadflow.com -> 185.199.111.153
+noadflow.com -> 185.199.110.153
+noadflow.com -> 185.199.109.153
+--- www CNAME ---
+www.noadflow.com -> noadflow.com
+--- HEAD https://noadflow.com ---
+status: 200
+server: GitHub.com
+x-vercel/x-nf headers: X-Served-By
+title: NoadFlow — Automation that thinks for itself.

@@ -1,0 +1,12 @@
+﻿git: NOT FOUND
+gh: NOT FOUND
+winget: C:\Users\anasm\AppData\Local\Microsoft\WindowsApps\winget.exe
+curl: 
+ssh: C:\WINDOWS\System32\OpenSSH\ssh.exe
+ftp: C:\WINDOWS\system32\ftp.exe
+--- .git HEAD/refs ---
+ref: refs/heads/main
+
+branches: main
+--- .env keys (names only) ---
+DATABASE_URL

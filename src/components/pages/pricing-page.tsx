@@ -115,8 +115,8 @@ export function PricingPage() {
       </section>
 
       <CTASection
-        title="Let us build it for you."
-        subtitle="Most people start with a quick call — no pressure, just a conversation about what's possible."
+        title="Let's build it for you."
+        subtitle="Most people start with a quick call — Anas and Sumiya will talk through what's possible, no pressure."
         buttonLabel="Book a Free Call"
       />
     </>

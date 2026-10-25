@@ -15,7 +15,6 @@ import {
 
 const NAV: { id: PageId; label: string }[] = [
   { id: "home", label: "Home" },
-  { id: "services", label: "Services" },
   { id: "portfolio", label: "Portfolio" },
   { id: "about", label: "About" },
   { id: "pricing", label: "Pricing" },

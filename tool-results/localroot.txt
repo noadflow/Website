@@ -1,0 +1,2 @@
+﻿--- local root ---
+public/, scripts/, src/, tool-results/, upload/, .env, .gitignore, bun.lock, Caddyfile, components.json, eslint.config.mjs, next-env.d.ts, next.config.ts, package-lock.json, package.json, postcss.config.mjs, tsconfig.json

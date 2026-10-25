@@ -7,7 +7,6 @@ import { Navbar } from "@/components/site/navbar";
 import { Footer } from "@/components/site/footer";
 import { ParallaxBackground } from "@/components/site/parallax-background";
 import { HomePage } from "@/components/pages/home-page";
-import { ServicesPage } from "@/components/pages/services-page";
 import { PortfolioPage } from "@/components/pages/portfolio-page";
 import { AboutPage } from "@/components/pages/about-page";
 import { PricingPage } from "@/components/pages/pricing-page";
@@ -15,7 +14,6 @@ import { ContactPage } from "@/components/pages/contact-page";
 
 const PAGES: Record<PageId, () => React.JSX.Element> = {
   home: HomePage,
-  services: ServicesPage,
   portfolio: PortfolioPage,
   about: AboutPage,
   pricing: PricingPage,

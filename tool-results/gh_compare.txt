@@ -1,0 +1,532 @@
+{
+  "url": "https://api.github.com/repos/noadflow/Website/compare/1f174f975bde6adfead0f88530d3d8bae542d099...main",
+  "html_url": "https://github.com/noadflow/Website/compare/1f174f975bde6adfead0f88530d3d8bae542d099...main",
+  "permalink_url": "https://github.com/noadflow/Website/compare/noadflow:1f174f9...noadflow:3bb2114",
+  "diff_url": "https://github.com/noadflow/Website/compare/1f174f975bde6adfead0f88530d3d8bae542d099...main.diff",
+  "patch_url": "https://github.com/noadflow/Website/compare/1f174f975bde6adfead0f88530d3d8bae542d099...main.patch",
+  "base_commit": {
+    "sha": "1f174f975bde6adfead0f88530d3d8bae542d099",
+    "node_id": "C_kwDOS6iyntoAKDFmMTc0Zjk3NWJkZTZhZGZlYWQwZjg4NTMwZDNkOGJhZTU0MmQwOTk",
+    "commit": {
+      "author": {
+        "name": "Noadflow",
+        "email": "noadflow@gmail.com",
+        "date": "2026-06-21T19:59:14Z"
+      },
+      "committer": {
+        "name": "Noadflow",
+        "email": "noadflow@gmail.com",
+        "date": "2026-06-21T19:59:14Z"
+      },
+      "message": "updated website to use static now with web3form for the form submission on contact form",
+      "tree": {
+        "sha": "f57e92df92158aa59ab8da06790da4c40424324d",
+        "url": "https://api.github.com/repos/noadflow/Website/git/trees/f57e92df92158aa59ab8da06790da4c40424324d"
+      },
+      "url": "https://api.github.com/repos/noadflow/Website/git/commits/1f174f975bde6adfead0f88530d3d8bae542d099",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/noadflow/Website/commits/1f174f975bde6adfead0f88530d3d8bae542d099",
+    "html_url": "https://github.com/noadflow/Website/commit/1f174f975bde6adfead0f88530d3d8bae542d099",
+    "comments_url": "https://api.github.com/repos/noadflow/Website/commits/1f174f975bde6adfead0f88530d3d8bae542d099/comments",
+    "author": {
+      "login": "noadflow",
+      "id": 293621498,
+      "node_id": "U_kgDOEYBO-g",
+      "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/noadflow",
+      "html_url": "https://github.com/noadflow",
+      "followers_url": "https://api.github.com/users/noadflow/followers",
+      "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+      "organizations_url": "https://api.github.com/users/noadflow/orgs",
+      "repos_url": "https://api.github.com/users/noadflow/repos",
+      "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/noadflow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "noadflow",
+      "id": 293621498,
+      "node_id": "U_kgDOEYBO-g",
+      "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/noadflow",
+      "html_url": "https://github.com/noadflow",
+      "followers_url": "https://api.github.com/users/noadflow/followers",
+      "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+      "organizations_url": "https://api.github.com/users/noadflow/orgs",
+      "repos_url": "https://api.github.com/users/noadflow/repos",
+      "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/noadflow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "fa8ada4a673e423f9c5006873c020157655a087c",
+        "url": "https://api.github.com/repos/noadflow/Website/commits/fa8ada4a673e423f9c5006873c020157655a087c",
+        "html_url": "https://github.com/noadflow/Website/commit/fa8ada4a673e423f9c5006873c020157655a087c"
+      }
+    ]
+  },
+  "merge_base_commit": {
+    "sha": "1f174f975bde6adfead0f88530d3d8bae542d099",
+    "node_id": "C_kwDOS6iyntoAKDFmMTc0Zjk3NWJkZTZhZGZlYWQwZjg4NTMwZDNkOGJhZTU0MmQwOTk",
+    "commit": {
+      "author": {
+        "name": "Noadflow",
+        "email": "noadflow@gmail.com",
+        "date": "2026-06-21T19:59:14Z"
+      },
+      "committer": {
+        "name": "Noadflow",
+        "email": "noadflow@gmail.com",
+        "date": "2026-06-21T19:59:14Z"
+      },
+      "message": "updated website to use static now with web3form for the form submission on contact form",
+      "tree": {
+        "sha": "f57e92df92158aa59ab8da06790da4c40424324d",
+        "url": "https://api.github.com/repos/noadflow/Website/git/trees/f57e92df92158aa59ab8da06790da4c40424324d"
+      },
+      "url": "https://api.github.com/repos/noadflow/Website/git/commits/1f174f975bde6adfead0f88530d3d8bae542d099",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/noadflow/Website/commits/1f174f975bde6adfead0f88530d3d8bae542d099",
+    "html_url": "https://github.com/noadflow/Website/commit/1f174f975bde6adfead0f88530d3d8bae542d099",
+    "comments_url": "https://api.github.com/repos/noadflow/Website/commits/1f174f975bde6adfead0f88530d3d8bae542d099/comments",
+    "author": {
+      "login": "noadflow",
+      "id": 293621498,
+      "node_id": "U_kgDOEYBO-g",
+      "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/noadflow",
+      "html_url": "https://github.com/noadflow",
+      "followers_url": "https://api.github.com/users/noadflow/followers",
+      "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+      "organizations_url": "https://api.github.com/users/noadflow/orgs",
+      "repos_url": "https://api.github.com/users/noadflow/repos",
+      "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/noadflow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "noadflow",
+      "id": 293621498,
+      "node_id": "U_kgDOEYBO-g",
+      "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/noadflow",
+      "html_url": "https://github.com/noadflow",
+      "followers_url": "https://api.github.com/users/noadflow/followers",
+      "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+      "organizations_url": "https://api.github.com/users/noadflow/orgs",
+      "repos_url": "https://api.github.com/users/noadflow/repos",
+      "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/noadflow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "fa8ada4a673e423f9c5006873c020157655a087c",
+        "url": "https://api.github.com/repos/noadflow/Website/commits/fa8ada4a673e423f9c5006873c020157655a087c",
+        "html_url": "https://github.com/noadflow/Website/commit/fa8ada4a673e423f9c5006873c020157655a087c"
+      }
+    ]
+  },
+  "status": "ahead",
+  "ahead_by": 3,
+  "behind_by": 0,
+  "total_commits": 3,
+  "commits": [
+    {
+      "sha": "bfd792716dfb47a559c6f97583a69538d144c0b5",
+      "node_id": "C_kwDOS6iyntoAKGJmZDc5MjcxNmRmYjQ3YTU1OWM2Zjk3NTgzYTY5NTM4ZDE0NGMwYjU",
+      "commit": {
+        "author": {
+          "name": "noadflow",
+          "email": "noadflow@gmail.com",
+          "date": "2026-06-21T20:11:00Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-06-21T20:11:00Z"
+        },
+        "message": "Delete .zscripts directory",
+        "tree": {
+          "sha": "c68a30b1d46f4df6cfed44d0d00bb27fb4f6b194",
+          "url": "https://api.github.com/repos/noadflow/Website/git/trees/c68a30b1d46f4df6cfed44d0d00bb27fb4f6b194"
+        },
+        "url": "https://api.github.com/repos/noadflow/Website/git/commits/bfd792716dfb47a559c6f97583a69538d144c0b5",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqOEVUCRC1aQ7uu5UhlAAAkmkQABbjJQ7YYHplmO5/1ol8UGns\ntRTKx3EVidelM+L8OcaYrb+j3vo9ZH3WiooL01H0wJFIVi0VRu2SEDh0V/g9yB7t\njKCHU8iKbMop0XBtLRZd7g86GndFcWJW/D6/gwmeihBGHiFIHNS3VvG6ah1oZHd5\nVRLs1zCagFfItieAf3P06pK/GHGlQZXtaqs0U0YzKVFeKWyvLV+vie8Udx3wn6Mk\n9yg6b7Wsie7vTNBm3tPql+lVTut17JDVSSuX1yPRObGqqW30YVUas/kx77z/5RCS\nzbJaxC9hmqQOjYyEvUVV8AxhGL/+go5k+OWw/2fRaMCesOGMYIFV0TwL2g42sDay\n5zKphthI368hkuvwqeUoY5qJLDwo3Pzs3tLDYSKwJCL2OdRJzvWfhjo2p4Kduik1\nCyaDlMIS/m8rnM044Vqq/eH83nwJiYObytvKNnJESHPHe0uBZ1iA1achY8OK9UHo\nBrROBIOPy5FaLVU1LJFG/1iBk46OU1SaRaBnGo0HusPTAKCImXcWGJmY9WmkKUF8\nugf5ks+NhSJhCklmuk944gpvdbMh3ND4FIfI/rplwdXG0/jvCbS3+oSpefEwFQnp\nSOimu3lCyaKCGLTrzynB3BxNiH8Gm5LEQxYFz/e2zggb0D7TwLT0Fom5XlxD6PQm\nsIz1zWxyqXJklRQK0eoz\n=7jjL\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree c68a30b1d46f4df6cfed44d0d00bb27fb4f6b194\nparent 1f174f975bde6adfead0f88530d3d8bae542d099\nauthor noadflow <noadflow@gmail.com> 1782072660 -0700\ncommitter GitHub <noreply@github.com> 1782072660 -0700\n\nDelete .zscripts directory",
+          "verified_at": "2026-06-21T20:11:01Z"
+        }
+      },
+      "url": "https://api.github.com/repos/noadflow/Website/commits/bfd792716dfb47a559c6f97583a69538d144c0b5",
+      "html_url": "https://github.com/noadflow/Website/commit/bfd792716dfb47a559c6f97583a69538d144c0b5",
+      "comments_url": "https://api.github.com/repos/noadflow/Website/commits/bfd792716dfb47a559c6f97583a69538d144c0b5/comments",
+      "author": {
+        "login": "noadflow",
+        "id": 293621498,
+        "node_id": "U_kgDOEYBO-g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/noadflow",
+        "html_url": "https://github.com/noadflow",
+        "followers_url": "https://api.github.com/users/noadflow/followers",
+        "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+        "organizations_url": "https://api.github.com/users/noadflow/orgs",
+        "repos_url": "https://api.github.com/users/noadflow/repos",
+        "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/noadflow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "1f174f975bde6adfead0f88530d3d8bae542d099",
+          "url": "https://api.github.com/repos/noadflow/Website/commits/1f174f975bde6adfead0f88530d3d8bae542d099",
+          "html_url": "https://github.com/noadflow/Website/commit/1f174f975bde6adfead0f88530d3d8bae542d099"
+        }
+      ]
+    },
+    {
+      "sha": "c3a229992305b6413eb3a0f112a2592fee1becfe",
+      "node_id": "C_kwDOS6iyntoAKGMzYTIyOTk5MjMwNWI2NDEzZWIzYTBmMTEyYTI1OTJmZWUxYmVjZmU",
+      "commit": {
+        "author": {
+          "name": "noadflow",
+          "email": "noadflow@gmail.com",
+          "date": "2026-06-21T20:12:45Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-06-21T20:12:45Z"
+        },
+        "message": "Delete mini-services directory",
+        "tree": {
+          "sha": "10bd8ed0b4f8f591ec8c4a873ac4fa73703e6a0b",
+          "url": "https://api.github.com/repos/noadflow/Website/git/trees/10bd8ed0b4f8f591ec8c4a873ac4fa73703e6a0b"
+        },
+        "url": "https://api.github.com/repos/noadflow/Website/git/commits/c3a229992305b6413eb3a0f112a2592fee1becfe",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqOEW9CRC1aQ7uu5UhlAAAO/EQAE9hJ3tqRUuAqX3AuPid9HFI\nXM2DtPBhPPnjB/TnVnwHQw2XvDsRMdD88lYBXtrg7Oc/5PGfcd12IfK6BqOjlkCM\nDw9OB3prJHWc0+7uQQLwxWjOUF4bUxWYf1qrqtnqIDu5vj7C/5p46nn3QVcN3mHx\n0tXHmgfdSdrGDjyO1X8ROpg1x1cVbPQvQLdbpJ1bNryqGA0LaRVKdgqmulXEsilB\n1p8QW9pBTFUs85FZXdW973DsrAaHYoun5FexAkOSffBr7ADx1FMwtoZFbGc2bzde\nWirRxJPON3lB6em0CXVhGwBgCHtKclqVHwvN62Evoxb+1T5kSG+fV+5KCwxbQz8C\nleQtzZ4BVGosnmqzFQthy+biaRt+/ZKm/rOebQbLkXTkz4MjPDYMF7XBoJ0ePCee\nbOFpWBwC4HWaCP4pELV4SdPPdXHfR6GfcVj1G7DjzqLL0cl6fXej9T8v56hgEESD\nZbHO2mmLopWNb3KpIOpbiv09+ICLd66+4Ib8JiDhlE1pDThXC7UhC1UVKyvwuYVA\nEbQeuofNWc9tK7yvbTQOvPTFpnE/8EOmNZT0cIruV7LCv3Y/nc/6uj+jTp8T7zWn\np3NrhEJu+GgEaEUKzx5wUOGVOssePwQaztGt0JMxkkMy2ElgfOAzzofUDWCZoQoM\ngsOo6IAEXI9hHM7CZsVo\n=aIwe\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 10bd8ed0b4f8f591ec8c4a873ac4fa73703e6a0b\nparent bfd792716dfb47a559c6f97583a69538d144c0b5\nauthor noadflow <noadflow@gmail.com> 1782072765 -0700\ncommitter GitHub <noreply@github.com> 1782072765 -0700\n\nDelete mini-services directory",
+          "verified_at": "2026-06-21T20:12:46Z"
+        }
+      },
+      "url": "https://api.github.com/repos/noadflow/Website/commits/c3a229992305b6413eb3a0f112a2592fee1becfe",
+      "html_url": "https://github.com/noadflow/Website/commit/c3a229992305b6413eb3a0f112a2592fee1becfe",
+      "comments_url": "https://api.github.com/repos/noadflow/Website/commits/c3a229992305b6413eb3a0f112a2592fee1becfe/comments",
+      "author": {
+        "login": "noadflow",
+        "id": 293621498,
+        "node_id": "U_kgDOEYBO-g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/noadflow",
+        "html_url": "https://github.com/noadflow",
+        "followers_url": "https://api.github.com/users/noadflow/followers",
+        "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+        "organizations_url": "https://api.github.com/users/noadflow/orgs",
+        "repos_url": "https://api.github.com/users/noadflow/repos",
+        "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/noadflow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "bfd792716dfb47a559c6f97583a69538d144c0b5",
+          "url": "https://api.github.com/repos/noadflow/Website/commits/bfd792716dfb47a559c6f97583a69538d144c0b5",
+          "html_url": "https://github.com/noadflow/Website/commit/bfd792716dfb47a559c6f97583a69538d144c0b5"
+        }
+      ]
+    },
+    {
+      "sha": "3bb211409fcb4f495cf04eb4c6596edbb2953ebf",
+      "node_id": "C_kwDOS6iyntoAKDNiYjIxMTQwOWZjYjRmNDk1Y2YwNGViNGM2NTk2ZWRiYjI5NTNlYmY",
+      "commit": {
+        "author": {
+          "name": "noadflow",
+          "email": "noadflow@gmail.com",
+          "date": "2026-06-21T20:18:32Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-06-21T20:18:32Z"
+        },
+        "message": "Create nextjs.yml",
+        "tree": {
+          "sha": "69945aab28b60bfb5d7104f7edf03148178cadd3",
+          "url": "https://api.github.com/repos/noadflow/Website/git/trees/69945aab28b60bfb5d7104f7edf03148178cadd3"
+        },
+        "url": "https://api.github.com/repos/noadflow/Website/git/commits/3bb211409fcb4f495cf04eb4c6596edbb2953ebf",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqOEcYCRC1aQ7uu5UhlAAA2joQAJcB7OJ3VDFWG13e6Nl/gkC1\n4xUuf5bS/s8E+rAwkjOawZB5iDBFuaJEl6Tfr10R6uFKINj9Z17UOIBiQP08E1HX\n4PgTmlnbjS5pT3CcfqLjco/gIQf31rXkh9arGIwYJqdKj2CswtgWJ0A4qctKUxqu\nYGAP/P1eEu0tZ3inIHFc3mbE4rL7n8uSfEEe4bZ9+pbJlyD8erUEUXC53XrWVlu+\nSCkfmNgr5Kk9kFKKF2/lICvOJpurhUwpsNDoSoKeh9g3CsL7oPbiDo1vYfJIYjMQ\nVSfoOSPyUmP98+wZ1fW+8b69VuJ+LAW4UGGOM/cNsPAG5HUtuAz+OW9Lp+HjP5vi\nN6/JrPQSlOZLVikOTx2h14W4F+bOBiqf80WNw6rAefaO+ekOEnAom4InvjkYEa5q\nusrS8XThBGOzuFLCwVM9/m5IO5SD0Omv6VPjaZhpvMWeo2dQW4IK02GOztMfrdJC\nsKGCDm4hdBz0keFENLrnqr9N2DBJ5gbStOwrOHyb0JSvCKfTABqjoz2hmMunO1H4\nVTxLknRigwQPD1567KjhHUWeUC7HuxHwrZZ+Q5njTkTATalzn9ED0eZgJh5z/x03\nHV7y29/85d/d3TCJiZQvnvS7DTspW34EkeuLBXCLrJ0aNXffE1p1qq4kShhn3W8e\n0AMf/vLUSdZza5s80BXO\n=TToe\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 69945aab28b60bfb5d7104f7edf03148178cadd3\nparent c3a229992305b6413eb3a0f112a2592fee1becfe\nauthor noadflow <noadflow@gmail.com> 1782073112 -0700\ncommitter GitHub <noreply@github.com> 1782073112 -0700\n\nCreate nextjs.yml",
+          "verified_at": "2026-06-21T20:18:32Z"
+        }
+      },
+      "url": "https://api.github.com/repos/noadflow/Website/commits/3bb211409fcb4f495cf04eb4c6596edbb2953ebf",
+      "html_url": "https://github.com/noadflow/Website/commit/3bb211409fcb4f495cf04eb4c6596edbb2953ebf",
+      "comments_url": "https://api.github.com/repos/noadflow/Website/commits/3bb211409fcb4f495cf04eb4c6596edbb2953ebf/comments",
+      "author": {
+        "login": "noadflow",
+        "id": 293621498,
+        "node_id": "U_kgDOEYBO-g",
+        "avatar_url": "https://avatars.githubusercontent.com/u/293621498?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/noadflow",
+        "html_url": "https://github.com/noadflow",
+        "followers_url": "https://api.github.com/users/noadflow/followers",
+        "following_url": "https://api.github.com/users/noadflow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/noadflow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/noadflow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/noadflow/subscriptions",
+        "organizations_url": "https://api.github.com/users/noadflow/orgs",
+        "repos_url": "https://api.github.com/users/noadflow/repos",
+        "events_url": "https://api.github.com/users/noadflow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/noadflow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "c3a229992305b6413eb3a0f112a2592fee1becfe",
+          "url": "https://api.github.com/repos/noadflow/Website/commits/c3a229992305b6413eb3a0f112a2592fee1becfe",
+          "html_url": "https://github.com/noadflow/Website/commit/c3a229992305b6413eb3a0f112a2592fee1becfe"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "sha": "d1837be354aecfdf8efab3f1131080f21f2ac71c",
+      "filename": ".github/workflows/nextjs.yml",
+      "status": "added",
+      "additions": 93,
+      "deletions": 0,
+      "changes": 93,
+      "blob_url": "https://github.com/noadflow/Website/blob/3bb211409fcb4f495cf04eb4c6596edbb2953ebf/.github%2Fworkflows%2Fnextjs.yml",
+      "raw_url": "https://github.com/noadflow/Website/raw/3bb211409fcb4f495cf04eb4c6596edbb2953ebf/.github%2Fworkflows%2Fnextjs.yml",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.github%2Fworkflows%2Fnextjs.yml?ref=3bb211409fcb4f495cf04eb4c6596edbb2953ebf",
+      "patch": "@@ -0,0 +1,93 @@\n+# Sample workflow for building and deploying a Next.js site to GitHub Pages\n+#\n+# To get started with Next.js see: https://nextjs.org/docs/getting-started\n+#\n+name: Deploy Next.js site to Pages\n+\n+on:\n+  # Runs on pushes targeting the default branch\n+  push:\n+    branches: [\"main\"]\n+\n+  # Allows you to run this workflow manually from the Actions tab\n+  workflow_dispatch:\n+\n+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages\n+permissions:\n+  contents: read\n+  pages: write\n+  id-token: write\n+\n+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.\n+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.\n+concurrency:\n+  group: \"pages\"\n+  cancel-in-progress: false\n+\n+jobs:\n+  # Build job\n+  build:\n+    runs-on: ubuntu-latest\n+    steps:\n+      - name: Checkout\n+        uses: actions/checkout@v4\n+      - name: Detect package manager\n+        id: detect-package-manager\n+        run: |\n+          if [ -f \"${{ github.workspace }}/yarn.lock\" ]; then\n+            echo \"manager=yarn\" >> $GITHUB_OUTPUT\n+            echo \"command=install\" >> $GITHUB_OUTPUT\n+            echo \"runner=yarn\" >> $GITHUB_OUTPUT\n+            exit 0\n+          elif [ -f \"${{ github.workspace }}/package.json\" ]; then\n+            echo \"manager=npm\" >> $GITHUB_OUTPUT\n+            echo \"command=ci\" >> $GITHUB_OUTPUT\n+            echo \"runner=npx --no-install\" >> $GITHUB_OUTPUT\n+            exit 0\n+          else\n+            echo \"Unable to determine package manager\"\n+            exit 1\n+          fi\n+      - name: Setup Node\n+        uses: actions/setup-node@v4\n+        with:\n+          node-version: \"20\"\n+          cache: ${{ steps.detect-package-manager.outputs.manager }}\n+      - name: Setup Pages\n+        uses: actions/configure-pages@v5\n+        with:\n+          # Automatically inject basePath in your Next.js configuration file and disable\n+          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).\n+          #\n+          # You may remove this line if you want to manage the configuration yourself.\n+          static_site_generator: next\n+      - name: Restore cache\n+        uses: actions/cache@v4\n+        with:\n+          path: |\n+            .next/cache\n+          # Generate a new cache whenever packages or source files change.\n+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}\n+          # If source files changed but packages didn't, rebuild from a prior cache.\n+          restore-keys: |\n+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-\n+      - name: Install dependencies\n+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}\n+      - name: Build with Next.js\n+        run: ${{ steps.detect-package-manager.outputs.runner }} next build\n+      - name: Upload artifact\n+        uses: actions/upload-pages-artifact@v3\n+        with:\n+          path: ./out\n+\n+  # Deployment job\n+  deploy:\n+    environment:\n+      name: github-pages\n+      url: ${{ steps.deployment.outputs.page_url }}\n+    runs-on: ubuntu-latest\n+    needs: build\n+    steps:\n+      - name: Deploy to GitHub Pages\n+        id: deployment\n+        uses: actions/deploy-pages@v5"
+    },
+    {
+      "sha": "f661c7fc3b00244eba1fce63f950e7e823188361",
+      "filename": ".zscripts/build.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 122,
+      "changes": 122,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fbuild.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fbuild.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fbuild.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,122 +0,0 @@\n-#!/bin/bash\n-\n-# 将 stderr 重定向到 stdout，避免 execute_command 因为 stderr 输出而报错\n-exec 2>&1\n-\n-set -e\n-\n-# 获取脚本所在目录（.zscripts 目录，即 workspace-agent/.zscripts）\n-# 使用 $0 获取脚本路径（兼容 sh 和 bash）\n-SCRIPT_DIR=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\n-\n-# Next.js 项目路径\n-NEXTJS_PROJECT_DIR=\"/home/z/my-project\"\n-\n-# 检查 Next.js 项目目录是否存在\n-if [ ! -d \"$NEXTJS_PROJECT_DIR\" ]; then\n-    echo \"❌ 错误: Next.js 项目目录不存在: $NEXTJS_PROJECT_DIR\"\n-    exit 1\n-fi\n-\n-echo \"🚀 开始构建 Next.js 应用和 mini-services...\"\n-echo \"📁 Next.js 项目路径: $NEXTJS_PROJECT_DIR\"\n-\n-# 切换到 Next.js 项目目录\n-cd \"$NEXTJS_PROJECT_DIR\" || exit 1\n-\n-# 设置环境变量\n-export NEXT_TELEMETRY_DISABLED=1\n-\n-BUILD_DIR=\"/tmp/build_fullstack_$BUILD_ID\"\n-echo \"📁 清理并创建构建目录: $BUILD_DIR\"\n-mkdir -p \"$BUILD_DIR\"\n-\n-# 安装依赖\n-echo \"📦 安装依赖...\"\n-bun install\n-\n-# 构建 Next.js 应用\n-echo \"🔨 构建 Next.js 应用...\"\n-bun run build\n-\n-# 构建 mini-services\n-# 检查 Next.js 项目目录下是否有 mini-services 目录\n-if [ -d \"$NEXTJS_PROJECT_DIR/mini-services\" ]; then\n-    echo \"🔨 构建 mini-services...\"\n-    # 使用 workspace-agent 目录下的 mini-services 脚本\n-    sh \"$SCRIPT_DIR/mini-services-install.sh\"\n-    sh \"$SCRIPT_DIR/mini-services-build.sh\"\n-\n-    # 复制 mini-services-start.sh 到 mini-services-dist 目录\n-    echo \"  - 复制 mini-services-start.sh 到 $BUILD_DIR\"\n-    cp \"$SCRIPT_DIR/mini-services-start.sh\" \"$BUILD_DIR/mini-services-start.sh\"\n-    chmod +x \"$BUILD_DIR/mini-services-start.sh\"\n-else\n-    echo \"ℹ️  mini-services 目录不存在，跳过\"\n-fi\n-\n-# 将所有构建产物复制到临时构建目录\n-echo \"📦 收集构建产物到 $BUILD_DIR...\"\n-\n-# 复制 Next.js standalone 构建输出\n-if [ -d \".next/standalone\" ]; then\n-    echo \"  - 复制 .next/standalone\"\n-    cp -r .next/standalone \"$BUILD_DIR/next-service-dist/\"\n-fi\n-\n-# 复制 Next.js 静态文件\n-if [ -d \".next/static\" ]; then\n-    echo \"  - 复制 .next/static\"\n-    mkdir -p \"$BUILD_DIR/next-service-dist/.next\"\n-    cp -r .next/static \"$BUILD_DIR/next-service-dist/.next/\"\n-fi\n-\n-# 复制 public 目录\n-if [ -d \"public\" ]; then\n-    echo \"  - 复制 public\"\n-    cp -r public \"$BUILD_DIR/next-service-dist/\"\n-fi\n-\n-# 将测试环境数据库复制到构建产物中，生产环境直接使用这份数据库\n-if [ -f \"./db/custom.db\" ]; then\n-    echo \"🗄️  复制测试环境数据库到构建产物...\"\n-    mkdir -p \"$BUILD_DIR/db\"\n-    cp -r ./db/. \"$BUILD_DIR/db/\"\n-\n-    echo \"🗄️  同步构建产物中的数据库结构...\"\n-    DATABASE_URL=\"file:$BUILD_DIR/db/custom.db\" bun run db:push\n-    echo \"✅ 构建产物数据库已准备完成\"\n-    ls -lah \"$BUILD_DIR/db\"\n-else\n-    echo \"❌ 未找到测试环境数据库文件 ./db/custom.db，无法继续构建生产包\"\n-    exit 1\n-fi\n-\n-# 复制 Caddyfile（如果存在）\n-if [ -f \"Caddyfile\" ]; then\n-    echo \"  - 复制 Caddyfile\"\n-    cp Caddyfile \"$BUILD_DIR/\"\n-else\n-    echo \"ℹ️  Caddyfile 不存在，跳过\"\n-fi\n-\n-# 复制 start.sh 脚本\n-echo \"  - 复制 start.sh 到 $BUILD_DIR\"\n-cp \"$SCRIPT_DIR/start.sh\" \"$BUILD_DIR/start.sh\"\n-chmod +x \"$BUILD_DIR/start.sh\"\n-\n-# 打包到 $BUILD_DIR.tar.gz\n-PACKAGE_FILE=\"${BUILD_DIR}.tar.gz\"\n-echo \"\"\n-echo \"📦 打包构建产物到 $PACKAGE_FILE...\"\n-cd \"$BUILD_DIR\" || exit 1\n-tar -czf \"$PACKAGE_FILE\" .\n-cd - > /dev/null || exit 1\n-\n-# # 清理临时目录\n-# rm -rf \"$BUILD_DIR\"\n-\n-echo \"\"\n-echo \"✅ 构建完成！所有产物已打包到 $PACKAGE_FILE\"\n-echo \"📊 打包文件大小:\"\n-ls -lh \"$PACKAGE_FILE\""
+    },
+    {
+      "sha": "6943e4dbe733d070b96942bde280bc3efd898e3b",
+      "filename": ".zscripts/dev.pid",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 1,
+      "changes": 1,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fdev.pid",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fdev.pid",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fdev.pid?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1 +0,0 @@\n-957"
+    },
+    {
+      "sha": "87057933c0ffeb08b244949bcd5a4a115c515f63",
+      "filename": ".zscripts/dev.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 154,
+      "changes": 154,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fdev.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fdev.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fdev.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,154 +0,0 @@\n-#!/bin/bash\n-\n-set -euo pipefail\n-\n-# 获取脚本所在目录（.zscripts）\n-# 使用 $0 获取脚本路径（与 build.sh 保持一致）\n-SCRIPT_DIR=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\n-PROJECT_DIR=\"$(cd \"$SCRIPT_DIR/..\" && pwd)\"\n-\n-log_step_start() {\n-\tlocal step_name=\"$1\"\n-\techo \"==========================================\"\n-\techo \"[$(date '+%Y-%m-%d %H:%M:%S')] Starting: $step_name\"\n-\techo \"==========================================\"\n-\texport STEP_START_TIME\n-\tSTEP_START_TIME=$(date +%s)\n-}\n-\n-log_step_end() {\n-\tlocal step_name=\"${1:-Unknown step}\"\n-\tlocal end_time\n-\tend_time=$(date +%s)\n-\tlocal duration=$((end_time - STEP_START_TIME))\n-\techo \"==========================================\"\n-\techo \"[$(date '+%Y-%m-%d %H:%M:%S')] Completed: $step_name\"\n-\techo \"[LOG] Step: $step_name | Duration: ${duration}s\"\n-\techo \"==========================================\"\n-\techo \"\"\n-}\n-\n-start_mini_services() {\n-\tlocal mini_services_dir=\"$PROJECT_DIR/mini-services\"\n-\tlocal started_count=0\n-\n-\tlog_step_start \"Starting mini-services\"\n-\tif [ ! -d \"$mini_services_dir\" ]; then\n-\t\techo \"Mini-services directory not found, skipping...\"\n-\t\tlog_step_end \"Starting mini-services\"\n-\t\treturn 0\n-\tfi\n-\n-\techo \"Found mini-services directory, scanning for sub-services...\"\n-\n-\tfor service_dir in \"$mini_services_dir\"/*; do\n-\t\tif [ ! -d \"$service_dir\" ]; then\n-\t\t\tcontinue\n-\t\tfi\n-\n-\t\tlocal service_name\n-\t\tservice_name=$(basename \"$service_dir\")\n-\t\techo \"Checking service: $service_name\"\n-\n-\t\tif [ ! -f \"$service_dir/package.json\" ]; then\n-\t\t\techo \"[$service_name] No package.json found, skipping...\"\n-\t\t\tcontinue\n-\t\tfi\n-\n-\t\tif ! grep -q '\"dev\"' \"$service_dir/package.json\"; then\n-\t\t\techo \"[$service_name] No dev script found, skipping...\"\n-\t\t\tcontinue\n-\t\tfi\n-\n-\t\techo \"Starting $service_name in background...\"\n-\t\t(\n-\t\t\tcd \"$service_dir\"\n-\t\t\techo \"[$service_name] Installing dependencies...\"\n-\t\t\tbun install\n-\t\t\techo \"[$service_name] Running bun run dev...\"\n-\t\t\texec bun run dev\n-\t\t) >\"$PROJECT_DIR/.zscripts/mini-service-${service_name}.log\" 2>&1 &\n-\n-\t\tlocal service_pid=$!\n-\t\techo \"[$service_name] Started in background (PID: $service_pid)\"\n-\t\techo \"[$service_name] Log: $PROJECT_DIR/.zscripts/mini-service-${service_name}.log\"\n-\t\tdisown \"$service_pid\" 2>/dev/null || true\n-\t\tstarted_count=$((started_count + 1))\n-\tdone\n-\n-\techo \"Mini-services startup completed. Started $started_count service(s).\"\n-\tlog_step_end \"Starting mini-services\"\n-}\n-\n-wait_for_service() {\n-\tlocal host=\"$1\"\n-\tlocal port=\"$2\"\n-\tlocal service_name=\"$3\"\n-\tlocal max_attempts=\"${4:-60}\"\n-\tlocal attempt=1\n-\n-\techo \"Waiting for $service_name to be ready on $host:$port...\"\n-\n-\twhile [ \"$attempt\" -le \"$max_attempts\" ]; do\n-\t\tif curl -s --connect-timeout 2 --max-time 5 \"http://$host:$port\" >/dev/null 2>&1; then\n-\t\t\techo \"$service_name is ready!\"\n-\t\t\treturn 0\n-\t\tfi\n-\n-\t\techo \"Attempt $attempt/$max_attempts: $service_name not ready yet, waiting...\"\n-\t\tsleep 1\n-\t\tattempt=$((attempt + 1))\n-\tdone\n-\n-\techo \"ERROR: $service_name failed to start within $max_attempts seconds\"\n-\treturn 1\n-}\n-\n-cleanup() {\n-\tif [ -n \"${DEV_PID:-}\" ] && kill -0 \"$DEV_PID\" >/dev/null 2>&1; then\n-\t\techo \"Stopping Next.js dev server (PID: $DEV_PID)...\"\n-\t\tkill \"$DEV_PID\" >/dev/null 2>&1 || true\n-\tfi\n-}\n-\n-trap cleanup EXIT INT TERM\n-\n-cd \"$PROJECT_DIR\"\n-\n-if ! command -v bun >/dev/null 2>&1; then\n-\techo \"ERROR: bun is not installed or not in PATH\"\n-\texit 1\n-fi\n-\n-log_step_start \"bun install\"\n-echo \"[BUN] Installing dependencies...\"\n-bun install\n-log_step_end \"bun install\"\n-\n-log_step_start \"bun run db:push\"\n-echo \"[BUN] Setting up database...\"\n-bun run db:push\n-log_step_end \"bun run db:push\"\n-\n-log_step_start \"Starting Next.js dev server\"\n-echo \"[BUN] Starting development server...\"\n-bun run dev &\n-DEV_PID=$!\n-log_step_end \"Starting Next.js dev server\"\n-\n-log_step_start \"Waiting for Next.js dev server\"\n-wait_for_service \"localhost\" \"3000\" \"Next.js dev server\"\n-log_step_end \"Waiting for Next.js dev server\"\n-\n-log_step_start \"Health check\"\n-echo \"[BUN] Performing health check...\"\n-curl -fsS localhost:3000 >/dev/null\n-echo \"[BUN] Health check passed\"\n-log_step_end \"Health check\"\n-\n-start_mini_services\n-\n-echo \"Next.js dev server is running in background (PID: $DEV_PID).\"\n-echo \"Use 'kill $DEV_PID' to stop it.\"\n-disown \"$DEV_PID\" 2>/dev/null || true\n-unset DEV_PID"
+    },
+    {
+      "sha": "1e3d39de3c3c852ff6fdee5339b7b85540f02a81",
+      "filename": ".zscripts/mini-services-build.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 78,
+      "changes": 78,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-build.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-build.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fmini-services-build.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,78 +0,0 @@\n-#!/bin/bash\n-\n-# 配置项\n-ROOT_DIR=\"/home/z/my-project/mini-services\"\n-DIST_DIR=\"/tmp/build_fullstack_$BUILD_ID/mini-services-dist\"\n-\n-main() {\n-    echo \"🚀 开始批量构建...\"\n-    \n-    # 检查 rootdir 是否存在\n-    if [ ! -d \"$ROOT_DIR\" ]; then\n-        echo \"ℹ️  目录 $ROOT_DIR 不存在，跳过构建\"\n-        return\n-    fi\n-    \n-    # 创建输出目录（如果不存在）\n-    mkdir -p \"$DIST_DIR\"\n-    \n-    # 统计变量\n-    success_count=0\n-    fail_count=0\n-    \n-    # 遍历 mini-services 目录下的所有文件夹\n-    for dir in \"$ROOT_DIR\"/*; do\n-        # 检查是否是目录且包含 package.json\n-        if [ -d \"$dir\" ] && [ -f \"$dir/package.json\" ]; then\n-            project_name=$(basename \"$dir\")\n-            \n-            # 智能查找入口文件 (按优先级查找)\n-            entry_path=\"\"\n-            for entry in \"src/index.ts\" \"index.ts\" \"src/index.js\" \"index.js\"; do\n-                if [ -f \"$dir/$entry\" ]; then\n-                    entry_path=\"$dir/$entry\"\n-                    break\n-                fi\n-            done\n-            \n-            if [ -z \"$entry_path\" ]; then\n-                echo \"⚠️  跳过 $project_name: 未找到入口文件 (index.ts/js)\"\n-                continue\n-            fi\n-            \n-            echo \"\"\n-            echo \"📦 正在构建: $project_name...\"\n-            \n-            # 使用 bun build CLI 构建\n-            output_file=\"$DIST_DIR/mini-service-$project_name.js\"\n-            \n-            if bun build \"$entry_path\" \\\n-                --outfile \"$output_file\" \\\n-                --target bun \\\n-                --minify; then\n-                echo \"✅ $project_name 构建成功 -> $output_file\"\n-                success_count=$((success_count + 1))\n-            else\n-                echo \"❌ $project_name 构建失败\"\n-                fail_count=$((fail_count + 1))\n-            fi\n-        fi\n-    done\n-    \n-    if [ -f ./.zscripts/mini-services-start.sh ]; then\n-        cp ./.zscripts/mini-services-start.sh \"$DIST_DIR/mini-services-start.sh\"\n-        chmod +x \"$DIST_DIR/mini-services-start.sh\"\n-    fi\n-    \n-    echo \"\"\n-    echo \"🎉 所有任务完成！\"\n-    if [ $success_count -gt 0 ] || [ $fail_count -gt 0 ]; then\n-        echo \"✅ 成功: $success_count 个\"\n-        if [ $fail_count -gt 0 ]; then\n-            echo \"❌ 失败: $fail_count 个\"\n-        fi\n-    fi\n-}\n-\n-main\n-"
+    },
+    {
+      "sha": "91ff56bf3e5c6e48b056eb7bbe1786934b771370",
+      "filename": ".zscripts/mini-services-install.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 65,
+      "changes": 65,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-install.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-install.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fmini-services-install.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,65 +0,0 @@\n-#!/bin/bash\n-\n-# 配置项\n-ROOT_DIR=\"/home/z/my-project/mini-services\"\n-\n-main() {\n-    echo \"🚀 开始批量安装依赖...\"\n-    \n-    # 检查 rootdir 是否存在\n-    if [ ! -d \"$ROOT_DIR\" ]; then\n-        echo \"ℹ️  目录 $ROOT_DIR 不存在，跳过安装\"\n-        return\n-    fi\n-    \n-    # 统计变量\n-    success_count=0\n-    fail_count=0\n-    failed_projects=\"\"\n-    \n-    # 遍历 mini-services 目录下的所有文件夹\n-    for dir in \"$ROOT_DIR\"/*; do\n-        # 检查是否是目录且包含 package.json\n-        if [ -d \"$dir\" ] && [ -f \"$dir/package.json\" ]; then\n-            project_name=$(basename \"$dir\")\n-            echo \"\"\n-            echo \"📦 正在安装依赖: $project_name...\"\n-            \n-            # 进入项目目录并执行 bun install\n-            if (cd \"$dir\" && bun install); then\n-                echo \"✅ $project_name 依赖安装成功\"\n-                success_count=$((success_count + 1))\n-            else\n-                echo \"❌ $project_name 依赖安装失败\"\n-                fail_count=$((fail_count + 1))\n-                if [ -z \"$failed_projects\" ]; then\n-                    failed_projects=\"$project_name\"\n-                else\n-                    failed_projects=\"$failed_projects $project_name\"\n-                fi\n-            fi\n-        fi\n-    done\n-    \n-    # 汇总结果\n-    echo \"\"\n-    echo \"==================================================\"\n-    if [ $success_count -gt 0 ] || [ $fail_count -gt 0 ]; then\n-        echo \"🎉 安装完成！\"\n-        echo \"✅ 成功: $success_count 个\"\n-        if [ $fail_count -gt 0 ]; then\n-            echo \"❌ 失败: $fail_count 个\"\n-            echo \"\"\n-            echo \"失败的项目:\"\n-            for project in $failed_projects; do\n-                echo \"  - $project\"\n-            done\n-        fi\n-    else\n-        echo \"ℹ️  未找到任何包含 package.json 的项目\"\n-    fi\n-    echo \"==================================================\"\n-}\n-\n-main\n-"
+    },
+    {
+      "sha": "e0af64d42467a7529a5cffc0d2dae00b995133bd",
+      "filename": ".zscripts/mini-services-start.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 123,
+      "changes": 123,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-start.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fmini-services-start.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fmini-services-start.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,123 +0,0 @@\n-#!/bin/sh\n-\n-# 配置项\n-DIST_DIR=\"./mini-services-dist\"\n-\n-# 存储所有子进程的 PID\n-pids=\"\"\n-\n-# 清理函数：优雅关闭所有服务\n-cleanup() {\n-    echo \"\"\n-    echo \"🛑 正在关闭所有服务...\"\n-    \n-    # 发送 SIGTERM 信号给所有子进程\n-    for pid in $pids; do\n-        if kill -0 \"$pid\" 2>/dev/null; then\n-            service_name=$(ps -p \"$pid\" -o comm= 2>/dev/null || echo \"unknown\")\n-            echo \"   关闭进程 $pid ($service_name)...\"\n-            kill -TERM \"$pid\" 2>/dev/null\n-        fi\n-    done\n-    \n-    # 等待所有进程退出（最多等待 5 秒）\n-    sleep 1\n-    for pid in $pids; do\n-        if kill -0 \"$pid\" 2>/dev/null; then\n-            # 如果还在运行，等待最多 4 秒\n-            timeout=4\n-            while [ $timeout -gt 0 ] && kill -0 \"$pid\" 2>/dev/null; do\n-                sleep 1\n-                timeout=$((timeout - 1))\n-            done\n-            # 如果仍然在运行，强制关闭\n-            if kill -0 \"$pid\" 2>/dev/null; then\n-                echo \"   强制关闭进程 $pid...\"\n-                kill -KILL \"$pid\" 2>/dev/null\n-            fi\n-        fi\n-    done\n-    \n-    echo \"✅ 所有服务已关闭\"\n-}\n-\n-main() {\n-    echo \"🚀 开始启动所有 mini services...\"\n-    \n-    # 检查 dist 目录是否存在\n-    if [ ! -d \"$DIST_DIR\" ]; then\n-        echo \"ℹ️  目录 $DIST_DIR 不存在\"\n-        return\n-    fi\n-    \n-    # 查找所有 mini-service-*.js 文件\n-    service_files=\"\"\n-    for file in \"$DIST_DIR\"/mini-service-*.js; do\n-        if [ -f \"$file\" ]; then\n-            if [ -z \"$service_files\" ]; then\n-                service_files=\"$file\"\n-            else\n-                service_files=\"$service_files $file\"\n-            fi\n-        fi\n-    done\n-    \n-    # 计算服务文件数量\n-    service_count=0\n-    for file in $service_files; do\n-        service_count=$((service_count + 1))\n-    done\n-    \n-    if [ $service_count -eq 0 ]; then\n-        echo \"ℹ️  未找到任何 mini service 文件\"\n-        return\n-    fi\n-    \n-    echo \"📦 找到 $service_count 个服务，开始启动...\"\n-    echo \"\"\n-    \n-    # 启动每个服务\n-    for file in $service_files; do\n-        service_name=$(basename \"$file\" .js | sed 's/mini-service-//')\n-        echo \"▶️  启动服务: $service_name...\"\n-        \n-        # 使用 bun 运行服务（后台运行）\n-        bun \"$file\" &\n-        pid=$!\n-        if [ -z \"$pids\" ]; then\n-            pids=\"$pid\"\n-        else\n-            pids=\"$pids $pid\"\n-        fi\n-        \n-        # 等待一小段时间检查进程是否成功启动\n-        sleep 0.5\n-        if ! kill -0 \"$pid\" 2>/dev/null; then\n-            echo \"❌ $service_name 启动失败\"\n-            # 从字符串中移除失败的 PID\n-            pids=$(echo \"$pids\" | sed \"s/\\b$pid\\b//\" | sed 's/  */ /g' | sed 's/^ *//' | sed 's/ *$//')\n-        else\n-            echo \"✅ $service_name 已启动 (PID: $pid)\"\n-        fi\n-    done\n-    \n-    # 计算运行中的服务数量\n-    running_count=0\n-    for pid in $pids; do\n-        if kill -0 \"$pid\" 2>/dev/null; then\n-            running_count=$((running_count + 1))\n-        fi\n-    done\n-    \n-    echo \"\"\n-    echo \"🎉 所有服务已启动！共 $running_count 个服务正在运行\"\n-    echo \"\"\n-    echo \"💡 按 Ctrl+C 停止所有服务\"\n-    echo \"\"\n-    \n-    # 等待所有后台进程\n-    wait\n-}\n-\n-main\n-"
+    },
+    {
+      "sha": "33a2984e1fbd0aedd7a82a2031081da126a43d74",
+      "filename": ".zscripts/start.sh",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 135,
+      "changes": 135,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fstart.sh",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/.zscripts%2Fstart.sh",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/.zscripts%2Fstart.sh?ref=1f174f975bde6adfead0f88530d3d8bae542d099",
+      "patch": "@@ -1,135 +0,0 @@\n-#!/bin/sh\n-\n-set -e\n-\n-# 获取脚本所在目录\n-SCRIPT_DIR=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\n-BUILD_DIR=\"$SCRIPT_DIR\"\n-\n-# 存储所有子进程的 PID\n-pids=\"\"\n-\n-# 清理函数：优雅关闭所有服务\n-cleanup() {\n-    echo \"\"\n-    echo \"🛑 正在关闭所有服务...\"\n-    \n-    # 发送 SIGTERM 信号给所有子进程\n-    for pid in $pids; do\n-        if kill -0 \"$pid\" 2>/dev/null; then\n-            service_name=$(ps -p \"$pid\" -o comm= 2>/dev/null || echo \"unknown\")\n-            echo \"   关闭进程 $pid ($service_name)...\"\n-            kill -TERM \"$pid\" 2>/dev/null\n-        fi\n-    done\n-    \n-    # 等待所有进程退出（最多等待 5 秒）\n-    sleep 1\n-    for pid in $pids; do\n-        if kill -0 \"$pid\" 2>/dev/null; then\n-            # 如果还在运行，等待最多 4 秒\n-            timeout=4\n-            while [ $timeout -gt 0 ] && kill -0 \"$pid\" 2>/dev/null; do\n-                sleep 1\n-                timeout=$((timeout - 1))\n-            done\n-            # 如果仍然在运行，强制关闭\n-            if kill -0 \"$pid\" 2>/dev/null; then\n-                echo \"   强制关闭进程 $pid...\"\n-                kill -KILL \"$pid\" 2>/dev/null\n-            fi\n-        fi\n-    done\n-    \n-    echo \"✅ 所有服务已关闭\"\n-    exit 0\n-}\n-\n-echo \"🚀 开始启动所有服务...\"\n-echo \"\"\n-\n-# 切换到构建目录\n-cd \"$BUILD_DIR\" || exit 1\n-\n-ls -lah\n-\n-DEFAULT_PACKAGED_DB_PATH=\"/app/db/custom.db\"\n-DEFAULT_PACKAGED_DATABASE_URL=\"file:$DEFAULT_PACKAGED_DB_PATH\"\n-\n-# 启动 Next.js 服务器\n-if [ -f \"./next-service-dist/server.js\" ]; then\n-    echo \"🚀 启动 Next.js 服务器...\"\n-    cd next-service-dist/ || exit 1\n-    \n-    # 设置环境变量\n-    export NODE_ENV=production\n-    export PORT=\"${PORT:-3000}\"\n-    export HOSTNAME=\"${HOSTNAME:-0.0.0.0}\"\n-    export DATABASE_URL=\"${DATABASE_URL:-$DEFAULT_PACKAGED_DATABASE_URL}\"\n-\n-    if [ \"$DATABASE_URL\" = \"$DEFAULT_PACKAGED_DATABASE_URL\" ]; then\n-        if [ ! -f \"$DEFAULT_PACKAGED_DB_PATH\" ]; then\n-            echo \"❌ 未找到打包后的数据库文件 $DEFAULT_PACKAGED_DB_PATH\"\n-            echo \"   为避免生产环境启动到空数据库，启动已终止\"\n-            exit 1\n-        fi\n-\n-        echo \"🗄️  当前使用打包数据库: $DEFAULT_PACKAGED_DB_PATH\"\n-    else\n-        echo \"🗄️  当前使用外部指定数据库: $DATABASE_URL\"\n-    fi\n-    \n-    # 后台启动 Next.js\n-    bun server.js &\n-    NEXT_PID=$!\n-    pids=\"$NEXT_PID\"\n-    \n-    # 等待一小段时间检查进程是否成功启动\n-    sleep 1\n-    if ! kill -0 \"$NEXT_PID\" 2>/dev/null; then\n-        echo \"❌ Next.js 服务器启动失败\"\n-        exit 1\n-    else\n-        echo \"✅ Next.js 服务器已启动 (PID: $NEXT_PID, Port: $PORT)\"\n-    fi\n-    \n-    cd ../\n-else\n-    echo \"⚠️  未找到 Next.js 服务器文件: ./next-service-dist/server.js\"\n-fi\n-\n-# 启动 mini-services\n-if [ -f \"./mini-services-start.sh\" ]; then\n-    echo \"🚀 启动 mini-services...\"\n-    \n-    # 运行启动脚本（从根目录运行，脚本内部会处理 mini-services-dist 目录）\n-    sh ./mini-services-start.sh &\n-    MINI_PID=$!\n-    pids=\"$pids $MINI_PID\"\n-    \n-    # 等待一小段时间检查进程是否成功启动\n-    sleep 1\n-    if ! kill -0 \"$MINI_PID\" 2>/dev/null; then\n-        echo \"⚠️  mini-services 可能启动失败，但继续运行...\"\n-    else\n-        echo \"✅ mini-services 已启动 (PID: $MINI_PID)\"\n-    fi\n-elif [ -d \"./mini-services-dist\" ]; then\n-    echo \"⚠️  未找到 mini-services 启动脚本，但目录存在\"\n-else\n-    echo \"ℹ️  mini-services 目录不存在，跳过\"\n-fi\n-\n-# 启动 Caddy（如果存在 Caddyfile）\n-echo \"🚀 启动 Caddy...\"\n-\n-# Caddy 作为前台进程运行（主进程）\n-echo \"✅ Caddy 已启动（前台运行）\"\n-echo \"\"\n-echo \"🎉 所有服务已启动！\"\n-echo \"\"\n-echo \"💡 按 Ctrl+C 停止所有服务\"\n-echo \"\"\n-\n-# Caddy 作为主进程运行\n-exec caddy run --config Caddyfile --adapter caddyfile"
+    },
+    {
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "filename": "mini-services/.gitkeep",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 0,
+      "changes": 0,
+      "blob_url": "https://github.com/noadflow/Website/blob/1f174f975bde6adfead0f88530d3d8bae542d099/mini-services%2F.gitkeep",
+      "raw_url": "https://github.com/noadflow/Website/raw/1f174f975bde6adfead0f88530d3d8bae542d099/mini-services%2F.gitkeep",
+      "contents_url": "https://api.github.com/repos/noadflow/Website/contents/mini-services%2F.gitkeep?ref=1f174f975bde6adfead0f88530d3d8bae542d099"
+    }
+  ]
+}

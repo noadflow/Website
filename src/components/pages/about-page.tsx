@@ -3,19 +3,44 @@
 import Image from "next/image";
 import { UserRound, Bot, Globe2 } from "lucide-react";
 import { PageHero } from "@/components/site/page-hero";
+import { SectionHeading } from "@/components/site/section-heading";
 import { FadeIn } from "@/components/site/fade-in";
 import { CTASection } from "@/components/site/cta-section";
 
-const STORY = [
+const TEAM = [
   {
-    eyebrow: "My Story",
-    title: "Why NoadFlow exists",
-    body: "I've always been drawn to building things — figuring out how systems work and making them work better. NoadFlow grew out of that: a way to take the repetitive, time-consuming parts of running a business and hand them off to AI agents that actually think through what needs to happen. Every project I take on, I build personally — which means you're not getting a templated solution, you're getting something built specifically around how your business actually works.",
+    name: "Anas",
+    role: "Founder & Automation Lead",
+    image: "/anas.jpg",
+    alt: "Anas — founder of NoadFlow",
+    bio: "Anas runs NoadFlow and builds every automation that ships from it. He sits down with each client, works out where the business is losing time, and turns that into AI agents and workflows that actually fix the problem — lead generation, customer support, internal processes, whatever is eating the hours. When he's not building for clients, he runs NoadFlow's socials too.",
+    tags: [
+      "AI Agents",
+      "Workflow Automation",
+      "Client Automation",
+      "Social Media",
+    ],
   },
   {
-    eyebrow: "How I Work",
+    name: "Sumiya",
+    role: "Client Relations & Delivery",
+    image: "/sumiya.jpg",
+    alt: "Sumiya — client relations at NoadFlow",
+    bio: "Sumiya takes care of everything on the client side. She manages every lead that comes in, has the first conversation, and stays with you right through to delivery — updates, questions, changes, and the final handover. Nothing gets lost between a first message and a finished automation, and you always know exactly where your project stands.",
+    tags: ["Lead Management", "Client Communication", "Delivery", "Onboarding"],
+  },
+];
+
+const STORY = [
+  {
+    eyebrow: "Our Story",
+    title: "Why NoadFlow exists",
+    body: "NoadFlow grew out of a simple frustration — businesses losing hours every week to repetitive work that a well-built system could handle on its own. We built a studio around fixing that: handing the busywork off to AI agents that actually think through what needs to happen. Every project is built personally by our team, so what you get is designed around how your business really works, not a templated shortcut.",
+  },
+  {
+    eyebrow: "How We Work",
     title: "Hands-on, from start to finish",
-    body: "Every build is handled with care from the first conversation about what's slowing you down, to designing the agent, to making sure it keeps running smoothly after launch. Direct communication, no layers of account managers — just clear, focused work that gets your automation shipped and performing.",
+    body: "From the first conversation about what's slowing you down, through the build, to keeping everything running after launch — you deal with the same two people the whole way. Anas works out the problem and builds the system; Sumiya keeps you informed and makes sure delivery lands. No account managers, no layers — just the two people actually doing the work.",
   },
 ];
 
@@ -42,92 +67,108 @@ export function AboutPage() {
     <>
       <PageHero
         eyebrow="About"
-        headline="Hi, I'm Anas."
-        subtitle="I started NoadFlow to bring practical, intelligent automation to businesses that don't have the time to build it themselves."
+        headline="The two people behind NoadFlow."
+        subtitle="Anas builds the automations. Sumiya handles the client side. No account managers, no layers — just the two of us doing the work."
       />
 
-      {/* Portrait + intro band */}
-      <section className="relative px-4 py-8 sm:px-6 sm:py-12">
+      {/* Team — the main section of the About page. Two members side by
+          side, each card: portrait on the left, bio + tags on the right. */}
+      <section className="relative px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading
+            eyebrow="Our Team"
+            title="Meet Anas & Sumiya"
+            subtitle="One works out the problem and builds the system. The other makes sure you're informed and that delivery lands. Everything in between is handled by the same two people you'll actually work with."
+            className="max-w-3xl"
+          />
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            {TEAM.map((member, i) => (
+              <FadeIn key={member.name} delay={i * 0.12}>
+                <div className="h-full overflow-hidden rounded-3xl border border-border bg-card">
+                  <div className="grid grid-cols-[120px_1fr] sm:grid-cols-[180px_1fr] md:grid-cols-[230px_1fr]">
+                    {/* Portrait — image on the left */}
+                    <div className="relative min-h-[260px]">
+                      <Image
+                        src={member.image}
+                        alt={member.alt}
+                        fill
+                        sizes="(max-width: 640px) 120px, (max-width: 768px) 180px, 230px"
+                        className="object-cover object-top"
+                      />
+                    </div>
+
+                    {/* Bio — on the right */}
+                    <div className="flex flex-col p-5 sm:p-6">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+                        {member.role}
+                      </p>
+                      <h3 className="mt-2 font-serif text-2xl font-semibold tracking-tight">
+                        {member.name}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {member.bio}
+                      </p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {member.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-border px-3 py-1 text-[11px] font-medium"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What we do — statement + service tags */}
+      <section className="relative px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
-            <div className="grid gap-6 lg:grid-cols-[420px_1fr] lg:items-stretch">
-              {/* Portrait card */}
-              <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
-                <div className="relative aspect-[5/7] w-full">
-                  <Image
-                    src="/anas-v2.png"
-                    alt="Anas — founder of NoadFlow"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 420px"
-                    className="object-cover object-top"
-                    priority
-                  />
-                  {/* Subtle gradient at the bottom for caption legibility. */}
-                  <div
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
-                    style={{
-                      background:
-                        "linear-gradient(to top, var(--card), transparent)",
-                    }}
-                  />
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
-                      Founder
-                    </p>
-                    <p className="mt-1 font-serif text-xl font-semibold tracking-tight">
-                      Anas
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-border bg-background/70 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] backdrop-blur">
-                    NoadFlow
-                  </span>
-                </div>
+            <div className="rounded-3xl border border-border bg-card p-8 sm:p-10">
+              <div className="mb-4 inline-flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+                <span className="h-px w-7 bg-current opacity-40" />
+                What We Do
               </div>
-
-              {/* Intro narrative */}
-              <div className="flex h-full flex-col justify-center rounded-3xl border border-border bg-card p-8 sm:p-10">
-                <div className="mb-4 inline-flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-                  <span className="h-px w-7 bg-current opacity-40" />
-                  Quick intro
-                </div>
-                <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-                  I build AI agents that handle the busywork — so you can
-                  focus on growing your business.
-                </h2>
-                <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-                  NoadFlow is a focused studio built around direct
-                  communication and careful work. Every project gets the same
-                  attention to detail — no templated solutions, no bloated
-                  teams, no handoffs. If you're tired of generic automation
-                  tools that don't quite fit, I'll build you something that
-                  actually does.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {[
-                    "AI Agents",
-                    "Lead Generation",
-                    "Customer Support",
-                    "Workflow Automation",
-                  ].map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <h2 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+                We build AI agents that handle the busywork — so you can focus
+                on growing your business.
+              </h2>
+              <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground">
+                NoadFlow is a focused two-person studio built around direct
+                communication and careful work. Every project gets the same
+                attention to detail — no templated solutions, no bloated teams,
+                no handoffs. If you're tired of generic automation tools that
+                don't quite fit, we'll build you something that actually does.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                {[
+                  "AI Agents",
+                  "Lead Generation",
+                  "Customer Support",
+                  "Workflow Automation",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-border px-3.5 py-1.5 text-xs font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* Principles strip — replaces the empty decorative wave band.
-          Three concrete value props with icons, so the section actually
-          says something instead of just being decoration. */}
+      {/* Principles strip */}
       <section className="relative px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <FadeIn>
@@ -153,7 +194,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Story + How I Work */}
+      {/* Story + How We Work */}
       <section className="relative px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-8">
           {STORY.map((s, i) => (
@@ -176,9 +217,12 @@ export function AboutPage() {
       </section>
 
       <CTASection
-        title="Want to see what this could look like for your business?"
+        title="Want Anas and Sumiya to build your automation?"
+        subtitle="Book a free call — we'll talk through what's slowing your business down and what we can build."
         buttonLabel="Book a Free Call"
       />
     </>
   );
 }
+
+

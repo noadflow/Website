@@ -27,8 +27,9 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Custom AI agents that automate the busywork for businesses
-              worldwide.
+              NoadFlow is a two-person studio — Anas builds the automations,
+              Sumiya handles the client side. We build AI agents around how your
+              business actually works, not templated shortcuts.
             </p>
           </div>
 
@@ -37,9 +38,6 @@ export function Footer() {
               Company
             </h4>
             <ul className="mt-4 space-y-3 text-sm">
-              <li>
-                <FooterLink onClick={go("services")}>Services</FooterLink>
-              </li>
               <li>
                 <FooterLink onClick={go("portfolio")}>Portfolio</FooterLink>
               </li>

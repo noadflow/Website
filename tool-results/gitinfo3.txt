@@ -1,0 +1,10 @@
+﻿C:\Program Files\Git\cmd\git.exe: False
+C:\Program Files (x86)\Git\cmd\git.exe: False
+C:\Users\anasm\AppData\Local\Programs\Git\cmd\git.exe: False
+C:\Users\anasm\scoop\apps\git\current\bin\git.exe: False
+--- saved github credentials ---
+
+--- local main sha ---
+1f174f975bde6adfead0f88530d3d8bae542d099
+
+--- packed-refs ---
