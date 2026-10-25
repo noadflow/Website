@@ -142,11 +142,9 @@ export function AboutPage() {
                 on growing your business.
               </h2>
               <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground">
-                NoadFlow is a focused two-person studio built around direct
-                communication and careful work. Every project gets the same
-                attention to detail — no templated solutions, no bloated teams,
-                no handoffs. If you're tired of generic automation tools that
-                don't quite fit, we'll build you something that actually does.
+                NoadFlow is a focused two-person studio — no templated
+                solutions, no bloated teams, no handoffs. Just careful work
+                built around your business.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 {[

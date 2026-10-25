@@ -53,11 +53,8 @@ export function HomePage() {
             <FadeIn delay={0.5}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
                 We build AI agents that reason through your business — finding
-                leads, answering customers, handling the busywork. Not fixed
-                steps, not chatbot skins: intelligence built around how you
-                actually work. Anas builds the systems, Sumiya handles the
-                client side. No account managers, no templates, no corporate
-                AI agency fluff.
+                leads, answering customers, handling the busywork. Intelligence
+                built around how you actually work, not chatbot skins.
               </p>
             </FadeIn>
             <FadeIn delay={0.65}>
